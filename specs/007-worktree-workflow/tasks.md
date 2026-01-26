@@ -34,11 +34,11 @@ This feature modifies existing files rather than creating new project structure.
 
 **CRITICAL**: User stories 1-4 all depend on these functions existing in common.sh
 
-- [ ] T001 [P] Implement `is_worktree()` function in .specify/scripts/bash/common.sh
-- [ ] T002 [P] Implement `get_main_repo_from_worktree()` function in .specify/scripts/bash/common.sh
-- [ ] T003 [P] Implement `get_worktree_for_branch()` function in .specify/scripts/bash/common.sh
-- [ ] T004 Implement `check_worktree_context()` function in .specify/scripts/bash/common.sh (depends on T001, T002, T003)
-- [ ] T005 [P] Implement `list_worktrees()` helper function in .specify/scripts/bash/common.sh
+- [X] T001 [P] Implement `is_worktree()` function in .specify/scripts/bash/common.sh
+- [X] T002 [P] Implement `get_main_repo_from_worktree()` function in .specify/scripts/bash/common.sh
+- [X] T003 [P] Implement `get_worktree_for_branch()` function in .specify/scripts/bash/common.sh
+- [X] T004 Implement `check_worktree_context()` function in .specify/scripts/bash/common.sh (depends on T001, T002, T003)
+- [X] T005 [P] Implement `list_worktrees()` helper function in .specify/scripts/bash/common.sh
 
 **Checkpoint**: Foundation ready - all worktree utility functions available for use by scripts and commands
 
@@ -57,8 +57,8 @@ This feature modifies existing files rather than creating new project structure.
 
 ### Implementation for User Story 1
 
-- [ ] T006 [US1] Review and update worktree creation messages in .specify/scripts/bash/create-new-feature.sh to use consistent "worktree" terminology
-- [ ] T007 [US1] Update `/projspec.specify` command documentation in .claude/commands/projspec.specify.md with worktree workflow guidance
+- [X] T006 [US1] Review and update worktree creation messages in .specify/scripts/bash/create-new-feature.sh to use consistent "worktree" terminology
+- [X] T007 [US1] Update `/projspec.specify` command documentation in .claude/commands/projspec.specify.md with worktree workflow guidance
 
 **Checkpoint**: User Story 1 complete - developers can create new features with proper worktree setup
 
@@ -75,12 +75,12 @@ This feature modifies existing files rather than creating new project structure.
 
 ### Implementation for User Story 2
 
-- [ ] T008 [US2] Add worktree context detection to .specify/scripts/bash/check-prerequisites.sh
-- [ ] T009 [US2] Add worktree context check to .specify/scripts/bash/setup-plan.sh
-- [ ] T010 [P] [US2] Update .claude/commands/projspec.plan.md to document worktree behavior
-- [ ] T011 [P] [US2] Update .claude/commands/projspec.implement.md to ensure source modifications target worktree directory
-- [ ] T012 [US2] Verify `get_repo_root()` correctly resolves paths from worktree context in .specify/scripts/bash/common.sh
-- [ ] T012a [US2] Verify source code isolation: create test file in worktree, confirm it does NOT appear in main repository
+- [X] T008 [US2] Add worktree context detection to .specify/scripts/bash/check-prerequisites.sh
+- [X] T009 [US2] Add worktree context check to .specify/scripts/bash/setup-plan.sh
+- [X] T010 [P] [US2] Update .claude/commands/projspec.plan.md to document worktree behavior
+- [X] T011 [P] [US2] Update .claude/commands/projspec.implement.md to ensure source modifications target worktree directory
+- [X] T012 [US2] Verify `get_repo_root()` correctly resolves paths from worktree context in .specify/scripts/bash/common.sh
+- [X] T012a [US2] Verify source code isolation: create test file in worktree, confirm it does NOT appear in main repository
 
 **Checkpoint**: User Story 2 complete - all commands work seamlessly from worktree context
 
@@ -94,9 +94,9 @@ This feature modifies existing files rather than creating new project structure.
 
 ### Implementation for User Story 3
 
-- [ ] T013 [US3] Update .claude/skills/learned/worktree-based-feature-workflow.md with multi-worktree navigation guidance
-- [ ] T014 [US3] Add worktree list display to create-new-feature.sh output showing existing worktrees
-- [ ] T015 [P] [US3] Update quickstart documentation at specs/007-worktree-workflow/quickstart.md with navigation examples and cleanup troubleshooting
+- [X] T013 [US3] Update .claude/skills/learned/worktree-based-feature-workflow.md with multi-worktree navigation guidance
+- [X] T014 [US3] Add worktree list display to create-new-feature.sh output showing existing worktrees
+- [X] T015 [P] [US3] Update quickstart documentation at specs/007-worktree-workflow/quickstart.md with navigation examples and cleanup troubleshooting
 
 **Checkpoint**: User Story 3 complete - developers can navigate between worktrees confidently
 
@@ -110,8 +110,8 @@ This feature modifies existing files rather than creating new project structure.
 
 ### Implementation for User Story 4
 
-- [ ] T016 [US4] Add cleanup guidance to .claude/skills/learned/worktree-based-feature-workflow.md
-- [ ] T017 [US4] Add worktree prune recommendation to check-prerequisites.sh for stale worktree cleanup
+- [X] T016 [US4] Add cleanup guidance to .claude/skills/learned/worktree-based-feature-workflow.md
+- [X] T017 [US4] Add worktree prune recommendation to check-prerequisites.sh for stale worktree cleanup
 
 **Checkpoint**: User Story 4 complete - developers can clean up worktrees safely
 
@@ -121,10 +121,10 @@ This feature modifies existing files rather than creating new project structure.
 
 **Purpose**: Documentation updates and final validation
 
-- [ ] T018 [P] Update terminology from "branch" to "worktree" in .specify/templates/spec-template.md where appropriate
-- [ ] T019 [P] Review and update error messages in all modified scripts for consistency
-- [ ] T020 Run manual validation using quickstart.md scenarios
-- [ ] T021 Update CLAUDE.md to reflect worktree workflow patterns (if needed)
+- [X] T018 [P] Update terminology from "branch" to "worktree" in .specify/templates/spec-template.md where appropriate
+- [X] T019 [P] Review and update error messages in all modified scripts for consistency
+- [X] T020 Run manual validation using quickstart.md scenarios
+- [X] T021 Update CLAUDE.md to reflect worktree workflow patterns (if needed)
 
 ---
 
