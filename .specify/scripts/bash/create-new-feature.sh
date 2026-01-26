@@ -286,6 +286,9 @@ if [ "$HAS_GIT" = true ]; then
 
     >&2 echo "[specify] Created worktree for feature '$BRANCH_NAME' at: $WORKTREE_PATH"
     >&2 echo "[specify] Navigate to your worktree: cd $WORKTREE_PATH"
+    >&2 echo ""
+    >&2 echo "[specify] Active worktrees:"
+    git worktree list | sed 's/^/  /' >&2
 else
     >&2 echo "[specify] Warning: Git repository not detected; skipped worktree creation for feature '$BRANCH_NAME'"
 fi
