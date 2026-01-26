@@ -67,6 +67,7 @@ class E2EProject:
         self.fixture_dir = tests_root / "fixtures" / project_name
         self.output_dir = tests_root / "e2e" / "output"
         self.timestamp: str = ""
+        self.plugin_dir: Path | None = None
 
     def setup(self) -> Path:
         """Create and initialize the test project directory.
@@ -109,6 +110,9 @@ class E2EProject:
 
         # Initialize git repository
         self._init_git_repository()
+
+        # Locate projspec plugin directory
+        self._locate_projspec_plugin()
 
         return self.project_path
 
@@ -186,6 +190,59 @@ class E2EProject:
             raise RuntimeError(
                 f"Failed to create initial commit: {result.stderr}"
             )
+
+    def _locate_projspec_plugin(self) -> None:
+        """Locate and install the projspec plugin into the test project.
+
+        This method finds the projspec plugin from the local development
+        path and copies the necessary directories (.specify/, .claude/)
+        to the test project so Claude Code can use projspec commands.
+
+        Raises:
+            RuntimeError: If plugin directory cannot be found.
+        """
+        if self.project_path is None:
+            return
+
+        # Determine the projspec plugin path
+        # The plugin is located at the repo root /projspec directory
+        # We need to find the repo root by going up from tests_root
+        repo_root = self.tests_root.parent
+        plugin_path = repo_root / "projspec"
+
+        # If running in a worktree, the plugin path may be different
+        # Check if the plugin exists at the expected path
+        if not plugin_path.exists():
+            # Try to find it relative to the worktree structure
+            # worktrees/XXX/tests -> ../../projspec
+            potential_path = self.tests_root.parent.parent.parent / "projspec"
+            if potential_path.exists():
+                plugin_path = potential_path
+
+        if not plugin_path.exists():
+            raise RuntimeError(
+                f"Could not find projspec plugin at {plugin_path}. "
+                "Ensure the projspec plugin directory exists."
+            )
+
+        self.plugin_dir = plugin_path
+
+        # Copy plugin directories to test project
+        # The plugin structure contains .specify/ in the main repo
+        # and plugin config in projspec/plugins/projspec/
+        main_repo_root = plugin_path.parent
+
+        # Copy .specify/ from main repo to test project
+        source_specify = main_repo_root / ".specify"
+        if source_specify.exists():
+            dest_specify = self.project_path / ".specify"
+            shutil.copytree(source_specify, dest_specify, dirs_exist_ok=True)
+
+        # Copy .claude/ from main repo to test project (if exists)
+        source_claude = main_repo_root / ".claude"
+        if source_claude.exists():
+            dest_claude = self.project_path / ".claude"
+            shutil.copytree(source_claude, dest_claude, dirs_exist_ok=True)
 
     def get_log_file(self, stage: int, stage_name: str) -> Path:
         """Get the log file path for a specific stage.

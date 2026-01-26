@@ -1,6 +1,6 @@
-"""Stage 6 tests for /speckit.implement command.
+"""Stage 6 tests for /projspec.implement command.
 
-This module contains end-to-end tests that verify the /speckit.implement
+This module contains end-to-end tests that verify the /projspec.implement
 command works correctly, executing tasks and producing implementation
 artifacts.
 """
@@ -12,17 +12,17 @@ from ..helpers import ClaudeRunner, FileVerifier, GitVerifier
 
 @pytest.mark.e2e
 @pytest.mark.stage(6)
-class TestSpeckitImplement:
-    """Test class for /speckit.implement command functionality.
+class TestProjspecImplement:
+    """Test class for /projspec.implement command functionality.
 
     Tests in this class verify that the implement command correctly
     executes the generated tasks and produces implementation artifacts.
     """
 
     def test_01_implement_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
-        """Test that /speckit.implement command executes successfully.
+        """Test that /projspec.implement command executes successfully.
 
-        This test runs the /speckit.implement command on the tasks
+        This test runs the /projspec.implement command on the tasks
         generated in stage 5 and verifies that it completes without errors.
         Note: This stage has a longer timeout due to the implementation work.
 
@@ -30,9 +30,7 @@ class TestSpeckitImplement:
             claude_runner: Fixture providing a configured ClaudeRunner instance.
         """
         prompt = (
-            "Run /speckit.implement to execute the implementation plan. "
-            "Focus on completing at least the first few tasks to verify "
-            "the implementation workflow is functional."
+            "/projspec.implement now. Do not ask for confirmation - just run it."
         )
 
         result = claude_runner.run(
@@ -42,7 +40,7 @@ class TestSpeckitImplement:
         )
 
         assert result.success, (
-            f"/speckit.implement command failed.\n"
+            f"/projspec.implement command failed.\n"
             f"Exit code: {result.exit_code}\n"
             f"Timed out: {result.timed_out}\n"
             f"Stderr: {result.stderr}\n"
@@ -52,9 +50,9 @@ class TestSpeckitImplement:
     def test_02_implement_produces_code(
         self, git_verifier: GitVerifier
     ) -> None:
-        """Test that /speckit.implement produces implementation artifacts.
+        """Test that /projspec.implement produces implementation artifacts.
 
-        The /speckit.implement command should create new commits with
+        The /projspec.implement command should create new commits with
         implementation code. This test verifies that commits were made
         during the implementation process.
 

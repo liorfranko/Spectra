@@ -1,6 +1,6 @@
-"""Stage 3 tests for /speckit.specify command.
+"""Stage 3 tests for /projspec.specify command.
 
-This module contains end-to-end tests that verify the /speckit.specify
+This module contains end-to-end tests that verify the /projspec.specify
 command works correctly, including spec creation, content validation,
 and proper file structure generation.
 """
@@ -12,26 +12,24 @@ from ..helpers import ClaudeRunner, FileVerifier, GitVerifier
 
 @pytest.mark.e2e
 @pytest.mark.stage(3)
-class TestSpeckitSpecify:
-    """Test class for /speckit.specify command functionality.
+class TestProjspecSpecify:
+    """Test class for /projspec.specify command functionality.
 
     Tests in this class verify that the specify command correctly
     generates feature specifications from natural language descriptions.
     """
 
     def test_01_specify_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
-        """Test that /speckit.specify command executes successfully.
+        """Test that /projspec.specify command executes successfully.
 
-        This test runs the /speckit.specify command with a sample feature
+        This test runs the /projspec.specify command with a sample feature
         description and verifies that it completes without errors.
 
         Args:
             claude_runner: Fixture providing a configured ClaudeRunner instance.
         """
         prompt = (
-            "Run /speckit.specify with the following feature description: "
-            "'Add a simple todo list feature that allows users to create, "
-            "read, update, and delete todo items with a title and completion status.'"
+            "/projspec.specify A minimal command-line todo application written in Python that allows users to manage their tasks efficiently."
         )
 
         result = claude_runner.run(
@@ -41,7 +39,7 @@ class TestSpeckitSpecify:
         )
 
         assert result.success, (
-            f"/speckit.specify command failed.\n"
+            f"/projspec.specify command failed.\n"
             f"Exit code: {result.exit_code}\n"
             f"Timed out: {result.timed_out}\n"
             f"Stderr: {result.stderr}\n"
@@ -49,9 +47,9 @@ class TestSpeckitSpecify:
         )
 
     def test_02_feature_branch_created(self, git_verifier: GitVerifier) -> None:
-        """Test that /speckit.specify creates a feature worktree.
+        """Test that /projspec.specify creates a feature worktree.
 
-        The /speckit.specify command should create a worktree with a numbered
+        The /projspec.specify command should create a worktree with a numbered
         feature branch for the specified feature. This test verifies that
         such a worktree exists after the specify command has run.
 
@@ -67,7 +65,7 @@ class TestSpeckitSpecify:
     ) -> None:
         """Test that spec.md file is created in the feature spec directory.
 
-        The /speckit.specify command should create a spec.md file within
+        The /projspec.specify command should create a spec.md file within
         the specs/<feature-id>/ directory in the feature worktree. This test
         locates the worktree and verifies the spec file exists.
 
@@ -79,7 +77,7 @@ class TestSpeckitSpecify:
         worktree_path = git_verifier.get_worktree_path(pattern=r"worktrees/\d+-.*")
         assert worktree_path is not None, (
             "Could not find feature worktree matching pattern 'worktrees/\\d+-.*'. "
-            "The /speckit.specify command should have created a numbered worktree."
+            "The /projspec.specify command should have created a numbered worktree."
         )
 
         # Find the spec.md file in the worktree's specs directory
@@ -90,7 +88,7 @@ class TestSpeckitSpecify:
         assert spec_file is not None, (
             f"spec.md not found in worktree at {worktree_path}. "
             "Expected a file matching pattern 'specs/<number>-<name>/spec.md'. "
-            "The /speckit.specify command should create this file."
+            "The /projspec.specify command should create this file."
         )
 
     def test_04_spec_has_required_sections(
@@ -98,7 +96,7 @@ class TestSpeckitSpecify:
     ) -> None:
         """Test that spec.md contains required specification sections.
 
-        The /speckit.specify command should generate a spec.md file that
+        The /projspec.specify command should generate a spec.md file that
         includes at minimum: User Scenarios, Requirements, and Success Criteria
         sections. This test verifies these sections are present.
 

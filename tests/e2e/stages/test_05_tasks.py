@@ -1,6 +1,6 @@
-"""Stage 5 tests for /speckit.tasks command.
+"""Stage 5 tests for /projspec.tasks command.
 
-This module contains end-to-end tests that verify the /speckit.tasks
+This module contains end-to-end tests that verify the /projspec.tasks
 command works correctly, including task generation, proper formatting,
 and phase organization.
 """
@@ -12,8 +12,8 @@ from ..helpers import ClaudeRunner, FileVerifier, GitVerifier
 
 @pytest.mark.e2e
 @pytest.mark.stage(5)
-class TestSpeckitTasks:
-    """Test class for /speckit.tasks command functionality.
+class TestProjspecTasks:
+    """Test class for /projspec.tasks command functionality.
 
     Tests in this class verify that the tasks command correctly
     generates actionable task lists from implementation plans,
@@ -21,17 +21,16 @@ class TestSpeckitTasks:
     """
 
     def test_01_tasks_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
-        """Test that /speckit.tasks command executes successfully.
+        """Test that /projspec.tasks command executes successfully.
 
-        This test runs the /speckit.tasks command on the feature plan
+        This test runs the /projspec.tasks command on the feature plan
         created in stage 4 and verifies that it completes without errors.
 
         Args:
             claude_runner: Fixture providing a configured ClaudeRunner instance.
         """
         prompt = (
-            "Run /speckit.tasks to generate actionable tasks from the "
-            "current implementation plan."
+            "/projspec.tasks now. Do not ask for confirmation - just run it."
         )
 
         result = claude_runner.run(
@@ -41,7 +40,7 @@ class TestSpeckitTasks:
         )
 
         assert result.success, (
-            f"/speckit.tasks command failed.\n"
+            f"/projspec.tasks command failed.\n"
             f"Exit code: {result.exit_code}\n"
             f"Timed out: {result.timed_out}\n"
             f"Stderr: {result.stderr}\n"
@@ -53,7 +52,7 @@ class TestSpeckitTasks:
     ) -> None:
         """Test that tasks.md file is created in the feature spec directory.
 
-        The /speckit.tasks command should create a tasks.md file within
+        The /projspec.tasks command should create a tasks.md file within
         the specs/<feature-id>/ directory in the feature worktree.
 
         Args:
@@ -64,7 +63,7 @@ class TestSpeckitTasks:
         worktree_path = git_verifier.get_worktree_path(pattern=r"worktrees/\d+-.*")
         assert worktree_path is not None, (
             "Could not find feature worktree matching pattern 'worktrees/\\d+-.*'. "
-            "The /speckit.specify command should have created a numbered worktree."
+            "The /projspec.specify command should have created a numbered worktree."
         )
 
         # Find the tasks.md file in the worktree's specs directory
@@ -75,7 +74,7 @@ class TestSpeckitTasks:
         assert tasks_file is not None, (
             f"tasks.md not found in worktree at {worktree_path}. "
             "Expected a file matching pattern 'specs/<number>-<name>/tasks.md'. "
-            "The /speckit.tasks command should create this file."
+            "The /projspec.tasks command should create this file."
         )
 
     def test_03_tasks_has_checkboxes(
@@ -83,7 +82,7 @@ class TestSpeckitTasks:
     ) -> None:
         """Test that tasks.md contains task checkboxes.
 
-        The /speckit.tasks command should generate a tasks.md file that
+        The /projspec.tasks command should generate a tasks.md file that
         includes markdown checkboxes (- [ ] or - [x]) for tracking task
         completion status.
 
@@ -115,7 +114,7 @@ class TestSpeckitTasks:
         assert checkbox_count >= 1, (
             f"tasks.md at {tasks_file} does not contain any task checkboxes. "
             "Expected at least one '- [ ]' or '- [x]' pattern. "
-            "The /speckit.tasks command should generate actionable tasks with checkboxes."
+            "The /projspec.tasks command should generate actionable tasks with checkboxes."
         )
 
     def test_04_tasks_has_phases(
@@ -123,7 +122,7 @@ class TestSpeckitTasks:
     ) -> None:
         """Test that tasks.md contains phase sections.
 
-        The /speckit.tasks command should organize tasks into phases
+        The /projspec.tasks command should organize tasks into phases
         using markdown headers (## Phase N or similar).
 
         Args:
