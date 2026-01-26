@@ -114,8 +114,199 @@ Write the completed research.md to `FEATURE_DIR/research.md`.
 
 ### Step 3: Phase 1 - Data Model
 
-<!-- Placeholder for T024: Data model phase implementation -->
-Define the data structures, schemas, and state management approach based on the specification requirements.
+Generate data-model.md by extracting and formalizing entities from the specification.
+
+#### 3.1: Read Key Entities Section
+
+Read the `Key Entities` section from spec.md. This section contains the domain entities that the feature operates on. Each entity is typically defined with:
+- Entity name (bolded heading)
+- Brief description of what the entity represents
+- Related context from user scenarios and requirements
+
+#### 3.2: Define Entity Attributes
+
+For each identified entity, create a formal definition:
+
+**Entity Structure**:
+```markdown
+### [Entity Name]
+
+[Description from spec or expanded description based on requirements]
+
+**Identifier Pattern**: [How instances are identified, if applicable]
+
+**Storage Location**: [Where entity data is stored, if applicable]
+
+**Attributes**:
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| [name] | [type] | [Yes/No] | [Description] |
+```
+
+**Attribute Types**:
+- Primitives: `string`, `integer`, `boolean`, `date`
+- Enums: `enum` (list valid values in description)
+- Collections: `string[]`, `[EntityName][]`
+- References: `[EntityName]` (reference to another entity)
+
+**Guidelines for Attributes**:
+- Derive attributes from requirements (FR-###) that mention the entity
+- Include attributes implied by user scenarios
+- Add status/state attributes if the entity has lifecycle states
+- Include timestamps if tracking is mentioned in requirements
+
+#### 3.3: Define Validation Rules
+
+For each entity, document validation rules based on requirements:
+
+```markdown
+**Validation Rules**:
+- [Rule derived from requirement FR-###]
+- [Constraint implied by success criteria SC-###]
+- [Business rule from user scenarios]
+```
+
+Consider:
+- Required fields and their constraints
+- Format validations (patterns, ranges, lengths)
+- Referential integrity (references to other entities)
+- Business logic constraints
+
+#### 3.4: Define Relationships
+
+Document how entities relate to each other:
+
+**Relationship Types**:
+- **One-to-One (1:1)**: Entity A has exactly one Entity B
+- **One-to-Many (1:n)**: Entity A has multiple Entity B instances
+- **Many-to-Many (n:m)**: Multiple Entity A instances relate to multiple Entity B instances
+
+**Relationship Diagram**:
+If the feature has 3+ entities with relationships, include an ASCII relationship diagram:
+
+```markdown
+## Relationships
+
+```
+[EntityA] (1) ────────── [EntityB] (n)
+     │
+     │ [relationship verb]
+     ▼
+[EntityC] (1)
+```
+```
+
+Document each relationship with:
+- Cardinality (1:1, 1:n, n:m)
+- Direction of ownership/containment
+- Cascade behavior (what happens when parent is deleted)
+
+#### 3.5: Define State Transitions
+
+If any entity has status/state attributes, document the state machine:
+
+```markdown
+**Status Values**:
+- `[state1]` - [Description of this state]
+- `[state2]` - [Description of this state]
+
+**State Transitions**:
+```
+[state1] → [state2] → [state3]
+  ↓                        ↑
+  └────────────────────────┘
+         (alternate path)
+```
+
+**Transition Rules**:
+- [state1] → [state2]: [Trigger/condition for transition]
+- [state2] → [state3]: [Trigger/condition for transition]
+```
+
+Include:
+- All valid states from the enum
+- Valid transition paths
+- Conditions/triggers for each transition
+- Any terminal states (no outgoing transitions)
+
+#### 3.6: Document File Formats
+
+If the feature involves file-based storage or data exchange, document the formats:
+
+```markdown
+## File Format Specifications
+
+### [Format Name]
+
+**File Extension**: `.[ext]`
+**Location**: `[path pattern]`
+
+**Structure**:
+```[format]
+[Example showing structure]
+```
+
+**Fields**:
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| [field] | [type] | [Yes/No] | [Description] |
+```
+
+Consider:
+- YAML frontmatter for markdown files
+- JSON/YAML for configuration files
+- Line-based formats (JSONL) for logs/streams
+
+#### 3.7: Write data-model.md
+
+Create the data-model.md file in the feature directory with this structure:
+
+```markdown
+# Data Model: [Feature Name]
+
+**Feature**: [Feature Name]
+**Date**: [ISO 8601 date]
+
+## Overview
+
+[Brief description of the data model and its purpose]
+
+---
+
+## Core Entities
+
+### 1. [Entity Name]
+
+[Full entity definition per 3.2]
+
+---
+
+### 2. [Entity Name]
+
+[Full entity definition per 3.2]
+
+---
+
+## Relationships
+
+[Relationship diagram and descriptions per 3.4]
+
+---
+
+## File Format Specifications
+
+[File formats per 3.6, if applicable]
+
+---
+
+## Validation Rules Summary
+
+| Entity | Rule | Error Action |
+|--------|------|--------------|
+| [Entity] | [Rule] | [ERROR/WARN/Block action] |
+```
+
+Write the completed data-model.md to `FEATURE_DIR/data-model.md`.
 
 ### Step 4: Technical Context
 
