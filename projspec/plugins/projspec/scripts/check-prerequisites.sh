@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# speckit/scripts/check-prerequisites.sh - Validate prerequisites for SpecKit commands
+# projspec/scripts/check-prerequisites.sh - Validate prerequisites for ProjSpec commands
 # Checks for required tools, validates feature directory structure, and reports available documents
 set -euo pipefail
 
@@ -24,7 +24,7 @@ usage() {
     cat <<EOF
 Usage: $(basename "$0") [OPTIONS]
 
-Validate prerequisites for SpecKit commands and report available documents.
+Validate prerequisites for ProjSpec commands and report available documents.
 
 OPTIONS:
     --json              Output in JSON format (default: human-readable)
@@ -96,7 +96,7 @@ check_git() {
         if [[ "$JSON_OUTPUT" == "true" ]]; then
             json_error "git is not installed"
         else
-            error "git is not installed. Please install git to use SpecKit."
+            error "git is not installed. Please install git to use ProjSpec."
         fi
         exit 1
     fi
@@ -108,7 +108,7 @@ check_git_repo() {
         if [[ "$JSON_OUTPUT" == "true" ]]; then
             json_error "Not in a git repository"
         else
-            error "Not in a git repository. SpecKit requires a git repository."
+            error "Not in a git repository. ProjSpec requires a git repository."
         fi
         exit 1
     fi
