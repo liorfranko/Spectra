@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# speckit/scripts/common.sh - Common utilities for SpecKit scripts
+# projspec/scripts/common.sh - Common utilities for projspec scripts
 # Provides path helpers, JSON output, error handling, and utility functions
 set -euo pipefail
 
