@@ -113,3 +113,39 @@ class TestSpeckitPlan:
             pattern=r"(?i)#.*technical\s+context",
             description="Technical Context section header",
         )
+
+    def test_plan_has_project_structure(
+        self, file_verifier: FileVerifier, git_verifier: GitVerifier
+    ) -> None:
+        """Test that plan.md contains a Project Structure section.
+
+        The /speckit.plan command should generate a plan.md file that
+        includes a Project Structure section describing the directory
+        layout and file organization for the implementation.
+
+        Args:
+            file_verifier: Fixture providing a configured FileVerifier instance.
+            git_verifier: Fixture providing a configured GitVerifier instance.
+        """
+        # Get the worktree path for the feature
+        worktree_path = git_verifier.get_worktree_path(pattern=r"worktrees/\d+-.*")
+        assert worktree_path is not None, (
+            "Could not find feature worktree. "
+            "This test depends on earlier stage tests passing."
+        )
+
+        # Find the plan.md file
+        plan_file = file_verifier.find_file(
+            pattern=r"specs/\d+-.*/plan\.md",
+            base_path=worktree_path,
+        )
+        assert plan_file is not None, (
+            "plan.md not found. This test depends on test_plan_file_created passing."
+        )
+
+        # Verify Project Structure section exists
+        file_verifier.assert_contains(
+            path=plan_file,
+            pattern=r"(?i)#.*project\s+structure",
+            description="Project Structure section header",
+        )
