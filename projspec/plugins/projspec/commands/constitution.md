@@ -365,11 +365,11 @@ In case of conflict between principles:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.0.0 | {TODAY} | Initial constitution established | {User or "Claude (speckit)"} |
+| 1.0.0 | {TODAY} | Initial constitution established | {User or "Claude (projspec)"} |
 
 ---
 
-*This constitution is checked during `/speckit.plan` execution. Violations must be justified in the Complexity Tracking section of the plan.*
+*This constitution is checked during `/projspec.plan` execution. Violations must be justified in the Complexity Tracking section of the plan.*
 ```
 
 **3.2: Write the constitution file**
@@ -424,7 +424,7 @@ Create a new principle entry:
 - Add entry to Version History
 
 ```markdown
-| 1.1.0 | {TODAY} | Added principle: {principle_title} | Claude (speckit) |
+| 1.1.0 | {TODAY} | Added principle: {principle_title} | Claude (projspec) |
 ```
 
 ### Step 5: Update Dependent Templates
@@ -485,9 +485,9 @@ during their respective command executions.
 ### Next Steps
 
 The constitution is now active. It will be checked during:
-- `/speckit.plan` - Technical planning will verify compliance
-- `/speckit.implement` - Implementation will follow constraints
-- `/speckit.review-pr` - Reviews will verify adherence
+- `/projspec.plan` - Technical planning will verify compliance
+- `/projspec.implement` - Implementation will follow constraints
+- `/projspec.review-pr` - Reviews will verify adherence
 
 To view the full constitution:
 ```bash
@@ -496,12 +496,12 @@ cat {CONSTITUTION_PATH}
 
 To add a new principle:
 ```
-/speckit.constitution add "Your new principle text here"
+/projspec.constitution add "Your new principle text here"
 ```
 
 To update interactively:
 ```
-/speckit.constitution interactive
+/projspec.constitution interactive
 ```
 ```
 
@@ -527,7 +527,7 @@ Upon completion, this command produces:
 ## Usage
 
 ```
-/speckit.constitution [action] [arguments]
+/projspec.constitution [action] [arguments]
 ```
 
 ### Actions
@@ -544,16 +544,16 @@ Upon completion, this command produces:
 
 ```bash
 # View current constitution
-/speckit.constitution
+/projspec.constitution
 
 # Start interactive creation
-/speckit.constitution interactive
+/projspec.constitution interactive
 
 # Add a specific principle
-/speckit.constitution add "All API endpoints must have rate limiting"
+/projspec.constitution add "All API endpoints must have rate limiting"
 
 # Update existing constitution
-/speckit.constitution update
+/projspec.constitution update
 ```
 
 ## Notes
