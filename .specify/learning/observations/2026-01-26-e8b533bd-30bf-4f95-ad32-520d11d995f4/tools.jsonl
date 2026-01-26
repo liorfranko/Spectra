@@ -1,0 +1,19 @@
+{"event_id":"pre-92831892000","phase":"pre","timestamp":"2026-01-26T11:06:32.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/PRD.md"}
+{"event_id":"pre-92835338000","phase":"pre","timestamp":"2026-01-26T11:06:32.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/.specify/templates/spec-template.md"}
+{"event_id":"post-93574603000","pre_event_id":"pre-92835338000","phase":"post","timestamp":"2026-01-26T11:06:33.3NZ","tool":"Read","success":true}
+{"event_id":"post-93576604000","pre_event_id":"pre-92835338000","phase":"post","timestamp":"2026-01-26T11:06:33.3NZ","tool":"Read","success":true}
+{"event_id":"pre-00053251000","phase":"pre","timestamp":"2026-01-26T11:06:40.3NZ","tool":"Bash","input":"git fetch --all --prune 2>&1 || echo \"}
+{"event_id":"post-77710570000","pre_event_id":"pre-00053251000","phase":"post","timestamp":"2026-01-26T11:09:37.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-81643771000","phase":"pre","timestamp":"2026-01-26T11:09:41.3NZ","tool":"Bash","input":".specify/scripts/bash/create-new-feature.sh --json --short-name \"}
+{"event_id":"pre-06648656000","phase":"pre","timestamp":"2026-01-26T11:10:06.3NZ","tool":"Bash","input":"git add PRD.md && git commit -m \"}
+{"event_id":"post-11717731000","pre_event_id":"pre-06648656000","phase":"post","timestamp":"2026-01-26T11:10:11.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-14655712000","phase":"pre","timestamp":"2026-01-26T11:10:14.3NZ","tool":"Bash","input":".specify/scripts/bash/create-new-feature.sh --json --short-name \"}
+{"event_id":"post-15485626000","pre_event_id":"pre-14655712000","phase":"post","timestamp":"2026-01-26T11:10:15.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-94545506000","phase":"pre","timestamp":"2026-01-26T11:11:34.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/specs/001-projspec-mvp/spec.md"}
+{"event_id":"post-94727277000","pre_event_id":"pre-94545506000","phase":"post","timestamp":"2026-01-26T11:11:34.3NZ","tool":"Read","success":true}
+{"event_id":"pre-73635940000","phase":"pre","timestamp":"2026-01-26T11:12:53.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/specs/001-projspec-mvp/spec.md"}
+{"event_id":"post-76741928000","pre_event_id":"pre-73635940000","phase":"post","timestamp":"2026-01-26T11:12:56.3NZ","tool":"Write","success":true}
+{"event_id":"pre-80924586000","phase":"pre","timestamp":"2026-01-26T11:13:00.3NZ","tool":"Bash","input":"mkdir -p /Users/liorfr/Development/projspec/specs/001-projspec-mvp/checklists"}
+{"event_id":"post-81395424000","pre_event_id":"pre-80924586000","phase":"post","timestamp":"2026-01-26T11:13:01.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-92090467000","phase":"pre","timestamp":"2026-01-26T11:13:12.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/specs/001-projspec-mvp/checklists/requirements.md"}
+{"event_id":"post-93095755000","pre_event_id":"pre-92090467000","phase":"post","timestamp":"2026-01-26T11:13:13.3NZ","tool":"Write","success":true}
