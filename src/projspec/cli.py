@@ -55,6 +55,7 @@ COMMAND_TEMPLATES = [
     "projspec.new.md",
     "projspec.spec.md",
     "projspec.plan.md",
+    "projspec.tasks.md",
 ]
 
 
