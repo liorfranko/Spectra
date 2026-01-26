@@ -1,6 +1,6 @@
-# speckit Command Verification Report
+# projspec Command Verification Report
 
-This document verifies the consistency and completeness of all speckit commands for tasks T085-T087.
+This document verifies the consistency and completeness of all projspec commands for tasks T085-T087.
 
 **Generated:** 2026-01-26
 **Version:** 1.0.0
@@ -17,24 +17,24 @@ All commands should use consistent error message patterns when prerequisites are
 
 ```
 Error: {artifact} not found.
-Run /speckit.{command} first to {action}.
+Run /projspec.{command} first to {action}.
 ```
 
 #### Command Prerequisite Matrix
 
 | Command | Prerequisites | Error Message Pattern |
 |---------|---------------|----------------------|
-| `/speckit.specify` | Git repository | "Error: Not in a git repository. Initialize with `git init` first." |
-| `/speckit.clarify` | spec.md exists | "Error: spec.md not found. Run /speckit.specify first to create a specification." |
-| `/speckit.plan` | spec.md exists | "Error: spec.md not found. Run /speckit.specify first to create a specification." |
-| `/speckit.tasks` | plan.md exists | "Error: plan.md not found. Run /speckit.plan first to generate an implementation plan." |
-| `/speckit.implement` | tasks.md exists | "Error: tasks.md not found. Run /speckit.tasks first to generate a task list." |
-| `/speckit.taskstoissues` | tasks.md + GitHub CLI | "Error: tasks.md not found." or "Error: GitHub CLI not authenticated. Run `gh auth login` first." |
-| `/speckit.validate` | At least one artifact | "Error: No artifacts found to validate. Run /speckit.specify to start." |
-| `/speckit.checklist` | spec.md exists | "Error: spec.md not found. Run /speckit.specify first to create a specification." |
-| `/speckit.analyze` | spec.md, plan.md, or tasks.md | "Error: No design artifacts found. Create spec.md, plan.md, or tasks.md first." |
-| `/speckit.review-pr` | Committed changes | "Error: No commits found on current branch. Commit changes before running review." |
-| `/speckit.constitution` | None (creates if missing) | N/A - Creates new constitution if none exists |
+| `/projspec.specify` | Git repository | "Error: Not in a git repository. Initialize with `git init` first." |
+| `/projspec.clarify` | spec.md exists | "Error: spec.md not found. Run /projspec.specify first to create a specification." |
+| `/projspec.plan` | spec.md exists | "Error: spec.md not found. Run /projspec.specify first to create a specification." |
+| `/projspec.tasks` | plan.md exists | "Error: plan.md not found. Run /projspec.plan first to generate an implementation plan." |
+| `/projspec.implement` | tasks.md exists | "Error: tasks.md not found. Run /projspec.tasks first to generate a task list." |
+| `/projspec.taskstoissues` | tasks.md + GitHub CLI | "Error: tasks.md not found." or "Error: GitHub CLI not authenticated. Run `gh auth login` first." |
+| `/projspec.validate` | At least one artifact | "Error: No artifacts found to validate. Run /projspec.specify to start." |
+| `/projspec.checklist` | spec.md exists | "Error: spec.md not found. Run /projspec.specify first to create a specification." |
+| `/projspec.analyze` | spec.md, plan.md, or tasks.md | "Error: No design artifacts found. Create spec.md, plan.md, or tasks.md first." |
+| `/projspec.review-pr` | Committed changes | "Error: No commits found on current branch. Commit changes before running review." |
+| `/projspec.constitution` | None (creates if missing) | N/A - Creates new constitution if none exists |
 
 ### Error Message Components
 
@@ -72,17 +72,17 @@ Each command should suggest the next logical command in the workflow.
 
 | Command | Suggested Next Command | Handoff Context |
 |---------|----------------------|-----------------|
-| `/speckit.specify` | `/speckit.clarify` or `/speckit.plan` | After spec creation |
-| `/speckit.clarify` | `/speckit.plan` | After clarifications resolved |
-| `/speckit.plan` | `/speckit.tasks` | After plan generation |
-| `/speckit.tasks` | `/speckit.implement` or `/speckit.taskstoissues` | After task generation |
-| `/speckit.implement` | `/speckit.review-pr` | After implementation complete |
-| `/speckit.taskstoissues` | GitHub issue management | After issues created |
-| `/speckit.validate` | Depends on validation result | Fix issues or proceed |
-| `/speckit.checklist` | `/speckit.validate` | After checklist generation |
-| `/speckit.analyze` | Fix identified issues | After analysis |
-| `/speckit.review-pr` | Create PR or fix issues | Based on review verdict |
-| `/speckit.constitution` | `/speckit.specify` | After constitution setup |
+| `/projspec.specify` | `/projspec.clarify` or `/projspec.plan` | After spec creation |
+| `/projspec.clarify` | `/projspec.plan` | After clarifications resolved |
+| `/projspec.plan` | `/projspec.tasks` | After plan generation |
+| `/projspec.tasks` | `/projspec.implement` or `/projspec.taskstoissues` | After task generation |
+| `/projspec.implement` | `/projspec.review-pr` | After implementation complete |
+| `/projspec.taskstoissues` | GitHub issue management | After issues created |
+| `/projspec.validate` | Depends on validation result | Fix issues or proceed |
+| `/projspec.checklist` | `/projspec.validate` | After checklist generation |
+| `/projspec.analyze` | Fix identified issues | After analysis |
+| `/projspec.review-pr` | Create PR or fix issues | Based on review verdict |
+| `/projspec.constitution` | `/projspec.specify` | After constitution setup |
 
 ### Handoff Message Format
 
@@ -90,11 +90,11 @@ Each command should suggest the next logical command in the workflow.
 ### Next Steps
 
 {If success:}
-- Run `/speckit.{next-command}` to {action description}
+- Run `/projspec.{next-command}` to {action description}
 {End if}
 
 {If issues found:}
-- Address the issues above, then re-run `/speckit.{current-command}`
+- Address the issues above, then re-run `/projspec.{current-command}`
 {End if}
 ```
 
@@ -205,4 +205,4 @@ model: sonnet
 
 ---
 
-*This verification report was generated for speckit Polish phase tasks T085-T087.*
+*This verification report was generated for projspec Polish phase tasks T085-T087.*
