@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# speckit/scripts/setup-hooks.sh - Initialize hooks in user's project
+# projspec/scripts/setup-hooks.sh - Initialize hooks in user's project
 # Copies hook templates to .specify/ directory and creates necessary configuration
 set -euo pipefail
 
@@ -22,7 +22,7 @@ usage() {
     cat <<EOF
 Usage: $(basename "$0") [OPTIONS]
 
-Initialize SpecKit hooks in the current project.
+Initialize projspec hooks in the current project.
 Creates .specify/ directory with hooks and memory infrastructure.
 
 OPTIONS:
@@ -190,7 +190,7 @@ _Document common patterns used in this codebase._
 _Add any notes that should persist across sessions._
 
 ---
-*Last updated: automatically by SpecKit*
+*Last updated: automatically by projspec*
 EOF
         log_verbose "Created context.md"
     fi
@@ -226,7 +226,7 @@ This file defines the core principles and constraints for AI-assisted developmen
 _Add project-specific preferences here._
 
 ---
-*Created by SpecKit*
+*Created by projspec*
 EOF
         log_verbose "Created constitution.md"
     fi
@@ -264,7 +264,7 @@ main() {
 
     local specify_dir="$repo_root/.specify"
 
-    log_info "Setting up SpecKit hooks..."
+    log_info "Setting up projspec hooks..."
     log_verbose "Repository root: $repo_root"
 
     # Check if already installed
