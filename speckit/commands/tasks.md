@@ -239,11 +239,160 @@ Store both lists for use in Step 4 (Foundational phase generation) and Step 5 (U
 
 ### Step 4: Generate Setup and Foundational Phases
 
-<!-- T034: Implement setup/foundation task generation -->
-- Create Phase 0: Project Setup tasks (tooling, config, structure)
-- Create Phase 1: Foundation tasks (core abstractions, base classes)
-- Generate tasks for shared utilities and common infrastructure
-- Establish the dependency baseline for subsequent phases
+This step creates the initial phases that establish project infrastructure and shared components before user story implementation begins.
+
+**4.1: Create Phase 1 - Setup tasks**
+
+Generate tasks for project initialization and environment setup. These tasks have no dependencies and can often run in parallel.
+
+| Category | Task Type | Description |
+|----------|-----------|-------------|
+| Structure | Directory creation | Create project directory structure as defined in plan.md Project Structure section |
+| Structure | File scaffolding | Create placeholder files for main entry points |
+| Configuration | Config files | Generate configuration files (package.json, tsconfig.json, etc. based on technology stack) |
+| Configuration | Environment setup | Create environment variable templates (.env.example) |
+| Configuration | Linting/formatting | Set up code quality tools (ESLint, Prettier, etc.) |
+| Dependencies | Package installation | Install required dependencies from plan.md |
+| Dependencies | Dev dependencies | Install development and testing dependencies |
+| Documentation | Initial docs | Create minimal README with setup instructions |
+
+For each setup task, create an entry:
+```
+{
+  id: "T001",  // Sequential task ID
+  phase: 1,
+  category: "setup",
+  description: "Create project directory structure",
+  filePath: "project root or specific path",
+  parallel: true,  // Can run alongside other setup tasks
+  blockedBy: [],   // No dependencies for setup tasks
+  acceptanceCriteria: ["Directory structure matches plan.md specification"]
+}
+```
+
+**4.2: Create Phase 2 - Foundational tasks**
+
+Generate tasks for core utilities, foundation entities, and shared components that multiple user stories depend on.
+
+**4.2.1: Core utilities and scripts**
+
+Identify common utilities from plan.md Technical Context section:
+- Helper functions (string manipulation, date formatting, etc.)
+- Logging infrastructure
+- Error handling utilities
+- Configuration loading utilities
+
+**4.2.2: Foundation entities (from Step 3.5)**
+
+For each entity in the `foundationalEntities` list from Step 3.5, generate implementation tasks:
+
+```
+For each foundationalEntity:
+  Generate tasks:
+    - "Define {Entity} model/schema" (T0XX)
+    - "Implement {Entity} validation rules" (T0XX) - blockedBy: model task
+    - "Create {Entity} storage layer" (T0XX) - blockedBy: model task
+```
+
+Order foundation entity tasks by their `implementationOrder` from Step 3.5.
+
+**4.2.3: Shared components used by multiple stories**
+
+Analyze the storyToTasksMap from Step 2.4 to identify shared components:
+- Components referenced by 2+ user stories
+- Abstract base classes or interfaces
+- Shared UI components (if applicable)
+- Common API patterns or middleware
+
+For each shared component:
+```
+{
+  id: "T0XX",
+  phase: 2,
+  category: "foundation",
+  description: "Implement {SharedComponent}",
+  filePath: "path from plan.md structure",
+  parallel: false,  // Usually sequential within foundation
+  blockedBy: ["T001", ...],  // Depends on setup tasks
+  acceptanceCriteria: ["Component is reusable by multiple features"]
+}
+```
+
+**4.2.4: Base templates**
+
+If plan.md defines template patterns, create tasks for:
+- Base template files
+- Template helpers or partials
+- Template configuration
+
+**4.3: Assign task IDs**
+
+Assign sequential task IDs using the format `T###`:
+- Phase 1 (Setup): T001 - T099
+- Phase 2 (Foundational): T100 - T199
+- Reserve T200+ for user story phases (Step 5)
+
+Task ID assignment rules:
+1. IDs are unique across all phases
+2. IDs are assigned in execution order within each phase
+3. Lower IDs indicate earlier execution (when no blocking dependencies)
+
+**4.4: Mark parallel tasks with [P]**
+
+Identify tasks that can execute in parallel and mark them with `[P]`:
+
+Parallel criteria:
+- No shared file modifications
+- No dependency relationship
+- No shared resource contention
+- Can be completed independently
+
+Examples of parallel tasks:
+- Creating independent directory structures `[P]`
+- Installing unrelated dependencies `[P]`
+- Creating separate configuration files `[P]`
+
+**4.5: Define blocking relationships**
+
+Establish `blockedBy` relationships for each task:
+
+| Task Type | Typically Blocked By |
+|-----------|---------------------|
+| Directory creation | None (can start immediately) |
+| Configuration files | Directory creation |
+| Dependency installation | Configuration files (package.json, etc.) |
+| Foundation entities | Setup tasks completion |
+| Entity validation | Entity model definition |
+| Entity storage | Entity model definition |
+| Shared components | Foundation entities they depend on |
+
+Store the generated Phase 1 and Phase 2 tasks in a structured format:
+```
+setupAndFoundationTasks = {
+  phase1: [
+    { id: "T001", description: "...", parallel: true, blockedBy: [], ... },
+    { id: "T002", description: "...", parallel: true, blockedBy: [], ... },
+    ...
+  ],
+  phase2: [
+    { id: "T100", description: "...", parallel: false, blockedBy: ["T001", "T002"], ... },
+    ...
+  ]
+}
+```
+
+**Task format for output:**
+
+Each task should be formatted as:
+```
+- [ ] T### [P?] Description (file path)
+```
+
+Where:
+- `T###` is the task ID
+- `[P]` is included only if the task can run in parallel
+- `Description` is a clear, actionable task description
+- `(file path)` is the primary file or directory affected
 
 ### Step 5: Generate User Story Phases
 
