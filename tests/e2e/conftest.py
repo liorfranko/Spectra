@@ -7,6 +7,7 @@ using Claude Code subprocess execution.
 
 from dataclasses import dataclass
 from enum import Enum
+from typing import Generator
 
 import pytest
 
@@ -407,3 +408,40 @@ def pytest_runtest_setup(item: pytest.Item) -> None:
         pytest.skip(
             f"Stage {stage} skipped due to stage {tracker.first_failure} failure"
         )
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(
+    item: pytest.Item, call: pytest.CallInfo
+) -> Generator[None, pytest.TestReport, None]:
+    """Track test pass/fail status for stage dependency management.
+
+    This hook runs after each test phase (setup, call, teardown) and updates
+    the StageTracker singleton with the test result. Only the "call" phase
+    (actual test execution) is tracked.
+
+    Args:
+        item: The pytest test item that was executed.
+        call: Information about the test call phase.
+
+    Yields:
+        None: Yields to get the report from the next hook in the chain.
+    """
+    outcome = yield
+    report = outcome.get_result()
+
+    # Only process the "call" phase (actual test execution)
+    # Skip "setup" and "teardown" phases
+    if report.when != "call":
+        return
+
+    stage = _get_stage_from_item(item)
+    if stage is None:
+        # No stage marker, don't track
+        return
+
+    tracker = StageTracker.get_instance()
+    if report.passed:
+        tracker.mark_passed(stage)
+    elif report.failed:
+        tracker.mark_failed(stage)
