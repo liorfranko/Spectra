@@ -22,10 +22,10 @@ from rich.panel import Panel
 from rich.table import Table
 
 from projspec_cli import __version__
+from projspec_cli.services.init import initialize_project
 from projspec_cli.utils.git import has_git, is_git_repo
 
-# Note: These imports will be used once services are implemented
-# from projspec_cli.services.init import init_project
+# Note: This import will be used once status service is implemented
 # from projspec_cli.services.status import display_status
 
 # Rich console for formatted output
@@ -215,35 +215,64 @@ def init(
 ) -> None:
     """Initialize ProjSpec in a directory.
 
-    Creates the projspec.yaml configuration file and sets up the specs/ directory
-    structure for managing feature specifications.
+    Creates the .specify/ directory structure and sets up the project
+    for managing feature specifications with worktrees.
 
     Examples:
         projspec init my-project    # Create new project directory
         projspec init --here        # Initialize in current directory
         projspec init --force       # Reinitialize, overwriting existing config
     """
-    # Delegate to the init service
-    # The service will be implemented in a later task
-    console.print("[bold]Initializing ProjSpec project...[/bold]")
+    # Determine the target path
+    cwd = Path.cwd()
 
-    if project_name:
-        console.print(f"Project name: [cyan]{project_name}[/cyan]")
+    if here or project_name is None:
+        # Initialize in current directory
+        target_path = cwd
+        effective_name = project_name if project_name else cwd.name
     else:
-        cwd = Path.cwd()
-        console.print(f"Project name: [cyan]{cwd.name}[/cyan] (from current directory)")
+        # Create a new subdirectory
+        target_path = cwd / project_name
+        effective_name = project_name
+        # Create the directory if it doesn't exist
+        if not target_path.exists():
+            target_path.mkdir(parents=True)
 
-    if here:
-        console.print("Mode: Initialize in current directory")
-    if force:
-        console.print("Mode: Force overwrite existing configuration")
-    if no_git:
-        console.print("Mode: Skip git initialization")
+    # Call the init service
+    result = initialize_project(
+        path=target_path,
+        project_name=effective_name,
+        force=force,
+        no_git=no_git,
+    )
 
-    # TODO: Call init_project service once implemented
-    # init_project(project_name=project_name, here=here, force=force, no_git=no_git)
-    console.print()
-    console.print("[yellow]Note: Full initialization will be implemented in a later task.[/yellow]")
+    if result.success:
+        # Display created items with checkmarks
+        console.print()
+        for item in result.created_files:
+            console.print(f"[green]\u2713[/green] Created {item}")
+
+        console.print()
+        console.print(
+            Panel(
+                f"[bold green]ProjSpec initialized in[/bold green] {target_path}\n\n"
+                f"Features will be created in [cyan]worktrees/[/cyan] with isolated working directories.\n"
+                f"Run [bold]/speckit.specify[/bold] in Claude Code to create your first feature.",
+                title="Initialization Complete",
+                border_style="green",
+            )
+        )
+    else:
+        # Display error message
+        err_console.print()
+        err_console.print(
+            Panel(
+                f"[bold red]Initialization failed[/bold red]\n\n{result.message}",
+                title="Error",
+                border_style="red",
+            )
+        )
+        raise typer.Exit(code=result.exit_code)
 
 
 @app.command()
