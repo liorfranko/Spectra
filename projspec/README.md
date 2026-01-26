@@ -9,7 +9,7 @@ ProjSpec provides a structured approach to feature development by guiding you th
 - **Claude Code CLI** - The Claude Code command-line interface
 - **Git** - Version control (repository must be initialized)
 - **macOS or Linux** - Currently supported platforms
-- **GitHub CLI** (optional) - Required for `/projspec.taskstoissues` command
+- **GitHub CLI** (optional) - Required for `/projspec.issues` command
 
 ## Installation
 
@@ -92,7 +92,7 @@ Uses specialized agents to ensure code quality before PR creation.
 
 ## Commands Reference
 
-ProjSpec includes 13 commands for the complete development workflow.
+ProjSpec includes 11 commands for the complete development workflow.
 
 ### Core Workflow Commands
 
@@ -103,7 +103,7 @@ ProjSpec includes 13 commands for the complete development workflow.
 | `/projspec.plan` | Generate implementation plan with constitution compliance | None |
 | `/projspec.tasks` | Generate structured, dependency-ordered task list from plan | None |
 | `/projspec.implement` | Implement tasks from task list with guided workflow | Task ID or empty for next task |
-| `/projspec.taskstoissues` | Convert tasks into GitHub issues (requires GitHub CLI) | None |
+| `/projspec.issues` | Convert tasks into GitHub issues (requires GitHub CLI) | None |
 
 ### Quality & Validation Commands
 
@@ -201,12 +201,12 @@ Execute the implementation plan by processing tasks.
 
 ---
 
-### /projspec.taskstoissues
+### /projspec.issues
 
 Convert tasks into actionable GitHub issues.
 
 ```bash
-/projspec.taskstoissues
+/projspec.issues
 ```
 
 **Prerequisites:** Requires `tasks.md` and GitHub CLI (`gh`) authenticated.
@@ -351,7 +351,7 @@ All agents have access to:
 specify --> clarify --> plan --> tasks --> implement
                                    |
                                    v
-                            taskstoissues (optional)
+                              issues (optional)
                                    |
                                    v
                               review-pr
@@ -363,8 +363,7 @@ specify --> clarify --> plan --> tasks --> implement
 constitution  <-- Define project principles (run once at project start)
 validate      <-- Check artifact quality (run at any phase)
 analyze       <-- Cross-artifact consistency (run after tasks)
-checkpoint    <-- Save session state (run at milestones)
-learn         <-- Manage learned patterns (run periodically)
+checklist     <-- Generate custom checklists (run at any phase)
 ```
 
 ---
