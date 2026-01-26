@@ -8,7 +8,7 @@
   },
   "plugins": [
     {
-      "name": "speckit",
+      "name": "projspec",
       "description": "Specification-driven development workflow automation",
       "version": "1.0.0",
       "author": {

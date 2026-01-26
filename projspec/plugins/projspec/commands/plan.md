@@ -449,7 +449,7 @@ Define how the feature will be tested:
 | Aspect | Value |
 |--------|-------|
 | Test Framework | [e.g., Jest, pytest, bats-core, manual validation] |
-| Test Location | [e.g., tests/, __tests__/, speckit/tests/] |
+| Test Location | [e.g., tests/, __tests__/, projspec/tests/] |
 | Required Coverage | [e.g., Not specified, 80%, Critical paths only] |
 
 **Test Types**:

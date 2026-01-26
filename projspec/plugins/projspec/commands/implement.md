@@ -63,7 +63,7 @@ For each task line, extract and store:
 | Parallel | Contains `[P]` after task ID | true/false |
 | Story Marker | `\[US\d+\]` | US3 |
 | Description | Text after markers, before `(` | "Add implement command logic..." |
-| File Path | Text inside final `()` | "speckit/commands/implement.md" |
+| File Path | Text inside final `()` | "projspec/commands/implement.md" |
 
 Build a task array:
 ```
