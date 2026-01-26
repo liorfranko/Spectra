@@ -1012,12 +1012,500 @@ This data structure enables:
 
 ### Step 7: Validate Task Format
 
-<!-- T037: Implement task format validation -->
-- Verify all tasks have required fields (ID, description, phase)
-- Check dependency references are valid
-- Ensure acceptance criteria are testable
-- Validate task granularity (not too large, not too small)
-- Write validated tasks.md to the feature directory
+This step performs comprehensive validation of the generated tasks to ensure format consistency, dependency integrity, and priority correctness before writing the final output.
+
+**7.1: Verify all tasks have correct format**
+
+For each task in the generated task list, validate the following format requirements:
+
+| Field | Format | Validation Rule |
+|-------|--------|-----------------|
+| Task ID | `T###` | Must be exactly T followed by three digits (e.g., T001, T042, T999) |
+| Checkbox | `- [ ] T###` | Must start with unchecked checkbox format |
+| Parallel marker | `[P]` | Optional; if present, must appear immediately after task ID |
+| Story marker | `[US#]` | Optional; if present, must appear after [P] marker (if any) |
+| Description | String | Must be present and non-empty |
+| File path | `(path)` | Optional; if present, must be in parentheses at end |
+
+**Format validation regex patterns:**
+
+```
+Task ID:       ^T\d{3}$
+Full task:     ^- \[ \] T\d{3}(\s+\[P\])?(\s+\[US\d+\])?\s+.+(\s+\(.+\))?$
+Parallel:      \[P\]
+Story marker:  \[US\d+\]
+```
+
+**7.1.1: Task ID uniqueness check**
+
+Build a set of all task IDs and verify:
+- No duplicate task IDs exist
+- Task IDs are sequential within each phase
+- Task IDs follow the phase numbering convention:
+  - Phase 1 (Setup): T001 - T099
+  - Phase 2 (Foundational): T100 - T199
+  - Phase 3+ (User Stories): T200+
+
+**7.1.2: Format error collection**
+
+For each format violation found:
+```
+formatErrors.push({
+  taskId: "T###" or "UNKNOWN",
+  line: lineNumber,
+  error: "Description of format violation",
+  severity: "error" | "warning"
+})
+```
+
+**7.2: Check for circular dependencies**
+
+Circular dependencies would create an infinite loop where tasks can never be completed. Use depth-first search (DFS) to detect cycles in the dependency graph.
+
+**7.2.1: Build the dependency graph**
+
+Using the `dependencyGraph.tasks` data from Step 6.4.5:
+
+```
+graph = {}
+for each task in allTasks:
+  graph[task.id] = {
+    blockedBy: task.blockedBy,  // Tasks this task depends on
+    blocks: task.blocks,        // Tasks that depend on this task
+    visited: false,
+    inStack: false
+  }
+```
+
+**7.2.2: Detect cycles using DFS**
+
+Implement cycle detection algorithm:
+
+```
+function detectCycles(graph):
+  cycles = []
+
+  function dfs(taskId, path):
+    if graph[taskId].inStack:
+      // Cycle detected - extract the cycle
+      cycleStart = path.indexOf(taskId)
+      cycle = path.slice(cycleStart).concat(taskId)
+      cycles.push(cycle)
+      return true
+
+    if graph[taskId].visited:
+      return false
+
+    graph[taskId].visited = true
+    graph[taskId].inStack = true
+    path.push(taskId)
+
+    for each dependency in graph[taskId].blockedBy:
+      dfs(dependency, path)
+
+    path.pop()
+    graph[taskId].inStack = false
+    return false
+
+  for each taskId in graph:
+    if not graph[taskId].visited:
+      dfs(taskId, [])
+
+  return cycles
+```
+
+**7.2.3: Error if cycles found**
+
+If any cycles are detected:
+```
+for each cycle in cycles:
+  cycleString = cycle.join(" → ")
+  dependencyErrors.push({
+    type: "circular_dependency",
+    severity: "error",
+    message: "Circular dependency detected: " + cycleString,
+    tasks: cycle
+  })
+```
+
+Display error message:
+```
+ERROR: Circular dependencies detected in task graph:
+  - T101 → T102 → T103 → T101
+
+Tasks in a cycle can never be completed. Please review and break the cycle
+by removing one of the dependency relationships.
+```
+
+**7.3: Verify all dependency references are valid**
+
+Ensure that every task ID referenced in `blockedBy` or `blocks` actually exists in the task list.
+
+**7.3.1: Validate blockedBy references**
+
+```
+for each task in allTasks:
+  for each dependencyId in task.blockedBy:
+    if dependencyId not in graph:
+      dependencyErrors.push({
+        type: "invalid_blockedBy",
+        severity: "error",
+        taskId: task.id,
+        invalidRef: dependencyId,
+        message: "Task " + task.id + " references non-existent task " + dependencyId + " in blockedBy"
+      })
+```
+
+**7.3.2: Validate blocks references**
+
+```
+for each task in allTasks:
+  for each blockingId in task.blocks:
+    if blockingId not in graph:
+      dependencyErrors.push({
+        type: "invalid_blocks",
+        severity: "error",
+        taskId: task.id,
+        invalidRef: blockingId,
+        message: "Task " + task.id + " references non-existent task " + blockingId + " in blocks"
+      })
+```
+
+**7.3.3: Verify bidirectional consistency**
+
+Ensure that dependency relationships are consistent in both directions:
+
+```
+for each task in allTasks:
+  for each dependencyId in task.blockedBy:
+    if task.id not in graph[dependencyId].blocks:
+      dependencyErrors.push({
+        type: "inconsistent_dependency",
+        severity: "warning",
+        taskId: task.id,
+        relatedTask: dependencyId,
+        message: "Task " + task.id + " is blockedBy " + dependencyId + " but " + dependencyId + " doesn't list " + task.id + " in blocks"
+      })
+```
+
+**7.4: Check priority consistency**
+
+Validate that task priorities follow logical dependency rules. P1 (highest priority) tasks should not be blocked by lower priority tasks.
+
+**7.4.1: Extract task priorities**
+
+Determine task priority based on:
+1. Explicit priority markers in the task description
+2. User story priority (P1 story tasks inherit P1 priority)
+3. Phase (Phase 1-2 tasks are implicitly P1)
+
+```
+function getTaskPriority(task):
+  if task.phase <= 2:
+    return "P1"  // Setup and Foundation are critical
+
+  if task.storyId:
+    story = storyToTasksMap[task.storyId]
+    return story.priority  // Inherit from user story
+
+  return "P2"  // Default priority
+```
+
+**7.4.2: Validate P1 tasks are not blocked by P2/P3**
+
+```
+for each task in allTasks:
+  taskPriority = getTaskPriority(task)
+
+  if taskPriority == "P1":
+    for each dependencyId in task.blockedBy:
+      depPriority = getTaskPriority(graph[dependencyId])
+
+      if depPriority in ["P2", "P3"]:
+        priorityWarnings.push({
+          type: "priority_inversion",
+          severity: "warning",
+          taskId: task.id,
+          taskPriority: "P1",
+          blockingTask: dependencyId,
+          blockingPriority: depPriority,
+          message: "P1 task " + task.id + " is blocked by " + depPriority + " task " + dependencyId
+        })
+```
+
+**7.4.3: Warn if violations found**
+
+Display priority warnings (non-blocking):
+```
+WARNING: Priority inconsistencies detected:
+
+  - P1 task T200 (Login implementation) is blocked by P2 task T150 (Analytics setup)
+    Recommendation: Consider elevating T150 to P1 or removing the dependency
+
+  - P1 task T205 (Auth service) is blocked by P3 task T180 (Logging enhancement)
+    Recommendation: P3 tasks should not block critical path items
+
+These warnings do not prevent task generation but may indicate planning issues.
+```
+
+**7.5: Generate validation report**
+
+Compile all validation results into a comprehensive report.
+
+**7.5.1: Validation summary structure**
+
+```
+validationReport = {
+  timestamp: currentDateTime,
+  taskCount: totalTasks,
+  phaseCount: totalPhases,
+
+  formatValidation: {
+    passed: formatErrors.filter(e => e.severity == "error").length == 0,
+    errors: formatErrors.filter(e => e.severity == "error"),
+    warnings: formatErrors.filter(e => e.severity == "warning")
+  },
+
+  dependencyValidation: {
+    passed: dependencyErrors.filter(e => e.severity == "error").length == 0,
+    circularDependencies: cycles,
+    invalidReferences: dependencyErrors.filter(e => e.type.includes("invalid")),
+    inconsistencies: dependencyErrors.filter(e => e.type == "inconsistent_dependency")
+  },
+
+  priorityValidation: {
+    passed: true,  // Priority issues are warnings only
+    warnings: priorityWarnings
+  },
+
+  overallStatus: "PASSED" | "FAILED",
+  canProceed: true | false
+}
+```
+
+**7.5.2: Display validation report**
+
+```markdown
+## Task Validation Report
+
+### Summary
+- Total Tasks: {taskCount}
+- Total Phases: {phaseCount}
+- Validation Status: {PASSED | FAILED}
+
+### Format Validation
+{✓ | ✗} All tasks have valid format
+  - Errors: {count}
+  - Warnings: {count}
+
+{If errors exist, list each error with line number and description}
+
+### Dependency Validation
+{✓ | ✗} No circular dependencies
+{✓ | ✗} All dependency references are valid
+{✓ | ✗} Dependency relationships are consistent
+
+{If errors exist, list each with details}
+
+### Priority Validation
+{✓ | ⚠} Priority consistency check
+  - Warnings: {count}
+
+{If warnings exist, list each with recommendation}
+
+### Result
+{If PASSED:}
+✓ Validation passed. Ready to write tasks.md
+
+{If FAILED:}
+✗ Validation failed. Please fix the following errors before proceeding:
+  {List all blocking errors}
+```
+
+**7.5.3: Handle validation failure**
+
+If validation fails (any severity="error"):
+1. Display the validation report
+2. Do NOT write tasks.md
+3. Provide specific guidance on fixing each error
+4. Exit the command with error status
+
+**7.6: Write tasks.md to FEATURE_DIR**
+
+If validation passes, write the complete tasks.md file to the feature directory.
+
+**7.6.1: Assemble final tasks.md content**
+
+Combine all generated content into the final document structure:
+
+```markdown
+# Tasks: {Feature Name}
+
+Generated: {timestamp}
+Feature: {FEATURE_DIR}
+Source: plan.md, spec.md{, data-model.md}{, research.md}
+
+## Overview
+
+- Total Tasks: {count}
+- Phases: {count}
+- Estimated Complexity: {Low | Medium | High}
+- Parallel Execution Groups: {count}
+
+## Task Legend
+
+- `[ ]` - Incomplete task
+- `[x]` - Completed task
+- `[P]` - Can execute in parallel with other [P] tasks in same group
+- `[US#]` - Linked to User Story # (e.g., [US1] = User Story 1)
+- `CHECKPOINT` - Review point before proceeding to next phase
+
+## Phase 1: Setup
+{Setup tasks from Step 4.1}
+
+## Phase 2: Foundational
+{Foundational tasks from Step 4.2}
+
+## Phase 3: {User Story Title} (US-001)
+{Story tasks from Step 5}
+
+{... additional phases ...}
+
+## Dependencies
+{Dependency documentation from Step 6}
+
+## Validation
+{Validation summary from Step 7.5}
+```
+
+**7.6.2: Write file to disk**
+
+```bash
+# Write tasks.md to the feature directory
+echo "${tasksContent}" > "${FEATURE_DIR}/tasks.md"
+```
+
+Verify the file was written successfully:
+```bash
+if [ -f "${FEATURE_DIR}/tasks.md" ]; then
+  echo "✓ tasks.md written successfully to ${FEATURE_DIR}"
+else
+  echo "✗ Failed to write tasks.md"
+  exit 1
+fi
+```
+
+### Step 8: Completion Summary
+
+This step provides a final summary of the generated tasks and guides the user to the next step in the workflow.
+
+**8.1: Report tasks.md created**
+
+Display confirmation that tasks.md has been successfully generated:
+
+```markdown
+## Task Generation Complete
+
+✓ Successfully generated tasks.md
+
+  Location: {FEATURE_DIR}/tasks.md
+  Generated: {timestamp}
+```
+
+**8.2: Show task counts by phase**
+
+Provide a breakdown of tasks by phase for quick reference:
+
+```markdown
+### Task Summary by Phase
+
+| Phase | Name | Tasks | Parallel | Checkpoints |
+|-------|------|-------|----------|-------------|
+| 1 | Setup | {count} | {parallel_count} | 0 |
+| 2 | Foundational | {count} | {parallel_count} | 0 |
+| 3 | {US-001 Title} | {count} | {parallel_count} | 1 |
+| 4 | {US-002 Title} | {count} | {parallel_count} | 1 |
+| ... | ... | ... | ... | ... |
+| **Total** | | **{total}** | **{total_parallel}** | **{total_checkpoints}** |
+
+### Priority Distribution
+
+| Priority | Task Count | Percentage |
+|----------|------------|------------|
+| P1 (Critical) | {count} | {percent}% |
+| P2 (Important) | {count} | {percent}% |
+| P3 (Nice-to-have) | {count} | {percent}% |
+```
+
+**8.3: Display dependency statistics**
+
+Show key dependency metrics:
+
+```markdown
+### Dependency Statistics
+
+- Total Dependencies: {count}
+- Average Dependencies per Task: {average}
+- Maximum Dependency Chain Length: {max_chain} tasks
+- Parallel Execution Groups: {group_count}
+- Estimated Time Savings with Parallelization: {percent}%
+```
+
+**8.4: Suggest next step**
+
+Guide the user to the next command in the workflow:
+
+```markdown
+### Next Steps
+
+Your implementation tasks are ready. To begin executing tasks:
+
+  /speckit.implement
+
+This command will:
+1. Parse the generated tasks.md
+2. Execute tasks in dependency order
+3. Track progress and update task status
+4. Handle checkpoints between phases
+
+**Optional commands before implementation:**
+
+- `/speckit.analyze` - Run cross-artifact consistency analysis
+- `/speckit.checklist` - Generate a requirements checklist
+- `/speckit.taskstoissues` - Convert tasks to GitHub issues
+```
+
+**8.5: Final output format**
+
+Complete final output displayed to user:
+
+```markdown
+─────────────────────────────────────────────────────────────────
+                    TASK GENERATION COMPLETE
+─────────────────────────────────────────────────────────────────
+
+✓ tasks.md generated successfully
+
+  Feature: {feature_name}
+  Location: {FEATURE_DIR}/tasks.md
+
+  Tasks: {total_count} across {phase_count} phases
+  User Stories: {story_count}
+  Parallel Groups: {group_count}
+
+  Priority Breakdown:
+    P1: {p1_count} tasks ({p1_percent}%)
+    P2: {p2_count} tasks ({p2_percent}%)
+    P3: {p3_count} tasks ({p3_percent}%)
+
+─────────────────────────────────────────────────────────────────
+
+Ready to implement? Run:
+
+  /speckit.implement
+
+─────────────────────────────────────────────────────────────────
+```
 
 ## Output
 
