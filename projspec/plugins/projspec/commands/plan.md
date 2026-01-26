@@ -17,7 +17,7 @@ Run the prerequisite check before proceeding:
 $CLAUDE_PLUGIN_ROOT/scripts/check-prerequisites.sh --require-spec
 ```
 
-If the check fails, use the `/speckit.specify` skill first to create the specification.
+If the check fails, use the `/projspec.specify` skill first to create the specification.
 
 ## Workflow
 
@@ -956,12 +956,12 @@ specs/[feature-id]/
 **File Purposes**:
 | File | Purpose | Created By |
 |------|---------|------------|
-| spec.md | Requirements and acceptance criteria | /speckit.specify |
-| research.md | Technology decisions and findings | /speckit.plan |
-| data-model.md | Data structures and schemas | /speckit.plan |
-| plan.md | Technical context and implementation guidance | /speckit.plan |
-| quickstart.md | Setup and usage guide | /speckit.plan |
-| tasks.md | Implementation task breakdown | /speckit.tasks |
+| spec.md | Requirements and acceptance criteria | /projspec.specify |
+| research.md | Technology decisions and findings | /projspec.plan |
+| data-model.md | Data structures and schemas | /projspec.plan |
+| plan.md | Technical context and implementation guidance | /projspec.plan |
+| quickstart.md | Setup and usage guide | /projspec.plan |
+| tasks.md | Implementation task breakdown | /projspec.tasks |
 ```
 
 #### 7.3: Create Source Code Structure
@@ -1148,7 +1148,7 @@ The implementation plan is complete. To continue:
 
 **Recommended**: Generate implementation tasks
 ```
-/speckit.tasks
+/projspec.tasks
 ```
 
 This will:
@@ -1157,8 +1157,8 @@ This will:
 3. Create tasks.md with actionable implementation steps
 
 **Alternative Actions**:
-- `/speckit.analyze` - Perform cross-artifact consistency analysis
-- `/speckit.checklist` - Generate a requirements validation checklist
+- `/projspec.analyze` - Perform cross-artifact consistency analysis
+- `/projspec.checklist` - Generate a requirements validation checklist
 - Manual review - Review generated artifacts before proceeding
 ```
 
@@ -1179,7 +1179,7 @@ Constitution check: [PASS/FAIL]
 Entities defined: [N]
 Requirements mapped: [N]/[Total]
 
-Next step: Run /speckit.tasks to generate implementation tasks
+Next step: Run /projspec.tasks to generate implementation tasks
 ```
 
 ## Output
