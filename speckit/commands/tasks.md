@@ -396,11 +396,233 @@ Where:
 
 ### Step 5: Generate User Story Phases
 
-<!-- T035: Implement user story phase generation -->
-- Create one phase per user story or logical grouping
-- Break down each story into implementation tasks
-- Include tasks for models, services, APIs, and UI as applicable
-- Add integration and testing tasks for each phase
+This step creates implementation phases for each user story extracted in Step 2, generating granular tasks with proper markers for story traceability and parallel execution.
+
+**5.1: Create a phase for each user story**
+
+For each user story in the sorted `storyToTasksMap` from Step 2.3, create a dedicated phase:
+
+| Story Priority | Phase Number | Phase Title Format |
+|----------------|--------------|-------------------|
+| P1 stories | Starting at Phase 3 | `Phase 3: User Story 1 (US-001)` |
+| P2 stories | Continuing sequence | `Phase 4: User Story 2 (US-002)` |
+| P3 stories | Continuing sequence | `Phase N: User Story N (US-00N)` |
+
+Phase numbering follows this pattern:
+- Phase 1: Setup (from Step 4.1)
+- Phase 2: Foundational (from Step 4.2)
+- Phase 3+: User Stories (one phase per story, ordered by priority)
+
+For each phase, create a header structure:
+```
+{
+  phaseNumber: 3,
+  phaseTitle: "User Story 1",
+  storyId: "US-001",
+  storyDescription: "As a user, I want to...",
+  tasks: []  // Will be populated in 5.2
+}
+```
+
+**5.2: Generate tasks for each story phase**
+
+For each user story phase, generate the following task categories in order:
+
+**5.2.1: Story-specific entities (from Step 3.3)**
+
+Check the `storyPhaseEntities` list from Step 3.5 for entities assigned to this phase:
+
+```
+For each entity where entity.phase == currentPhaseNumber:
+  Generate tasks:
+    - "Define {Entity} model/schema" [US#]
+    - "Implement {Entity} validation rules" [US#] - blockedBy: model task
+    - "Create {Entity} storage layer" [US#] - blockedBy: model task
+    - "Add {Entity} serialization/deserialization" [US#] - blockedBy: model task
+```
+
+These entity tasks are generated before implementation tasks because story logic depends on entity definitions.
+
+**5.2.2: Implementation tasks**
+
+Analyze the user story description and acceptance criteria to generate core implementation tasks:
+
+| Task Category | Description | Example |
+|---------------|-------------|---------|
+| Core logic | Main business logic for the story | "Implement story validation logic" |
+| Service layer | Service methods required by the story | "Create {Feature}Service with {operation} method" |
+| API endpoints | REST/GraphQL endpoints (if applicable) | "Add POST /api/{resource} endpoint" |
+| UI components | User interface elements (if applicable) | "Create {Component} React component" |
+| State management | State updates and handlers | "Implement {feature} state management" |
+| Error handling | Story-specific error cases | "Add error handling for {scenario}" |
+
+For each implementation task:
+```
+{
+  id: "T2XX",
+  phase: currentPhaseNumber,
+  category: "implementation",
+  storyId: "US-001",
+  description: "Implement {feature}",
+  filePath: "path from plan.md structure",
+  blockedBy: [entity task IDs from 5.2.1]
+}
+```
+
+**5.2.3: Integration tasks**
+
+Generate tasks that connect the story implementation to existing system components:
+
+| Integration Type | Task Description |
+|-----------------|------------------|
+| Cross-component | "Integrate {StoryFeature} with {ExistingComponent}" |
+| API integration | "Connect {StoryFeature} to {APIEndpoint}" |
+| Event handling | "Wire {StoryEvent} to event bus/handlers" |
+| Data flow | "Connect {StoryComponent} to data store" |
+
+Integration tasks are blocked by their corresponding implementation tasks:
+```
+{
+  id: "T2XX",
+  phase: currentPhaseNumber,
+  category: "integration",
+  storyId: "US-001",
+  description: "Integrate {feature} with {component}",
+  blockedBy: [implementation task IDs from 5.2.2]
+}
+```
+
+**5.2.4: Test tasks**
+
+Generate testing tasks based on the story's acceptance criteria:
+
+| Test Type | Task Description | Blocked By |
+|-----------|------------------|------------|
+| Unit tests | "Write unit tests for {Entity/Service}" | Entity/Implementation tasks |
+| Integration tests | "Create integration tests for {Feature}" | Integration tasks |
+| Acceptance tests | "Implement acceptance test for: {criterion}" | All story tasks |
+
+For each acceptance criterion from the story, create a corresponding test task:
+```
+For each criterion in story.acceptanceCriteria:
+  Generate task:
+    - "Verify: {criterion}" [US#] - blockedBy: integration tasks
+```
+
+**5.3: Mark tasks with [US#] marker**
+
+Every task generated for a user story phase MUST include the story marker:
+
+Format: `[US#]` where `#` is the story number (e.g., `[US1]`, `[US2]`, `[US3]`)
+
+The marker appears after the task ID and any parallel marker:
+```
+- [ ] T201 [US1] Implement user authentication logic (src/auth/service.ts)
+- [ ] T202 [P] [US1] Create login form component (src/components/LoginForm.tsx)
+```
+
+This marker enables:
+- Filtering tasks by user story
+- Traceability from tasks to requirements
+- Progress tracking per story
+- Story-based sprint planning
+
+**5.4: Mark parallel tasks with [P]**
+
+Identify tasks within each story phase that can execute in parallel and mark them with `[P]`:
+
+Parallel criteria within a story:
+- Tasks modify different files
+- No shared state dependencies
+- No sequential data requirements
+- Can be completed by different developers simultaneously
+
+Common parallel patterns:
+| Parallel Set | Example Tasks |
+|--------------|---------------|
+| Independent components | `[P] [US1] Create HeaderComponent`, `[P] [US1] Create FooterComponent` |
+| Separate test files | `[P] [US1] Write unit tests for ServiceA`, `[P] [US1] Write unit tests for ServiceB` |
+| Independent integrations | `[P] [US1] Integrate with LoggingService`, `[P] [US1] Integrate with MetricsService` |
+
+The `[P]` marker appears immediately after the task ID:
+```
+- [ ] T203 [P] [US1] Task that can run in parallel (file/path)
+- [ ] T204 [P] [US1] Another parallel task (different/file/path)
+```
+
+**5.5: Add checkpoint after each story phase**
+
+After all tasks for a user story phase, add a checkpoint task:
+
+```
+- [ ] T2XX [US#] CHECKPOINT: Verify {Story Title} is complete and functional
+```
+
+The checkpoint task:
+- Is blocked by ALL tasks in the current story phase
+- Verifies all acceptance criteria are met
+- Acts as a gate before the next story phase
+- Provides a natural review/demo point
+
+Checkpoint format:
+```
+{
+  id: "T2XX",
+  phase: currentPhaseNumber,
+  category: "checkpoint",
+  storyId: "US-001",
+  description: "CHECKPOINT: Verify {Story Title} is complete and functional",
+  blockedBy: [all task IDs in this phase],
+  acceptanceCriteria: story.acceptanceCriteria  // Inherited from story
+}
+```
+
+**Task format for story phase output:**
+
+Each task in a story phase should be formatted as:
+```
+- [ ] T### [P?] [US#] Description (file path)
+```
+
+Where:
+- `T###` is the task ID (T200+ for story phases)
+- `[P]` is included only if the task can run in parallel
+- `[US#]` is the user story marker (required for all story tasks)
+- `Description` is a clear, actionable task description
+- `(file path)` is the primary file or directory affected
+
+**Example story phase output:**
+
+```markdown
+## Phase 3: User Authentication (US-001)
+
+Story: As a user, I want to log in so that I can access my dashboard.
+
+### Entity Tasks
+- [ ] T200 [US1] Define User model schema (src/models/user.ts)
+- [ ] T201 [US1] Implement User validation rules (src/models/user.ts)
+- [ ] T202 [US1] Create User storage layer (src/repositories/userRepository.ts)
+
+### Implementation Tasks
+- [ ] T203 [US1] Implement authentication service (src/services/authService.ts)
+- [ ] T204 [US1] Create login endpoint (src/api/auth/login.ts)
+- [ ] T205 [P] [US1] Create login form component (src/components/LoginForm.tsx)
+- [ ] T206 [P] [US1] Create auth state management (src/store/authSlice.ts)
+
+### Integration Tasks
+- [ ] T207 [US1] Connect login form to auth service (src/pages/Login.tsx)
+- [ ] T208 [US1] Integrate auth state with router guards (src/router/guards.ts)
+
+### Test Tasks
+- [ ] T209 [P] [US1] Write unit tests for authService (tests/services/authService.test.ts)
+- [ ] T210 [P] [US1] Write unit tests for User model (tests/models/user.test.ts)
+- [ ] T211 [US1] Create integration tests for login flow (tests/integration/auth.test.ts)
+- [ ] T212 [US1] Verify: User can log in with valid credentials (tests/e2e/login.test.ts)
+- [ ] T213 [US1] Verify: Invalid credentials show error message (tests/e2e/login.test.ts)
+
+### Checkpoint
+- [ ] T214 [US1] CHECKPOINT: Verify User Authentication is complete and functional
+```
 
 ### Step 6: Generate Dependency Graph
 
