@@ -1,0 +1,8 @@
+{
+  "name": "speckit",
+  "description": "Specification-driven development workflow automation",
+  "author": {
+    "name": "liorfr",
+    "email": "lior@example.com"
+  }
+}
