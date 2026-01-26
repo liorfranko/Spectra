@@ -62,6 +62,62 @@ has_git() {
     git rev-parse --show-toplevel >/dev/null 2>&1
 }
 
+# ============================================================================
+# Worktree Detection Functions
+# ============================================================================
+
+# Detect if current directory is inside a git worktree
+# Returns: 0 if worktree, 1 if not
+is_worktree() {
+    local git_common_dir=$(git rev-parse --git-common-dir 2>/dev/null)
+    local git_dir=$(git rev-parse --git-dir 2>/dev/null)
+    [[ -n "$git_common_dir" && -n "$git_dir" && "$git_common_dir" != "$git_dir" ]]
+}
+
+# Get the main repository path from a worktree
+# Returns: Absolute path to main repo, or empty if not in worktree
+get_main_repo_from_worktree() {
+    if is_worktree; then
+        local git_common_dir=$(git rev-parse --git-common-dir 2>/dev/null)
+        # Remove /.git suffix to get repo root
+        echo "${git_common_dir%/.git}"
+    fi
+}
+
+# List all worktrees (prunes stale entries first)
+# Usage: list_worktrees [format]
+#   format: "simple" (default) or "porcelain"
+list_worktrees() {
+    local format="${1:-simple}"
+
+    # Prune stale worktree entries first
+    git worktree prune 2>/dev/null
+
+    case "$format" in
+        porcelain)
+            git worktree list --porcelain
+            ;;
+        *)
+            git worktree list
+            ;;
+    esac
+}
+
+# Get worktree path for a given branch
+# Returns: Worktree path or empty if branch not in a worktree
+get_worktree_for_branch() {
+    local branch="$1"
+    [[ -z "$branch" ]] && return
+
+    git worktree list --porcelain 2>/dev/null | awk -v branch="$branch" '
+        /^worktree / { wt = substr($0, 10) }
+        /^branch refs\/heads\// {
+            b = substr($0, 21)
+            if (b == branch) print wt
+        }
+    '
+}
+
 check_feature_branch() {
     local branch="$1"
     local has_git_repo="$2"
