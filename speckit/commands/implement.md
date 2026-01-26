@@ -349,11 +349,159 @@ After successful completion or user-directed action:
 
 ### Step 3: Track Progress and Report
 
-<!-- T041: Implement progress tracking and reporting -->
-- Display real-time progress as tasks complete
-- Show summary statistics (completed, pending, blocked, failed)
-- Generate completion report when all tasks finish
-- Update any cross-references in related artifacts
+**3.1: After each task completes, update and display progress**
+
+After each successful task completion (from Step 2.2), calculate and display progress:
+
+1. **Calculate completion percentage**:
+   ```
+   total_tasks = count of all tasks in tasks.md
+   completed_tasks = count of tasks with [x] status
+   percentage = (completed_tasks / total_tasks) * 100
+   ```
+
+2. **Display completion message**:
+   ```markdown
+   ✓ [T###] Description - Committed and pushed
+   ```
+
+   Example output:
+   ```markdown
+   ✓ [T039] Add implement command logic: prerequisites check - Committed and pushed
+   ✓ [T040] Add implement command logic: task execution loop - Committed and pushed
+   ```
+
+**3.2: Track and display metrics after each task**
+
+Maintain running metrics throughout execution:
+
+1. **Core metrics**:
+   ```
+   metrics = {
+     total_tasks: count of all tasks,
+     completed_tasks: count of [x] tasks,
+     remaining_tasks: count of [ ] tasks,
+     skipped_tasks: count of tasks skipped by user,
+     failed_retries: count of tasks that failed and were retried
+   }
+   ```
+
+2. **Tasks by phase**:
+   ```
+   phase_metrics = {
+     "Phase 1: Setup": { total: 4, completed: 4 },
+     "Phase 2: Foundational": { total: 8, completed: 3 },
+     ...
+   }
+   ```
+
+3. **Display periodic progress update** (after every task or batch of parallel tasks):
+   ```markdown
+   Progress: {completed_tasks}/{total_tasks} ({percentage}%) | Phase {current_phase}: {phase_completed}/{phase_total}
+   ```
+
+**3.3: Show progress bar or percentage indicator**
+
+Display a visual progress indicator after each task completion:
+
+```markdown
+## Progress Update
+
+[████████████░░░░░░░░] 60% Complete
+
+| Metric | Count |
+|--------|-------|
+| Completed | 24 |
+| Remaining | 16 |
+| Current Phase | Phase 3: Core Features |
+
+Last completed: [T024] Add validation logic to form handler
+```
+
+For text-based progress bar, use:
+- 20 character width total
+- `█` for completed portions
+- `░` for remaining portions
+- Calculate: `filled = floor((completed / total) * 20)`
+
+**3.4: On completion of all tasks, display final summary**
+
+When all tasks are completed (remaining_tasks == 0 and no blocked tasks):
+
+```markdown
+## Implementation Complete! 🎉
+
+All tasks have been successfully implemented.
+
+### Summary
+
+| Metric | Count |
+|--------|-------|
+| Total Tasks | {total_tasks} |
+| Completed | {completed_tasks} |
+| Skipped | {skipped_tasks} |
+| Duration | {approximate duration if tracked} |
+
+### Tasks by Phase
+
+| Phase | Tasks Completed |
+|-------|-----------------|
+| Phase 1: Setup | 4/4 |
+| Phase 2: Foundational | 8/8 |
+| Phase 3: Core Features | 12/12 |
+| ... | ... |
+
+### Git Commits
+
+The following commits were created during implementation:
+
+{Run: git log --oneline -n {total_tasks} and display output}
+
+Example:
+```
+a1b2c3d [T040] Add implement command logic: task execution loop
+e4f5g6h [T039] Add implement command logic: prerequisites check
+...
+```
+
+### Next Steps
+
+Your implementation is ready for review. Suggested next action:
+
+→ Run `/speckit.review-pr` to create a comprehensive pull request with review
+
+Alternatively:
+- Run `git log --oneline` to review all commits
+- Run `git diff main...HEAD` to see full changes
+- Create a PR manually with `gh pr create`
+```
+
+**3.5: Handle partial completion (user aborts or session ends)**
+
+If implementation is interrupted before all tasks complete:
+
+```markdown
+## Implementation Paused
+
+Progress has been saved. You can resume by running `/speckit.implement` again.
+
+### Current Status
+
+| Metric | Count |
+|--------|-------|
+| Completed | {completed_tasks} |
+| Remaining | {remaining_tasks} |
+| Progress | {percentage}% |
+
+### Commits Made This Session
+
+{Run: git log --oneline -n {tasks_completed_this_session}}
+
+### To Resume
+
+Run `/speckit.implement` to continue from where you left off.
+The command will detect completed tasks and continue with remaining work.
+```
 
 ### Step 4: Handle Blocked Tasks
 
