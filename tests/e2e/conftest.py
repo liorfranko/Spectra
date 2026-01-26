@@ -7,9 +7,12 @@ using Claude Code subprocess execution.
 
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 from typing import Generator
 
 import pytest
+
+from .helpers import E2EProject
 
 
 class StageStatus(Enum):
@@ -445,3 +448,80 @@ def pytest_runtest_makereport(
         tracker.mark_passed(stage)
     elif report.failed:
         tracker.mark_failed(stage)
+
+
+# =============================================================================
+# Session-Scoped Fixtures
+# =============================================================================
+
+
+@pytest.fixture(scope="session")
+def e2e_config(request: pytest.FixtureRequest) -> E2EConfig:
+    """Parse CLI options and return E2E configuration.
+
+    This session-scoped fixture parses the pytest command-line options
+    and constructs an E2EConfig instance that can be used throughout
+    the test session.
+
+    Args:
+        request: Pytest fixture request object providing access to config.
+
+    Returns:
+        E2EConfig instance with parsed stage filter, debug mode, and
+        timeout override settings.
+
+    Example:
+        >>> def test_example(e2e_config):
+        ...     if e2e_config.debug:
+        ...         print("Debug mode enabled")
+        ...     if e2e_config.should_run_stage(3):
+        ...         # Run stage 3 logic
+        ...         pass
+    """
+    stage_str = request.config.getoption("--stage", default=None)
+    stage_filter = _parse_stage_filter(stage_str)
+
+    debug = request.config.getoption("--e2e-debug", default=False)
+    timeout_override = request.config.getoption("--timeout-all", default=None)
+
+    return E2EConfig(
+        stage_filter=stage_filter,
+        debug=debug,
+        timeout_override=timeout_override,
+    )
+
+
+@pytest.fixture(scope="session")
+def test_project(request: pytest.FixtureRequest) -> E2EProject:
+    """Create and set up an E2EProject for the test session.
+
+    This session-scoped fixture creates an isolated test project directory
+    with git initialization, fixture copying, and log directory creation.
+    The project persists for the entire test session and is not cleaned up
+    automatically (for debugging purposes).
+
+    Args:
+        request: Pytest fixture request object (unused but required for
+            session-scoped fixtures that may need config access).
+
+    Returns:
+        E2EProject instance with setup() already called, ready for use
+        in test stages.
+
+    Example:
+        >>> def test_example(test_project):
+        ...     # Project path is ready to use
+        ...     assert test_project.project_path.exists()
+        ...     # Run Claude commands in project directory
+        ...     runner.run(cwd=test_project.project_path)
+    """
+    # Detect tests root directory (tests/e2e/conftest.py -> tests/)
+    tests_root = Path(__file__).parent.parent
+
+    # Create the E2EProject instance
+    project = E2EProject("todo-app", tests_root)
+
+    # Set up the project (creates directories, copies fixtures, inits git)
+    project.setup()
+
+    return project
