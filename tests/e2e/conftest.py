@@ -283,3 +283,101 @@ def pytest_addoption(parser: pytest.Parser) -> None:
             "Useful for slow environments or when debugging with breakpoints."
         ),
     )
+
+
+def _parse_stage_filter(stage_str: str | None) -> tuple[int, int] | None:
+    """Parse --stage option value into a stage range.
+
+    Args:
+        stage_str: The stage filter string from CLI, either "N" or "N-M" format.
+
+    Returns:
+        A tuple of (start, end) stage numbers (inclusive), or None if no filter.
+
+    Raises:
+        ValueError: If the stage string format is invalid.
+    """
+    if stage_str is None:
+        return None
+
+    stage_str = stage_str.strip()
+
+    if "-" in stage_str:
+        # Range format: "N-M"
+        parts = stage_str.split("-")
+        if len(parts) != 2:
+            raise ValueError(f"Invalid stage range format: '{stage_str}'. Use 'N-M'.")
+        try:
+            start = int(parts[0].strip())
+            end = int(parts[1].strip())
+        except ValueError as e:
+            raise ValueError(
+                f"Invalid stage range: '{stage_str}'. Stage numbers must be integers."
+            ) from e
+        return (start, end)
+    else:
+        # Single stage format: "N"
+        try:
+            stage = int(stage_str)
+        except ValueError as e:
+            raise ValueError(
+                f"Invalid stage: '{stage_str}'. Must be an integer."
+            ) from e
+        return (stage, stage)
+
+
+def _get_stage_from_item(item: pytest.Item) -> int | None:
+    """Extract stage number from a test item's markers.
+
+    Looks for pytest.mark.stage(N) marker on the test item or its parent class.
+
+    Args:
+        item: The pytest test item to check.
+
+    Returns:
+        The stage number if found, or None if no stage marker exists.
+    """
+    # Check for stage marker on the item
+    for marker in item.iter_markers(name="stage"):
+        if marker.args:
+            return int(marker.args[0])
+    return None
+
+
+def pytest_collection_modifyitems(
+    config: pytest.Config, items: list[pytest.Item]
+) -> None:
+    """Sort and filter test items by stage number.
+
+    This hook modifies the test collection to:
+    1. Sort tests by their stage number (tests without stage marker go last)
+    2. Filter out tests that don't match the --stage filter
+
+    Args:
+        config: The pytest configuration object.
+        items: List of collected test items (modified in place).
+    """
+    # Parse the stage filter from CLI options
+    stage_str = config.getoption("--stage", default=None)
+    stage_filter = _parse_stage_filter(stage_str)
+
+    # Sort items by stage number (None/no stage goes to end)
+    def stage_sort_key(item: pytest.Item) -> tuple[int, str]:
+        """Sort key: (stage_number, test_name). No stage = 999 (last)."""
+        stage = _get_stage_from_item(item)
+        return (stage if stage is not None else 999, item.nodeid)
+
+    items.sort(key=stage_sort_key)
+
+    # Filter items based on stage filter if provided
+    if stage_filter is not None:
+        start, end = stage_filter
+        filtered_items = []
+        for item in items:
+            stage = _get_stage_from_item(item)
+            # Include items without stage marker (infrastructure tests)
+            # or items within the filter range
+            if stage is None or (start <= stage <= end):
+                filtered_items.append(item)
+        # Modify items in place
+        items[:] = filtered_items
