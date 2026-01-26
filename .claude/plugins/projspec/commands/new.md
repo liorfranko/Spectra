@@ -26,7 +26,33 @@ Usage: /projspec.new <spec-name>
 Example: /projspec.new user-auth
 ```
 
-### Step 2: Generate Spec ID
+### Step 2: Validate Spec Name Format
+
+Validate that the spec name follows kebab-case convention and is suitable for git branch names.
+
+**Validation Rules:**
+- Must match pattern: `^[a-z][a-z0-9-]*$`
+- Must start with a lowercase letter
+- Can contain only lowercase letters, numbers, and hyphens
+- No spaces, underscores, or special characters
+- Maximum length: 50 characters
+
+If the spec name is invalid, show this error and stop:
+
+```
+Error: Invalid spec name '{SPEC_NAME}'.
+
+Spec names must:
+- Start with a lowercase letter
+- Contain only lowercase letters, numbers, and hyphens
+- Be 50 characters or less
+
+Examples: user-auth, payment-v2, api-refactor
+```
+
+If valid, proceed to the next step.
+
+### Step 3: Generate Spec ID
 
 Generate an 8-character hex ID:
 
@@ -36,17 +62,17 @@ python -c "import uuid; print(uuid.uuid4().hex[:8])"
 
 Store this as `SPEC_ID`.
 
-### Step 3: Prepare Variables
+### Step 4: Prepare Variables
 
 Calculate the following values:
 - `SPEC_NAME`: The provided spec name (use as-is, should be kebab-case)
-- `SPEC_ID`: The 8-character hex from Step 2
+- `SPEC_ID`: The 8-character hex from Step 3
 - `BRANCH_NAME`: `spec/{SPEC_ID}-{SPEC_NAME}`
 - `WORKTREE_PATH`: `worktrees/spec-{SPEC_ID}-{SPEC_NAME}`
 - `SPEC_DIR`: `.projspec/specs/active/{SPEC_ID}`
 - `TIMESTAMP`: Current UTC timestamp in ISO 8601 format
 
-### Step 4: Validate Branch Doesn't Exist
+### Step 5: Validate Branch Doesn't Exist
 
 Before creating the branch, verify it doesn't already exist:
 
@@ -62,7 +88,7 @@ Error: Branch '{BRANCH_NAME}' already exists. Use a different spec name or delet
 
 If the command exits with non-zero status, the branch doesn't exist and you can proceed.
 
-### Step 5: Validate Worktree Directory Doesn't Exist
+### Step 6: Validate Worktree Directory Doesn't Exist
 
 Before creating the worktree, verify the directory doesn't already exist:
 
@@ -78,7 +104,7 @@ Error: Worktree directory '{WORKTREE_PATH}' already exists. Remove it first or u
 
 If the command exits with non-zero status, the directory doesn't exist and you can proceed.
 
-### Step 6: Create Git Branch
+### Step 7: Create Git Branch
 
 Create a new branch from the current HEAD:
 
@@ -86,7 +112,7 @@ Create a new branch from the current HEAD:
 git branch {BRANCH_NAME}
 ```
 
-### Step 7: Create Git Worktree
+### Step 8: Create Git Worktree
 
 Create an isolated worktree for this spec:
 
@@ -94,7 +120,7 @@ Create an isolated worktree for this spec:
 git worktree add {WORKTREE_PATH} {BRANCH_NAME}
 ```
 
-### Step 8: Create Spec Directory
+### Step 9: Create Spec Directory
 
 Create the spec's state directory in the main repository:
 
@@ -102,7 +128,7 @@ Create the spec's state directory in the main repository:
 mkdir -p {SPEC_DIR}
 ```
 
-### Step 9: Create state.yaml
+### Step 10: Create state.yaml
 
 Create the initial state file at `{SPEC_DIR}/state.yaml` with this content:
 
@@ -119,7 +145,7 @@ worktree_path: {WORKTREE_PATH}
 tasks: []
 ```
 
-### Step 10: Create brief.md in Worktree
+### Step 11: Create brief.md in Worktree
 
 Create a placeholder brief file at `{WORKTREE_PATH}/specs/{SPEC_ID}/brief.md`:
 
@@ -152,7 +178,7 @@ Describe the feature or change you want to implement.
 Any additional context or constraints.
 ```
 
-### Step 11: Output Success Message
+### Step 12: Output Success Message
 
 Report success to the user with next steps:
 
