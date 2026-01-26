@@ -309,6 +309,12 @@ class ClaudeRunner:
                 stdout = e.stdout if isinstance(e.stdout, str) else e.stdout.decode("utf-8", errors="replace")
             if e.stderr is not None:
                 stderr = e.stderr if isinstance(e.stderr, str) else e.stderr.decode("utf-8", errors="replace")
+            # Add timeout error message
+            stderr = (
+                f"Command timed out after {timeout} seconds (stage {stage}). "
+                f"Consider increasing the timeout with --timeout-all option.\n\n"
+                f"Original stderr:\n{stderr}"
+            )
             exit_code = -1
 
         except FileNotFoundError:
