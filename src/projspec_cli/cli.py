@@ -23,10 +23,15 @@ from rich.table import Table
 
 from projspec_cli import __version__
 from projspec_cli.services.init import initialize_project
+from projspec_cli.services.status import (
+    format_status_json,
+    format_status_table,
+    format_feature_status_json,
+    get_feature_status,
+    get_project_status,
+    get_status_summary,
+)
 from projspec_cli.utils.git import has_git, is_git_repo
-
-# Note: This import will be used once status service is implemented
-# from projspec_cli.services.status import display_status
 
 # Rich console for formatted output
 console = Console()
@@ -277,6 +282,14 @@ def init(
 
 @app.command()
 def status(
+    feature: Annotated[
+        str | None,
+        typer.Option(
+            "--feature",
+            "-f",
+            help="Show status for a specific feature (by ID or name)",
+        ),
+    ] = None,
     json_output: Annotated[
         bool,
         typer.Option(
@@ -291,43 +304,224 @@ def status(
     in the project.
 
     Examples:
-        projspec status         # Show formatted status
-        projspec status --json  # Output as JSON for scripting
+        projspec status              # Show all features status
+        projspec status --feature 001  # Show specific feature status
+        projspec status --json       # Output as JSON for scripting
     """
-    # Delegate to the status service
-    # The service will be implemented in a later task
-    if json_output:
-        console.print('{"status": "not_implemented", "message": "Status service pending implementation"}')
-    else:
-        console.print("[bold]ProjSpec Status[/bold]")
-        console.print()
+    cwd = Path.cwd()
 
-        # Check if we're in a git repo
-        cwd = Path.cwd()
-        if is_git_repo(cwd):
-            console.print(f"[dim]Current directory:[/dim] {cwd}")
-
-            # Try to get current branch
-            try:
-                result = subprocess.run(
-                    ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-                    capture_output=True,
-                    text=True,
-                    check=False,
-                    cwd=cwd,
+    # If a specific feature is requested
+    if feature:
+        feature_status = get_feature_status(feature, cwd)
+        if feature_status is None:
+            err_console.print(
+                Panel(
+                    f"[bold red]Feature not found:[/bold red] {feature}\n\n"
+                    "Make sure the feature exists in specs/ directory.",
+                    title="Error",
+                    border_style="red",
                 )
-                if result.returncode == 0:
-                    branch = result.stdout.strip()
-                    console.print(f"[dim]Current branch:[/dim] {branch}")
-            except (FileNotFoundError, OSError):
-                pass
-        else:
-            console.print("[yellow]Not in a git repository.[/yellow]")
+            )
+            raise typer.Exit(code=1)
 
+        if json_output:
+            console.print(format_feature_status_json(feature_status))
+        else:
+            _display_feature_status(feature_status)
+        return
+
+    # Get full project status
+    result = get_project_status(cwd)
+
+    if not result.success:
+        if json_output:
+            console.print('{"success": false, "error": "' + result.message + '"}')
+        else:
+            err_console.print(
+                Panel(
+                    f"[bold red]Error:[/bold red] {result.message}",
+                    title="Status Error",
+                    border_style="red",
+                )
+            )
+        raise typer.Exit(code=1)
+
+    if result.project_status is None:
+        if json_output:
+            console.print('{"success": false, "error": "No project status available"}')
+        else:
+            console.print("[yellow]No project status available.[/yellow]")
+        raise typer.Exit(code=1)
+
+    project_status = result.project_status
+
+    if json_output:
+        console.print(format_status_json(project_status))
+    else:
+        _display_project_status(project_status)
+
+
+def _display_feature_status(feature_status) -> None:
+    """Display detailed status for a single feature using Rich formatting."""
+    # Feature header panel
+    phase_color = _get_phase_color(feature_status.phase.value)
+    header_content = (
+        f"[bold]{feature_status.full_name}[/bold]\n"
+        f"Phase: [{phase_color}]{feature_status.phase.value}[/{phase_color}]\n"
+        f"Branch: [cyan]{feature_status.branch}[/cyan]"
+    )
+    if feature_status.description:
+        header_content += f"\n\n{feature_status.description}"
+
+    console.print()
+    console.print(
+        Panel(
+            header_content,
+            title=f"Feature {feature_status.id}",
+            border_style=phase_color,
+        )
+    )
+
+    # Artifacts table
+    console.print()
+    artifacts_table = Table(title="Artifacts", show_header=True, header_style="bold")
+    artifacts_table.add_column("File", style="cyan")
+    artifacts_table.add_column("Status", justify="center")
+
+    artifacts_table.add_row(
+        "spec.md",
+        "[green]Present[/green]" if feature_status.has_spec else "[dim]Missing[/dim]",
+    )
+    artifacts_table.add_row(
+        "plan.md",
+        "[green]Present[/green]" if feature_status.has_plan else "[dim]Missing[/dim]",
+    )
+    artifacts_table.add_row(
+        "tasks.md",
+        "[green]Present[/green]" if feature_status.has_tasks else "[dim]Missing[/dim]",
+    )
+    artifacts_table.add_row(
+        "state.yaml",
+        "[green]Present[/green]" if feature_status.has_state else "[dim]Missing[/dim]",
+    )
+
+    console.print(artifacts_table)
+
+    # Task progress
+    if feature_status.task_progress.total > 0:
         console.print()
-        # TODO: Call display_status service once implemented
-        # display_status(json_output=json_output)
-        console.print("[yellow]Note: Full status display will be implemented in a later task.[/yellow]")
+        progress = feature_status.task_progress
+        task_table = Table(title="Task Progress", show_header=True, header_style="bold")
+        task_table.add_column("Status", style="cyan")
+        task_table.add_column("Count", justify="right")
+
+        task_table.add_row("Pending", str(progress.pending))
+        task_table.add_row("In Progress", f"[yellow]{progress.in_progress}[/yellow]")
+        task_table.add_row("Completed", f"[green]{progress.completed}[/green]")
+        task_table.add_row("Skipped", f"[dim]{progress.skipped}[/dim]")
+        task_table.add_row(
+            "[bold]Total[/bold]",
+            f"[bold]{progress.total}[/bold] ({progress.percentage:.0f}% complete)",
+        )
+
+        console.print(task_table)
+
+        if feature_status.next_available_task:
+            console.print()
+            console.print(
+                f"[bold]Next available task:[/bold] [cyan]{feature_status.next_available_task}[/cyan]"
+            )
+
+    console.print()
+
+
+def _display_project_status(project_status) -> None:
+    """Display full project status using Rich formatting."""
+    summary = get_status_summary(project_status)
+
+    # Project header
+    console.print()
+
+    # Calculate task completion bar
+    task_completion_bar = ""
+    if summary["total_tasks"] > 0:
+        completed_pct = summary["task_completion"]
+        bar_width = 20
+        filled = int(bar_width * completed_pct / 100)
+        task_completion_bar = (
+            f"\n\nTask Progress: [green]{'=' * filled}[/green]"
+            f"[dim]{'=' * (bar_width - filled)}[/dim] "
+            f"{completed_pct:.0f}%"
+        )
+
+    header_content = (
+        f"[bold blue]{project_status.project_name}[/bold blue]\n"
+        f"[dim]Root:[/dim] {project_status.project_root}\n"
+        f"[dim]Features:[/dim] {project_status.total_features}"
+        f"{task_completion_bar}"
+    )
+
+    # Add current context info
+    if project_status.current_branch:
+        header_content += f"\n\n[dim]Current branch:[/dim] {project_status.current_branch}"
+    if project_status.is_worktree:
+        header_content += " [cyan](worktree)[/cyan]"
+
+    console.print(
+        Panel(
+            header_content,
+            title="ProjSpec Status",
+            border_style="blue",
+        )
+    )
+
+    # Phase summary
+    if project_status.features_by_phase:
+        console.print()
+        phase_table = Table(title="Features by Phase", show_header=True, header_style="bold")
+        phase_table.add_column("Phase", style="cyan")
+        phase_table.add_column("Count", justify="right")
+
+        for phase, count in project_status.features_by_phase.items():
+            phase_color = _get_phase_color(phase)
+            phase_table.add_row(f"[{phase_color}]{phase}[/{phase_color}]", str(count))
+
+        console.print(phase_table)
+
+    # Features table
+    if project_status.features:
+        console.print()
+        features_table = Table(title="Features", show_header=True, header_style="bold")
+        features_table.add_column("ID", style="cyan", no_wrap=True)
+        features_table.add_column("Name")
+        features_table.add_column("Phase", justify="center")
+        features_table.add_column("Tasks", justify="center")
+        features_table.add_column("Branch", style="dim")
+        features_table.add_column("Next Task", style="yellow")
+
+        rows = format_status_table(project_status)
+        for row in rows:
+            features_table.add_row(*row)
+
+        console.print(features_table)
+    else:
+        console.print()
+        console.print("[dim]No features found. Create your first feature with /speckit.specify[/dim]")
+
+    console.print()
+
+
+def _get_phase_color(phase: str) -> str:
+    """Get the display color for a phase."""
+    phase_colors = {
+        "new": "dim",
+        "spec": "blue",
+        "plan": "cyan",
+        "tasks": "magenta",
+        "implement": "yellow",
+        "complete": "green",
+    }
+    return phase_colors.get(phase.lower(), "white")
 
 
 # Entry point for the CLI
