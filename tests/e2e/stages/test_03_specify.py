@@ -92,3 +92,52 @@ class TestSpeckitSpecify:
             "Expected a file matching pattern 'specs/<number>-<name>/spec.md'. "
             "The /speckit.specify command should create this file."
         )
+
+    def test_spec_has_required_sections(
+        self, file_verifier: FileVerifier, git_verifier: GitVerifier
+    ) -> None:
+        """Test that spec.md contains required specification sections.
+
+        The /speckit.specify command should generate a spec.md file that
+        includes at minimum: User Scenarios, Requirements, and Success Criteria
+        sections. This test verifies these sections are present.
+
+        Args:
+            file_verifier: Fixture providing a configured FileVerifier instance.
+            git_verifier: Fixture providing a configured GitVerifier instance.
+        """
+        # Get the worktree path for the feature
+        worktree_path = git_verifier.get_worktree_path(pattern=r"worktrees/\d+-.*")
+        assert worktree_path is not None, (
+            "Could not find feature worktree. "
+            "This test depends on test_feature_branch_created passing."
+        )
+
+        # Find the spec.md file
+        spec_file = file_verifier.find_file(
+            pattern=r"specs/\d+-.*/spec\.md",
+            base_path=worktree_path,
+        )
+        assert spec_file is not None, (
+            "spec.md not found. This test depends on test_spec_file_created passing."
+        )
+
+        # Verify required sections exist
+        # Use case-insensitive patterns since section headers may vary slightly
+        file_verifier.assert_contains(
+            path=spec_file,
+            pattern=r"(?i)#.*user\s+scenarios?",
+            description="User Scenarios section header",
+        )
+
+        file_verifier.assert_contains(
+            path=spec_file,
+            pattern=r"(?i)#.*requirements?",
+            description="Requirements section header",
+        )
+
+        file_verifier.assert_contains(
+            path=spec_file,
+            pattern=r"(?i)#.*success\s+criteria",
+            description="Success Criteria section header",
+        )
