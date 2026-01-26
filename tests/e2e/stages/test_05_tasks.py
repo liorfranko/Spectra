@@ -77,3 +77,43 @@ class TestSpeckitTasks:
             "Expected a file matching pattern 'specs/<number>-<name>/tasks.md'. "
             "The /speckit.tasks command should create this file."
         )
+
+    def test_tasks_has_checkboxes(
+        self, file_verifier: FileVerifier, git_verifier: GitVerifier
+    ) -> None:
+        """Test that tasks.md contains task checkboxes.
+
+        The /speckit.tasks command should generate a tasks.md file that
+        includes markdown checkboxes (- [ ] or - [x]) for tracking task
+        completion status.
+
+        Args:
+            file_verifier: Fixture providing a configured FileVerifier instance.
+            git_verifier: Fixture providing a configured GitVerifier instance.
+        """
+        # Get the worktree path for the feature
+        worktree_path = git_verifier.get_worktree_path(pattern=r"worktrees/\d+-.*")
+        assert worktree_path is not None, (
+            "Could not find feature worktree. "
+            "This test depends on earlier stage tests passing."
+        )
+
+        # Find the tasks.md file
+        tasks_file = file_verifier.find_file(
+            pattern=r"specs/\d+-.*/tasks\.md",
+            base_path=worktree_path,
+        )
+        assert tasks_file is not None, (
+            "tasks.md not found. This test depends on test_tasks_file_created passing."
+        )
+
+        # Verify task checkboxes exist (unchecked or checked)
+        checkbox_count = file_verifier.count_pattern(
+            path=tasks_file,
+            pattern=r"-\s*\[[ x]\]",
+        )
+        assert checkbox_count >= 1, (
+            f"tasks.md at {tasks_file} does not contain any task checkboxes. "
+            "Expected at least one '- [ ]' or '- [x]' pattern. "
+            "The /speckit.tasks command should generate actionable tasks with checkboxes."
+        )
