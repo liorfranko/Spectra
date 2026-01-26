@@ -20,7 +20,7 @@ class TestSpeckitTasks:
     including proper checkbox formatting and phase organization.
     """
 
-    def test_tasks_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
+    def test_01_tasks_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
         """Test that /speckit.tasks command executes successfully.
 
         This test runs the /speckit.tasks command on the feature plan
@@ -48,7 +48,7 @@ class TestSpeckitTasks:
             f"Stdout (last 500 chars): {result.stdout[-500:] if result.stdout else 'empty'}"
         )
 
-    def test_tasks_file_created(
+    def test_02_tasks_file_created(
         self, file_verifier: FileVerifier, git_verifier: GitVerifier
     ) -> None:
         """Test that tasks.md file is created in the feature spec directory.
@@ -78,7 +78,7 @@ class TestSpeckitTasks:
             "The /speckit.tasks command should create this file."
         )
 
-    def test_tasks_has_checkboxes(
+    def test_03_tasks_has_checkboxes(
         self, file_verifier: FileVerifier, git_verifier: GitVerifier
     ) -> None:
         """Test that tasks.md contains task checkboxes.
@@ -118,7 +118,7 @@ class TestSpeckitTasks:
             "The /speckit.tasks command should generate actionable tasks with checkboxes."
         )
 
-    def test_tasks_has_phases(
+    def test_04_tasks_has_phases(
         self, file_verifier: FileVerifier, git_verifier: GitVerifier
     ) -> None:
         """Test that tasks.md contains phase sections.

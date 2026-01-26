@@ -19,7 +19,7 @@ class TestSpeckitImplement:
     executes the generated tasks and produces implementation artifacts.
     """
 
-    def test_implement_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
+    def test_01_implement_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
         """Test that /speckit.implement command executes successfully.
 
         This test runs the /speckit.implement command on the tasks
@@ -49,7 +49,7 @@ class TestSpeckitImplement:
             f"Stdout (last 500 chars): {result.stdout[-500:] if result.stdout else 'empty'}"
         )
 
-    def test_implement_produces_code(
+    def test_02_implement_produces_code(
         self, git_verifier: GitVerifier
     ) -> None:
         """Test that /speckit.implement produces implementation artifacts.

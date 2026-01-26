@@ -20,7 +20,7 @@ class TestSpeckitConstitution:
     consistency with dependent templates.
     """
 
-    def test_constitution_setup(self, claude_runner: ClaudeRunner) -> None:
+    def test_01_constitution_setup(self, claude_runner: ClaudeRunner) -> None:
         """Test that /speckit.constitution command executes successfully.
 
         This test verifies that the /speckit.constitution command can be
@@ -45,7 +45,7 @@ class TestSpeckitConstitution:
             f"STDERR:\n{result.stderr}"
         )
 
-    def test_constitution_file_created(self, file_verifier: FileVerifier) -> None:
+    def test_02_constitution_file_created(self, file_verifier: FileVerifier) -> None:
         """Test that constitution.md file is created in the correct location.
 
         This test verifies that running the /speckit.constitution command

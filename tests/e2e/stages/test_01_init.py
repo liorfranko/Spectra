@@ -25,7 +25,7 @@ class TestSpeckitInit:
     Test methods will be added in subsequent tasks (T025-T028).
     """
 
-    def test_init_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
+    def test_01_init_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
         """Test that specify init command executes successfully.
 
         This test verifies that the `specify init` command can be executed
@@ -49,7 +49,7 @@ class TestSpeckitInit:
             f"STDERR:\n{result.stderr}"
         )
 
-    def test_specify_dir_created(self, file_verifier: FileVerifier) -> None:
+    def test_02_specify_dir_created(self, file_verifier: FileVerifier) -> None:
         """Test that .specify/ directory is created after initialization.
 
         This test verifies that the `specify init` command creates the
@@ -64,7 +64,7 @@ class TestSpeckitInit:
             "projspec plugin configuration directory"
         )
 
-    def test_templates_exist(self, file_verifier: FileVerifier) -> None:
+    def test_03_templates_exist(self, file_verifier: FileVerifier) -> None:
         """Test that .specify/templates/ directory is created with required template files.
 
         This test verifies that the `specify init` command creates the templates
@@ -98,7 +98,7 @@ class TestSpeckitInit:
             "checklist template"
         )
 
-    def test_claude_plugin_configured(self, file_verifier: FileVerifier) -> None:
+    def test_04_claude_plugin_configured(self, file_verifier: FileVerifier) -> None:
         """Test that .claude/ directory is created with plugin configuration.
 
         This test verifies that the `specify init` command creates the .claude/

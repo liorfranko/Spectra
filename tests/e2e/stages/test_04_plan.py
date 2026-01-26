@@ -20,7 +20,7 @@ class TestSpeckitPlan:
     including technical context and project structure analysis.
     """
 
-    def test_plan_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
+    def test_01_plan_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
         """Test that /speckit.plan command executes successfully.
 
         This test runs the /speckit.plan command on the feature spec
@@ -48,7 +48,7 @@ class TestSpeckitPlan:
             f"Stdout (last 500 chars): {result.stdout[-500:] if result.stdout else 'empty'}"
         )
 
-    def test_plan_file_created(
+    def test_02_plan_file_created(
         self, file_verifier: FileVerifier, git_verifier: GitVerifier
     ) -> None:
         """Test that plan.md file is created in the feature spec directory.
@@ -78,7 +78,7 @@ class TestSpeckitPlan:
             "The /speckit.plan command should create this file."
         )
 
-    def test_plan_has_technical_context(
+    def test_03_plan_has_technical_context(
         self, file_verifier: FileVerifier, git_verifier: GitVerifier
     ) -> None:
         """Test that plan.md contains a Technical Context section.
@@ -114,7 +114,7 @@ class TestSpeckitPlan:
             description="Technical Context section header",
         )
 
-    def test_plan_has_project_structure(
+    def test_04_plan_has_project_structure(
         self, file_verifier: FileVerifier, git_verifier: GitVerifier
     ) -> None:
         """Test that plan.md contains a Project Structure section.

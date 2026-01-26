@@ -19,7 +19,7 @@ class TestSpeckitSpecify:
     generates feature specifications from natural language descriptions.
     """
 
-    def test_specify_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
+    def test_01_specify_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
         """Test that /speckit.specify command executes successfully.
 
         This test runs the /speckit.specify command with a sample feature
@@ -48,7 +48,7 @@ class TestSpeckitSpecify:
             f"Stdout (last 500 chars): {result.stdout[-500:] if result.stdout else 'empty'}"
         )
 
-    def test_feature_branch_created(self, git_verifier: GitVerifier) -> None:
+    def test_02_feature_branch_created(self, git_verifier: GitVerifier) -> None:
         """Test that /speckit.specify creates a feature worktree.
 
         The /speckit.specify command should create a worktree with a numbered
@@ -62,7 +62,7 @@ class TestSpeckitSpecify:
             pattern=r"worktrees/\d+-.*"
         )
 
-    def test_spec_file_created(
+    def test_03_spec_file_created(
         self, file_verifier: FileVerifier, git_verifier: GitVerifier
     ) -> None:
         """Test that spec.md file is created in the feature spec directory.
@@ -93,7 +93,7 @@ class TestSpeckitSpecify:
             "The /speckit.specify command should create this file."
         )
 
-    def test_spec_has_required_sections(
+    def test_04_spec_has_required_sections(
         self, file_verifier: FileVerifier, git_verifier: GitVerifier
     ) -> None:
         """Test that spec.md contains required specification sections.
