@@ -97,3 +97,26 @@ class TestSpeckitInit:
             ".specify/templates/checklist-template.md",
             "checklist template"
         )
+
+    def test_claude_plugin_configured(self, file_verifier: FileVerifier) -> None:
+        """Test that .claude/ directory is created with plugin configuration.
+
+        This test verifies that the `specify init` command creates the .claude/
+        directory in the project root, which is where Claude Code plugin
+        configuration is stored. This directory contains settings and
+        configuration files required for the projspec plugin to function.
+
+        Args:
+            file_verifier: FileVerifier fixture configured for the test project.
+        """
+        # Verify .claude/ directory exists
+        file_verifier.assert_dir_exists(
+            ".claude/",
+            "Claude Code plugin configuration directory"
+        )
+
+        # Verify plugin settings file exists
+        file_verifier.assert_exists(
+            ".claude/settings.json",
+            "Claude Code plugin settings"
+        )
