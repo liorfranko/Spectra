@@ -45,8 +45,8 @@ while [ $i -le $# ]; do
             echo ""
             echo "Options:"
             echo "  --json              Output in JSON format"
-            echo "  --short-name <name> Provide a custom short name (2-4 words) for the branch"
-            echo "  --number N          Specify branch number manually (overrides auto-detection)"
+            echo "  --short-name <name> Provide a custom short name (2-4 words) for the feature worktree"
+            echo "  --number N          Specify feature number manually (overrides auto-detection)"
             echo "  --help, -h          Show this help message"
             echo ""
             echo "Examples:"
@@ -284,10 +284,10 @@ if [ "$HAS_GIT" = true ]; then
     rm -rf "$WORKTREE_PATH/specs"
     ln -s "../../specs" "$WORKTREE_PATH/specs"
 
-    >&2 echo "[specify] Created worktree at: $WORKTREE_PATH"
-    >&2 echo "[specify] To start working: cd $WORKTREE_PATH"
+    >&2 echo "[specify] Created worktree for feature '$BRANCH_NAME' at: $WORKTREE_PATH"
+    >&2 echo "[specify] Navigate to your worktree: cd $WORKTREE_PATH"
 else
-    >&2 echo "[specify] Warning: Git repository not detected; skipped worktree creation for $BRANCH_NAME"
+    >&2 echo "[specify] Warning: Git repository not detected; skipped worktree creation for feature '$BRANCH_NAME'"
 fi
 
 # Specs are always created in the main repository
