@@ -117,3 +117,38 @@ class TestSpeckitTasks:
             "Expected at least one '- [ ]' or '- [x]' pattern. "
             "The /speckit.tasks command should generate actionable tasks with checkboxes."
         )
+
+    def test_tasks_has_phases(
+        self, file_verifier: FileVerifier, git_verifier: GitVerifier
+    ) -> None:
+        """Test that tasks.md contains phase sections.
+
+        The /speckit.tasks command should organize tasks into phases
+        using markdown headers (## Phase N or similar).
+
+        Args:
+            file_verifier: Fixture providing a configured FileVerifier instance.
+            git_verifier: Fixture providing a configured GitVerifier instance.
+        """
+        # Get the worktree path for the feature
+        worktree_path = git_verifier.get_worktree_path(pattern=r"worktrees/\d+-.*")
+        assert worktree_path is not None, (
+            "Could not find feature worktree. "
+            "This test depends on earlier stage tests passing."
+        )
+
+        # Find the tasks.md file
+        tasks_file = file_verifier.find_file(
+            pattern=r"specs/\d+-.*/tasks\.md",
+            base_path=worktree_path,
+        )
+        assert tasks_file is not None, (
+            "tasks.md not found. This test depends on test_tasks_file_created passing."
+        )
+
+        # Verify phase sections exist (case-insensitive, with "Phase" in heading)
+        file_verifier.assert_contains(
+            path=tasks_file,
+            pattern=r"(?i)#.*phase",
+            description="Phase section header",
+        )
