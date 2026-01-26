@@ -7,7 +7,7 @@ and proper file structure generation.
 
 import pytest
 
-from ..helpers import ClaudeRunner
+from ..helpers import ClaudeRunner, GitVerifier
 
 
 @pytest.mark.e2e
@@ -46,4 +46,18 @@ class TestSpeckitSpecify:
             f"Timed out: {result.timed_out}\n"
             f"Stderr: {result.stderr}\n"
             f"Stdout (last 500 chars): {result.stdout[-500:] if result.stdout else 'empty'}"
+        )
+
+    def test_feature_branch_created(self, git_verifier: GitVerifier) -> None:
+        """Test that /speckit.specify creates a feature worktree.
+
+        The /speckit.specify command should create a worktree with a numbered
+        feature branch for the specified feature. This test verifies that
+        such a worktree exists after the specify command has run.
+
+        Args:
+            git_verifier: Fixture providing a configured GitVerifier instance.
+        """
+        git_verifier.assert_worktree_exists(
+            pattern=r"worktrees/\d+-.*"
         )
