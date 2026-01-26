@@ -7,7 +7,7 @@ and proper file structure generation.
 
 import pytest
 
-from ..helpers import ClaudeRunner, GitVerifier
+from ..helpers import ClaudeRunner, FileVerifier, GitVerifier
 
 
 @pytest.mark.e2e
@@ -60,4 +60,35 @@ class TestSpeckitSpecify:
         """
         git_verifier.assert_worktree_exists(
             pattern=r"worktrees/\d+-.*"
+        )
+
+    def test_spec_file_created(
+        self, file_verifier: FileVerifier, git_verifier: GitVerifier
+    ) -> None:
+        """Test that spec.md file is created in the feature spec directory.
+
+        The /speckit.specify command should create a spec.md file within
+        the specs/<feature-id>/ directory in the feature worktree. This test
+        locates the worktree and verifies the spec file exists.
+
+        Args:
+            file_verifier: Fixture providing a configured FileVerifier instance.
+            git_verifier: Fixture providing a configured GitVerifier instance.
+        """
+        # Get the worktree path for the feature
+        worktree_path = git_verifier.get_worktree_path(pattern=r"worktrees/\d+-.*")
+        assert worktree_path is not None, (
+            "Could not find feature worktree matching pattern 'worktrees/\\d+-.*'. "
+            "The /speckit.specify command should have created a numbered worktree."
+        )
+
+        # Find the spec.md file in the worktree's specs directory
+        spec_file = file_verifier.find_file(
+            pattern=r"specs/\d+-.*/spec\.md",
+            base_path=worktree_path,
+        )
+        assert spec_file is not None, (
+            f"spec.md not found in worktree at {worktree_path}. "
+            "Expected a file matching pattern 'specs/<number>-<name>/spec.md'. "
+            "The /speckit.specify command should create this file."
         )
