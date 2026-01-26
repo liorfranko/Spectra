@@ -852,8 +852,335 @@ The Constitution Check is a quality gate that determines if planning can proceed
 
 ### Step 7: Project Structure
 
-<!-- Placeholder for T028: Project structure implementation -->
-Define the file and directory structure for the feature implementation.
+Generate the project structure section of plan.md by defining source code layout based on project type.
+
+#### 7.1: Determine Directory Structure by Project Type
+
+Based on the project type identified in Technical Context, determine the standard directory structure:
+
+**Project Type Detection**:
+1. Check Technical Context for Target Platform value
+2. Identify project type from existing codebase patterns
+3. Map to standard structure template
+
+**Common Project Type Structures**:
+
+**Claude Code Plugin**:
+```
+[plugin-name]/
+├── plugin.json          # Plugin manifest
+├── commands/            # User-invocable slash commands
+│   └── *.md
+├── skills/              # Reusable skill definitions
+│   └── *.md
+├── agents/              # Specialized agent definitions
+│   └── *.md
+├── hooks/               # Event hooks (PreToolUse, PostToolUse, etc.)
+│   └── *.md
+├── scripts/             # Bash helper scripts
+│   └── *.sh
+├── templates/           # Template files for generation
+│   └── *.md
+├── memory/              # Persistent knowledge and context
+│   └── *.md
+└── tests/               # Test files
+    └── *.sh
+```
+
+**Node.js/TypeScript CLI**:
+```
+[project-name]/
+├── src/                 # Source code
+│   ├── index.ts         # Entry point
+│   ├── commands/        # CLI commands
+│   ├── lib/             # Core library code
+│   └── utils/           # Utility functions
+├── tests/               # Test files
+│   ├── unit/
+│   └── integration/
+├── dist/                # Compiled output (gitignored)
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+**Python CLI**:
+```
+[project-name]/
+├── src/
+│   └── [package_name]/
+│       ├── __init__.py
+│       ├── cli.py       # Entry point
+│       ├── commands/
+│       └── utils/
+├── tests/
+│   ├── unit/
+│   └── integration/
+├── pyproject.toml
+└── README.md
+```
+
+**Bash Scripts**:
+```
+[project-name]/
+├── bin/                 # Executable scripts
+│   └── *.sh
+├── lib/                 # Shared functions
+│   └── *.sh
+├── tests/               # Test files (bats-core)
+│   └── *.bats
+└── README.md
+```
+
+#### 7.2: Create Documentation Structure
+
+Define the feature documentation layout within the specs directory:
+
+```markdown
+### Documentation Structure
+
+The feature documentation is organized under `specs/[feature-id]/`:
+
+```
+specs/[feature-id]/
+├── spec.md              # Feature specification (requirements, scenarios)
+├── research.md          # Technical research and decisions
+├── data-model.md        # Entity definitions and schemas
+├── plan.md              # Implementation plan (this document)
+├── quickstart.md        # Getting started guide
+├── tasks.md             # Implementation task list
+└── checklists/          # Optional: validation checklists
+    └── requirements.md
+```
+
+**File Purposes**:
+| File | Purpose | Created By |
+|------|---------|------------|
+| spec.md | Requirements and acceptance criteria | /speckit.specify |
+| research.md | Technology decisions and findings | /speckit.plan |
+| data-model.md | Data structures and schemas | /speckit.plan |
+| plan.md | Technical context and implementation guidance | /speckit.plan |
+| quickstart.md | Setup and usage guide | /speckit.plan |
+| tasks.md | Implementation task breakdown | /speckit.tasks |
+```
+
+#### 7.3: Create Source Code Structure
+
+Define where source files should be created based on the project type:
+
+```markdown
+### Source Code Structure
+
+Based on project type: [Project Type from 7.1]
+
+**Main Source Directories**:
+| Directory | Purpose | File Types |
+|-----------|---------|------------|
+| [dir1] | [Purpose] | [*.ext] |
+| [dir2] | [Purpose] | [*.ext] |
+| [dir3] | [Purpose] | [*.ext] |
+
+**Test Directories**:
+| Directory | Test Type | Framework |
+|-----------|-----------|-----------|
+| [test-dir1] | Unit tests | [framework] |
+| [test-dir2] | Integration tests | [framework] |
+
+**Configuration File Locations**:
+| File | Location | Purpose |
+|------|----------|---------|
+| [config1] | [path] | [Purpose] |
+| [config2] | [path] | [Purpose] |
+```
+
+**Source Structure Guidelines**:
+1. Follow existing codebase conventions when present
+2. Group related files by feature or domain
+3. Keep test files adjacent to or mirroring source structure
+4. Place shared utilities in dedicated directories
+
+#### 7.4: Map Files to Requirements
+
+Create a traceability matrix linking planned files to spec requirements:
+
+```markdown
+### File-to-Requirement Mapping
+
+| Planned File | Primary Requirement(s) | Description |
+|--------------|------------------------|-------------|
+| [path/file1] | FR-001, FR-002 | [What this file implements] |
+| [path/file2] | FR-003 | [What this file implements] |
+| [path/file3] | FR-004, NFR-001 | [What this file implements] |
+| [path/config] | NFR-002 | [Configuration for this requirement] |
+
+**Unmapped Requirements**:
+List any requirements that don't directly map to source files (e.g., documentation requirements, process requirements):
+- [REQ-ID]: [Why no direct file mapping]
+```
+
+**Mapping Guidelines**:
+1. Every functional requirement (FR-###) should map to at least one file
+2. Non-functional requirements (NFR-###) may map to configuration or be constraints
+3. If a requirement cannot be mapped, document why
+4. Use this mapping during task generation to ensure complete coverage
+
+#### 7.5: Add Project Structure Section to plan.md
+
+Compile the project structure information into the plan.md document:
+
+```markdown
+## Project Structure
+
+### Documentation Layout
+
+```
+specs/[feature-id]/
+├── spec.md
+├── research.md
+├── data-model.md
+├── plan.md
+├── quickstart.md
+├── tasks.md
+└── checklists/
+```
+
+### Source Code Layout
+
+Based on project type: [Type]
+
+```
+[Appropriate structure from 7.1]
+```
+
+### Directory Purposes
+
+| Directory | Purpose |
+|-----------|---------|
+| [dir] | [purpose] |
+
+### File-to-Requirement Mapping
+
+| File | Requirements | Purpose |
+|------|--------------|---------|
+| [file] | [FR-###] | [purpose] |
+
+### New Files to Create
+
+| File Path | Type | Description |
+|-----------|------|-------------|
+| [path] | [source/config/test] | [What it will contain] |
+```
+
+#### 7.6: Finalize and Write plan.md
+
+Complete the plan.md document and write to the feature directory:
+
+1. **Verify All Sections Present**:
+   - [ ] Header with feature metadata
+   - [ ] Technical Context
+   - [ ] Constitution Check
+   - [ ] Project Structure
+   - [ ] All placeholder text replaced
+
+2. **Cross-Reference Check**:
+   - [ ] File mapping covers all spec requirements
+   - [ ] Directory structure matches Technical Context platform
+   - [ ] Dependencies are reflected in configuration files
+
+3. **Write Final plan.md**:
+   Write the completed plan to `FEATURE_DIR/plan.md`
+
+### Step 8: Plan Completion Summary
+
+Report all created artifacts and provide next steps guidance.
+
+#### 8.1: Report Created Artifacts
+
+Generate a summary of all artifacts created during the planning phase:
+
+```markdown
+## Planning Complete
+
+The following artifacts have been generated in `specs/[feature-id]/`:
+
+### Generated Artifacts
+
+| Artifact | Status | Description |
+|----------|--------|-------------|
+| research.md | Created | Technology research and decision documentation |
+| data-model.md | Created | Entity definitions, relationships, and schemas |
+| plan.md | Created | Technical context, constraints, and project structure |
+| quickstart.md | Created | Prerequisites, installation, and usage guide |
+
+### Artifact Summary
+
+**research.md**:
+- [X] Technical unknowns identified and resolved
+- [X] Decision rationale documented
+- [X] Sources and references included
+
+**data-model.md**:
+- [X] [N] entities defined
+- [X] Relationships documented
+- [X] Validation rules specified
+
+**plan.md**:
+- [X] Language and runtime specified
+- [X] Dependencies cataloged
+- [X] Platform requirements defined
+- [X] Constitution compliance verified
+- [X] Project structure defined
+
+**quickstart.md**:
+- [X] Prerequisites listed
+- [X] Installation steps provided
+- [X] Examples included
+```
+
+#### 8.2: Suggest Next Steps
+
+Provide clear guidance on the recommended next action:
+
+```markdown
+### Next Steps
+
+The implementation plan is complete. To continue:
+
+**Recommended**: Generate implementation tasks
+```
+/speckit.tasks
+```
+
+This will:
+1. Read the plan artifacts (spec.md, research.md, data-model.md, plan.md)
+2. Generate a dependency-ordered task list
+3. Create tasks.md with actionable implementation steps
+
+**Alternative Actions**:
+- `/speckit.analyze` - Perform cross-artifact consistency analysis
+- `/speckit.checklist` - Generate a requirements validation checklist
+- Manual review - Review generated artifacts before proceeding
+```
+
+#### 8.3: Output Planning Summary
+
+Print the final planning summary to the user:
+
+```
+Planning phase complete for [Feature Name]
+
+Artifacts created:
+  - specs/[feature-id]/research.md
+  - specs/[feature-id]/data-model.md
+  - specs/[feature-id]/plan.md
+  - specs/[feature-id]/quickstart.md
+
+Constitution check: [PASS/FAIL]
+Entities defined: [N]
+Requirements mapped: [N]/[Total]
+
+Next step: Run /speckit.tasks to generate implementation tasks
+```
 
 ## Output
 
