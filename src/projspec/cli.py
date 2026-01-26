@@ -14,6 +14,7 @@ from pathlib import Path
 from rich.console import Console
 
 from projspec.defaults import DEFAULT_CONFIG, DEFAULT_WORKFLOW
+from projspec.state import load_active_specs
 
 # Module-level console instance for Rich output
 console = Console()
@@ -129,6 +130,36 @@ def _run_init() -> None:
     console.print(f"  Created .projspec/phases/ ({len(PHASE_TEMPLATES)} templates)")
 
 
+def _run_status() -> None:
+    """Display status of all active specs.
+
+    Reads specs from .projspec/specs/active/ and displays basic information
+    about each spec. Handles the case when ProjSpec is not initialized.
+    """
+    cwd = Path.cwd()
+    projspec_dir = cwd / ".projspec"
+
+    # Check if ProjSpec is initialized
+    if not projspec_dir.exists():
+        console.print(
+            "[bold red]Error:[/bold red] ProjSpec is not initialized. "
+            "Run 'projspec init' first."
+        )
+        sys.exit(1)
+
+    # Load active specs
+    specs = load_active_specs(cwd)
+
+    if not specs:
+        console.print("[yellow]No active specs found.[/yellow]")
+        return
+
+    # Display basic information about each spec
+    console.print(f"[bold]Active Specs ({len(specs)}):[/bold]")
+    for spec in specs:
+        console.print(f"  {spec.spec_id}: {spec.name} [{spec.phase}]")
+
+
 def main() -> None:
     """Main entry point for the ProjSpec CLI."""
     parser = create_parser()
@@ -142,8 +173,7 @@ def main() -> None:
     if args.command == "init":
         _run_init()
     elif args.command == "status":
-        # Handler will be implemented in T025
-        pass
+        _run_status()
 
 
 if __name__ == "__main__":
