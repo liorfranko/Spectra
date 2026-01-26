@@ -9,10 +9,10 @@ When working on features that use git worktrees for isolation, and the main repo
    - Feature branches may be checked out in worktrees (e.g., `worktrees/001-feature-name/`)
    - The main repo can't checkout the same branch (`fatal: 'branch' is already checked out`)
 
-2. **Access scripts from main repo**
-   - Worktrees don't automatically have all directories from main (e.g., `.specify/`)
-   - Use absolute paths to run scripts: `/path/to/main-repo/.specify/scripts/...`
-   - Or `cd` to worktree and reference main repo scripts
+2. **Run scripts from worktree**
+   - Worktrees are complete working copies with all tracked files (including `.specify/`)
+   - Run scripts directly from worktree: `.specify/scripts/bash/setup-plan.sh`
+   - Scripts use `get_repo_root()` which returns the worktree root
 
 3. **File operations in worktrees**
    - Specs and feature files belong in the worktree: `worktrees/001-feature/specs/...`
