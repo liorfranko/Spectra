@@ -7,6 +7,8 @@ constitution files with foundational principles and constraints.
 
 import pytest
 
+from ..helpers import ClaudeRunner
+
 
 @pytest.mark.e2e
 @pytest.mark.stage(2)
@@ -18,4 +20,27 @@ class TestSpeckitConstitution:
     consistency with dependent templates.
     """
 
-    pass
+    def test_constitution_setup(self, claude_runner: ClaudeRunner) -> None:
+        """Test that /speckit.constitution command executes successfully.
+
+        This test verifies that the /speckit.constitution command can be
+        executed via Claude CLI without errors. It runs the constitution
+        setup which creates foundational principles and constraints for
+        the project.
+
+        Args:
+            claude_runner: ClaudeRunner fixture configured for the test project.
+        """
+        result = claude_runner.run(
+            prompt="Run /speckit.constitution to set up the project constitution with foundational principles",
+            stage=2,
+            log_name="test_constitution_setup",
+        )
+
+        assert result.success, (
+            f"/speckit.constitution command failed.\n"
+            f"Exit code: {result.exit_code}\n"
+            f"Timed out: {result.timed_out}\n"
+            f"STDOUT:\n{result.stdout}\n"
+            f"STDERR:\n{result.stderr}"
+        )
