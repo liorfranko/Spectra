@@ -1,0 +1,9 @@
+# ProjSpec workflow definition
+workflow:
+  name: default
+  phases:
+    - spec      # Define feature specification
+    - plan      # Create implementation plan
+    - tasks     # Generate task breakdown
+    - implement # Execute tasks
+    - review    # Review implementation

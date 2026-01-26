@@ -1,0 +1,22 @@
+{"event_id":"pre-50161786000","phase":"pre","timestamp":"2026-01-26T14:00:50.3NZ","tool":"Bash","input":".specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks"}
+{"event_id":"post-52925259000","pre_event_id":"pre-50161786000","phase":"post","timestamp":"2026-01-26T14:00:52.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-59125094000","phase":"pre","timestamp":"2026-01-26T14:00:59.3NZ","tool":"Bash","input":"ls -la /Users/liorfr/Development/projspec/worktrees/001-projspec-mvp/specs/001-projspec-mvp/checklists/ 2>/dev/null || echo \"}
+{"event_id":"pre-59130647000","phase":"pre","timestamp":"2026-01-26T14:00:59.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/001-projspec-mvp/specs/001-projspec-mvp/plan.md"}
+{"event_id":"pre-59146453000","phase":"pre","timestamp":"2026-01-26T14:00:59.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/001-projspec-mvp/specs/001-projspec-mvp/tasks.md"}
+{"event_id":"post-91000572000","pre_event_id":"pre-59146453000","phase":"post","timestamp":"2026-01-26T14:01:30.3NZ","tool":"Bash","success":true}
+{"event_id":"post-03420691000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T14:01:43.3NZ","tool":"Read","success":true}
+{"event_id":"post-03434957000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T14:01:43.3NZ","tool":"Read","success":true}
+{"event_id":"pre-08423170000","phase":"pre","timestamp":"2026-01-26T14:01:48.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/001-projspec-mvp/specs/001-projspec-mvp/checklists/requirements.md"}
+{"event_id":"pre-08441672000","phase":"pre","timestamp":"2026-01-26T14:01:48.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/001-projspec-mvp/specs/001-projspec-mvp/research.md"}
+{"event_id":"pre-08442495000","phase":"pre","timestamp":"2026-01-26T14:01:48.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/001-projspec-mvp/specs/001-projspec-mvp/data-model.md"}
+{"event_id":"post-08585888000","pre_event_id":"pre-08442495000","phase":"post","timestamp":"2026-01-26T14:01:48.3NZ","tool":"Read","success":true}
+{"event_id":"post-08594261000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T14:01:48.3NZ","tool":"Read","success":true}
+{"event_id":"post-08615360000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T14:01:48.3NZ","tool":"Read","success":true}
+{"event_id":"pre-14386393000","phase":"pre","timestamp":"2026-01-26T14:01:54.3NZ","tool":"Bash","input":"git log --oneline | head -30"}
+{"event_id":"pre-14400215000","phase":"pre","timestamp":"2026-01-26T14:01:54.3NZ","tool":"Bash","input":"git status"}
+{"event_id":"post-14664066000","pre_event_id":"pre-14400215000","phase":"post","timestamp":"2026-01-26T14:01:54.3NZ","tool":"Bash","success":true}
+{"event_id":"post-14678399000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T14:01:54.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-19787233000","phase":"pre","timestamp":"2026-01-26T14:01:59.3NZ","tool":"Bash","input":"git log --oneline | grep -E '^\\w+ \\[T[0-9]+\\]' | wc -l"}
+{"event_id":"pre-19801606000","phase":"pre","timestamp":"2026-01-26T14:01:59.3NZ","tool":"Bash","input":"git log --oneline | grep -E '^\\w+ \\[T[0-9]+\\]' | tail -20"}
+{"event_id":"post-20063422000","pre_event_id":"pre-19801606000","phase":"post","timestamp":"2026-01-26T14:02:00.3NZ","tool":"Bash","success":true}
+{"event_id":"post-20076130000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T14:02:00.3NZ","tool":"Bash","success":true}

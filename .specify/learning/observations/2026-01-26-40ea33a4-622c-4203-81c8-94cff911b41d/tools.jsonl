@@ -1,0 +1,13 @@
+{"event_id":"pre-81137833000","phase":"pre","timestamp":"2026-01-26T13:33:01.3NZ","tool":"Bash","input":"tail -20 /Users/liorfr/Development/projspec/worktrees/001-projspec-mvp/src/projspec/assets/commands/projspec.implement.md"}
+{"event_id":"post-87003673000","pre_event_id":"pre-81137833000","phase":"post","timestamp":"2026-01-26T13:33:06.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-95376119000","phase":"pre","timestamp":"2026-01-26T13:33:15.3NZ","tool":"Bash","input":"projspec init"}
+{"event_id":"pre-05293750000","phase":"pre","timestamp":"2026-01-26T13:33:25.3NZ","tool":"Bash","input":"python -m projspec init"}
+{"event_id":"post-09668924000","pre_event_id":"pre-05293750000","phase":"post","timestamp":"2026-01-26T13:33:29.3NZ","tool":"Task","success":true}
+{"event_id":"pre-24907535000","phase":"pre","timestamp":"2026-01-26T13:33:44.3NZ","tool":"Edit","input":"/Users/liorfr/Development/projspec/worktrees/001-projspec-mvp/src/projspec/cli.py"}
+{"event_id":"post-25949530000","pre_event_id":"pre-24907535000","phase":"post","timestamp":"2026-01-26T13:33:45.3NZ","tool":"Edit","success":true}
+{"event_id":"pre-34179861000","phase":"pre","timestamp":"2026-01-26T13:33:54.3NZ","tool":"Bash","input":"git add src/projspec/assets/commands/projspec.implement.md src/projspec/cli.py && git commit -m \"}
+{"event_id":"post-37145768000","pre_event_id":"pre-34179861000","phase":"post","timestamp":"2026-01-26T13:33:57.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-43765316000","phase":"pre","timestamp":"2026-01-26T13:34:03.3NZ","tool":"Bash","input":"git push"}
+{"event_id":"post-46258028000","pre_event_id":"pre-43765316000","phase":"post","timestamp":"2026-01-26T13:34:06.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-62921198000","phase":"pre","timestamp":"2026-01-26T13:34:22.3NZ","tool":"Edit","input":"/Users/liorfr/Development/projspec/worktrees/001-projspec-mvp/specs/001-projspec-mvp/tasks.md"}
+{"event_id":"post-63982064000","pre_event_id":"pre-62921198000","phase":"post","timestamp":"2026-01-26T13:34:23.3NZ","tool":"Edit","success":true}

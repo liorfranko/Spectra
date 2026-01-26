@@ -1,0 +1,13 @@
+# ProjSpec configuration
+version: "1.0"
+
+project:
+  # name: my-project  # Defaults to directory name
+  description: ""
+
+worktrees:
+  base_path: "./worktrees"
+
+context:
+  always_include:
+    - "CLAUDE.md"
