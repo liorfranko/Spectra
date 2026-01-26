@@ -63,3 +63,37 @@ class TestSpeckitInit:
             ".specify/",
             "projspec plugin configuration directory"
         )
+
+    def test_templates_exist(self, file_verifier: FileVerifier) -> None:
+        """Test that .specify/templates/ directory is created with required template files.
+
+        This test verifies that the `specify init` command creates the templates
+        directory and populates it with the core template files needed for
+        specification, planning, task generation, and checklists.
+
+        Args:
+            file_verifier: FileVerifier fixture configured for the test project.
+        """
+        # Verify templates directory exists
+        file_verifier.assert_dir_exists(
+            ".specify/templates/",
+            "projspec templates directory"
+        )
+
+        # Verify core template files exist
+        file_verifier.assert_exists(
+            ".specify/templates/spec-template.md",
+            "specification template"
+        )
+        file_verifier.assert_exists(
+            ".specify/templates/plan-template.md",
+            "implementation plan template"
+        )
+        file_verifier.assert_exists(
+            ".specify/templates/tasks-template.md",
+            "task generation template"
+        )
+        file_verifier.assert_exists(
+            ".specify/templates/checklist-template.md",
+            "checklist template"
+        )
