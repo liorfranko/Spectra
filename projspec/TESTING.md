@@ -1,6 +1,6 @@
-# speckit Manual Testing Checklists
+# projspec Manual Testing Checklists
 
-This document provides manual testing checklists for verifying speckit functionality (tasks T088-T091).
+This document provides manual testing checklists for verifying projspec functionality (tasks T088-T091).
 
 **Generated:** 2026-01-26
 **Version:** 1.0.0
@@ -16,7 +16,7 @@ This test verifies the complete development workflow from specification to imple
 #### Prerequisites
 
 - [ ] Claude Code CLI installed and working
-- [ ] speckit plugin loaded (`claude --plugin-dir /path/to/speckit`)
+- [ ] projspec plugin loaded (`claude --plugin-dir /path/to/projspec`)
 - [ ] Git repository initialized
 - [ ] Clean working directory (no uncommitted changes)
 
@@ -25,7 +25,7 @@ This test verifies the complete development workflow from specification to imple
 ##### 1. Specify Command
 
 ```bash
-/speckit.specify create a simple CLI tool that converts markdown to HTML
+/projspec.specify create a simple CLI tool that converts markdown to HTML
 ```
 
 **Expected Results:**
@@ -37,12 +37,12 @@ This test verifies the complete development workflow from specification to imple
   - [ ] Success Criteria section with SC-### format
   - [ ] Edge Cases section
   - [ ] Assumptions section
-- [ ] Next steps guidance displayed suggesting `/speckit.plan`
+- [ ] Next steps guidance displayed suggesting `/projspec.plan`
 
 ##### 2. Plan Command
 
 ```bash
-/speckit.plan
+/projspec.plan
 ```
 
 **Expected Results:**
@@ -53,12 +53,12 @@ This test verifies the complete development workflow from specification to imple
   - [ ] Constitution Check section
   - [ ] Project Structure section
   - [ ] Implementation phases
-- [ ] Next steps guidance displayed suggesting `/speckit.tasks`
+- [ ] Next steps guidance displayed suggesting `/projspec.tasks`
 
 ##### 3. Tasks Command
 
 ```bash
-/speckit.tasks
+/projspec.tasks
 ```
 
 **Expected Results:**
@@ -69,12 +69,12 @@ This test verifies the complete development workflow from specification to imple
   - [ ] Task IDs in T### format
   - [ ] Dependencies documented
   - [ ] Status markers ([ ] for pending)
-- [ ] Next steps guidance displayed suggesting `/speckit.implement`
+- [ ] Next steps guidance displayed suggesting `/projspec.implement`
 
 ##### 4. Implement Command
 
 ```bash
-/speckit.implement
+/projspec.implement
 ```
 
 **Expected Results:**
@@ -123,7 +123,7 @@ gh auth status
 ##### 2. Run taskstoissues Command
 
 ```bash
-/speckit.taskstoissues
+/projspec.taskstoissues
 ```
 
 **Expected Results:**
@@ -151,18 +151,18 @@ gh issue list
 
 **Test: No GitHub CLI**
 - [ ] Remove gh from PATH temporarily
-- [ ] Run `/speckit.taskstoissues`
+- [ ] Run `/projspec.taskstoissues`
 - [ ] Verify clear error message about GitHub CLI requirement
 
 **Test: No Authentication**
 - [ ] Run `gh auth logout`
-- [ ] Run `/speckit.taskstoissues`
+- [ ] Run `/projspec.taskstoissues`
 - [ ] Verify clear error message about authentication
 
 **Test: No tasks.md**
 - [ ] Navigate to directory without tasks.md
-- [ ] Run `/speckit.taskstoissues`
-- [ ] Verify clear error message suggesting `/speckit.tasks`
+- [ ] Run `/projspec.taskstoissues`
+- [ ] Verify clear error message suggesting `/projspec.tasks`
 
 ---
 
@@ -182,7 +182,7 @@ This test verifies the clarification workflow.
 ##### 1. Run Clarify Command
 
 ```bash
-/speckit.clarify
+/projspec.clarify
 ```
 
 **Expected Results:**
@@ -225,7 +225,7 @@ This test verifies cross-artifact analysis.
 ##### 1. Run Analyze Command
 
 ```bash
-/speckit.analyze
+/projspec.analyze
 ```
 
 **Expected Results:**
@@ -249,7 +249,7 @@ This test verifies cross-artifact analysis.
 
 **Test: Missing artifacts**
 - [ ] Remove plan.md temporarily
-- [ ] Run `/speckit.analyze`
+- [ ] Run `/projspec.analyze`
 - [ ] Verify graceful handling (analyze what exists)
 
 ---
@@ -262,7 +262,7 @@ This test verifies the installation process and first-use experience.
 
 #### Prerequisites
 
-- [ ] Clean environment (no previous speckit installation)
+- [ ] Clean environment (no previous projspec installation)
 - [ ] Claude Code CLI installed
 
 #### Test Steps
@@ -270,7 +270,7 @@ This test verifies the installation process and first-use experience.
 ##### 1. Plugin Installation
 
 ```bash
-claude --plugin-dir /path/to/speckit
+claude --plugin-dir /path/to/projspec
 ```
 
 **Expected Results:**
@@ -285,24 +285,24 @@ claude --plugin-dir /path/to/speckit
 ```
 
 **Expected Results:**
-- [ ] speckit commands listed
+- [ ] projspec commands listed
 - [ ] All 13 commands visible:
-  - [ ] /speckit.specify
-  - [ ] /speckit.clarify
-  - [ ] /speckit.plan
-  - [ ] /speckit.tasks
-  - [ ] /speckit.implement
-  - [ ] /speckit.taskstoissues
-  - [ ] /speckit.validate
-  - [ ] /speckit.checklist
-  - [ ] /speckit.analyze
-  - [ ] /speckit.review-pr
-  - [ ] /speckit.constitution
+  - [ ] /projspec.specify
+  - [ ] /projspec.clarify
+  - [ ] /projspec.plan
+  - [ ] /projspec.tasks
+  - [ ] /projspec.implement
+  - [ ] /projspec.taskstoissues
+  - [ ] /projspec.validate
+  - [ ] /projspec.checklist
+  - [ ] /projspec.analyze
+  - [ ] /projspec.review-pr
+  - [ ] /projspec.constitution
 
 ##### 3. First Command Execution
 
 ```bash
-/speckit.specify
+/projspec.specify
 ```
 
 **Expected Results:**
@@ -327,16 +327,16 @@ Test various error conditions:
 **Test: No git repository**
 ```bash
 cd /tmp && mkdir test && cd test
-/speckit.specify
+/projspec.specify
 ```
 - [ ] Clear error about git requirement
 
 **Test: Missing prerequisites**
 ```bash
-/speckit.plan  # Without spec.md
+/projspec.plan  # Without spec.md
 ```
 - [ ] Clear error about missing spec.md
-- [ ] Suggests running /speckit.specify
+- [ ] Suggests running /projspec.specify
 
 ---
 
@@ -348,7 +348,7 @@ cd /tmp && mkdir test && cd test
 |-------|-------|
 | Date | YYYY-MM-DD |
 | Tester | Name |
-| speckit Version | 1.0.0 |
+| projspec Version | 1.0.0 |
 | Claude Code Version | X.X.X |
 | Platform | macOS/Linux |
 
@@ -381,13 +381,13 @@ cd /tmp && mkdir test && cd test
 
 After any changes, run this minimal test:
 
-1. [ ] `/speckit.specify "test feature"` - Creates spec.md
-2. [ ] `/speckit.plan` - Creates plan.md
-3. [ ] `/speckit.tasks` - Creates tasks.md
-4. [ ] `/speckit.validate` - Validates all artifacts
+1. [ ] `/projspec.specify "test feature"` - Creates spec.md
+2. [ ] `/projspec.plan` - Creates plan.md
+3. [ ] `/projspec.tasks` - Creates tasks.md
+4. [ ] `/projspec.validate` - Validates all artifacts
 
 **Pass Criteria:** All commands complete without error, artifacts created correctly.
 
 ---
 
-*This testing document was generated for speckit Polish phase tasks T088-T091.*
+*This testing document was generated for projspec Polish phase tasks T088-T091.*
