@@ -85,11 +85,11 @@ This story is the orchestration layer - it depends on the stage tests from US2-U
 ### Implementation for User Story 2
 
 - [x] T024 [US2] Create test_01_init.py with TestSpeckitInit class in tests/e2e/stages/test_01_init.py
-- [ ] T025 [US2] Implement test_init_runs_successfully that runs `specify init` via ClaudeRunner in tests/e2e/stages/test_01_init.py
-- [ ] T026 [US2] Implement test_specify_dir_created that verifies .specify/ directory exists in tests/e2e/stages/test_01_init.py
-- [ ] T027 [US2] Implement test_templates_exist that verifies .specify/templates/ has required files in tests/e2e/stages/test_01_init.py
-- [ ] T028 [US2] Implement test_claude_plugin_configured that verifies .claude/ directory setup in tests/e2e/stages/test_01_init.py
-- [ ] T029 [US2] Add @pytest.mark.e2e and @pytest.mark.stage(1) decorators to all stage 1 tests in tests/e2e/stages/test_01_init.py
+- [x] T025 [US2] Implement test_init_runs_successfully that runs `specify init` via ClaudeRunner in tests/e2e/stages/test_01_init.py
+- [x] T026 [US2] Implement test_specify_dir_created that verifies .specify/ directory exists in tests/e2e/stages/test_01_init.py
+- [x] T027 [US2] Implement test_templates_exist that verifies .specify/templates/ has required files in tests/e2e/stages/test_01_init.py
+- [x] T028 [US2] Implement test_claude_plugin_configured that verifies .claude/ directory setup in tests/e2e/stages/test_01_init.py
+- [x] T029 [US2] Add @pytest.mark.e2e and @pytest.mark.stage(1) decorators to all stage 1 tests in tests/e2e/stages/test_01_init.py
 
 **Checkpoint**: Stage 1 (init) tests complete and independently runnable
 
@@ -103,15 +103,15 @@ This story is the orchestration layer - it depends on the stage tests from US2-U
 
 ### Implementation for User Story 3
 
-- [ ] T030 [P] [US3] Create test_02_constitution.py with TestSpeckitConstitution class in tests/e2e/stages/test_02_constitution.py
-- [ ] T031 [P] [US3] Create test_03_specify.py with TestSpeckitSpecify class in tests/e2e/stages/test_03_specify.py
-- [ ] T032 [US3] Implement test_constitution_setup that runs /speckit.constitution via ClaudeRunner in tests/e2e/stages/test_02_constitution.py
-- [ ] T033 [US3] Implement test_constitution_file_created that verifies constitution.md exists in tests/e2e/stages/test_02_constitution.py
-- [ ] T034 [US3] Implement test_specify_runs_successfully that runs /speckit.specify via ClaudeRunner in tests/e2e/stages/test_03_specify.py
-- [ ] T035 [US3] Implement test_feature_branch_created that uses GitVerifier to verify worktree in tests/e2e/stages/test_03_specify.py
-- [ ] T036 [US3] Implement test_spec_file_created that uses FileVerifier to verify spec.md exists in tests/e2e/stages/test_03_specify.py
-- [ ] T037 [US3] Implement test_spec_has_required_sections that verifies User Scenarios, Requirements, Success Criteria in tests/e2e/stages/test_03_specify.py
-- [ ] T038 [US3] Add @pytest.mark.stage(2) to constitution tests and @pytest.mark.stage(3) to specify tests
+- [x] T030 [P] [US3] Create test_02_constitution.py with TestSpeckitConstitution class in tests/e2e/stages/test_02_constitution.py
+- [x] T031 [P] [US3] Create test_03_specify.py with TestSpeckitSpecify class in tests/e2e/stages/test_03_specify.py
+- [x] T032 [US3] Implement test_constitution_setup that runs /speckit.constitution via ClaudeRunner in tests/e2e/stages/test_02_constitution.py
+- [x] T033 [US3] Implement test_constitution_file_created that verifies constitution.md exists in tests/e2e/stages/test_02_constitution.py
+- [x] T034 [US3] Implement test_specify_runs_successfully that runs /speckit.specify via ClaudeRunner in tests/e2e/stages/test_03_specify.py
+- [x] T035 [US3] Implement test_feature_branch_created that uses GitVerifier to verify worktree in tests/e2e/stages/test_03_specify.py
+- [x] T036 [US3] Implement test_spec_file_created that uses FileVerifier to verify spec.md exists in tests/e2e/stages/test_03_specify.py
+- [x] T037 [US3] Implement test_spec_has_required_sections that verifies User Scenarios, Requirements, Success Criteria in tests/e2e/stages/test_03_specify.py
+- [x] T038 [US3] Add @pytest.mark.stage(2) to constitution tests and @pytest.mark.stage(3) to specify tests
 
 **Checkpoint**: Stages 2-3 (constitution, specify) tests complete and independently runnable
 
@@ -125,12 +125,12 @@ This story is the orchestration layer - it depends on the stage tests from US2-U
 
 ### Implementation for User Story 4
 
-- [ ] T039 [US4] Create test_04_plan.py with TestSpeckitPlan class in tests/e2e/stages/test_04_plan.py
-- [ ] T040 [US4] Implement test_plan_runs_successfully that runs /speckit.plan via ClaudeRunner in tests/e2e/stages/test_04_plan.py
-- [ ] T041 [US4] Implement test_plan_file_created that uses FileVerifier to verify plan.md exists in tests/e2e/stages/test_04_plan.py
-- [ ] T042 [US4] Implement test_plan_has_technical_context that verifies plan contains Technical Context section in tests/e2e/stages/test_04_plan.py
-- [ ] T043 [US4] Implement test_plan_has_project_structure that verifies plan contains Project Structure section in tests/e2e/stages/test_04_plan.py
-- [ ] T044 [US4] Add @pytest.mark.e2e and @pytest.mark.stage(4) decorators to all stage 4 tests
+- [x] T039 [US4] Create test_04_plan.py with TestSpeckitPlan class in tests/e2e/stages/test_04_plan.py
+- [x] T040 [US4] Implement test_plan_runs_successfully that runs /speckit.plan via ClaudeRunner in tests/e2e/stages/test_04_plan.py
+- [x] T041 [US4] Implement test_plan_file_created that uses FileVerifier to verify plan.md exists in tests/e2e/stages/test_04_plan.py
+- [x] T042 [US4] Implement test_plan_has_technical_context that verifies plan contains Technical Context section in tests/e2e/stages/test_04_plan.py
+- [x] T043 [US4] Implement test_plan_has_project_structure that verifies plan contains Project Structure section in tests/e2e/stages/test_04_plan.py
+- [x] T044 [US4] Add @pytest.mark.e2e and @pytest.mark.stage(4) decorators to all stage 4 tests
 
 **Checkpoint**: Stage 4 (plan) tests complete and independently runnable
 

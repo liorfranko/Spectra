@@ -676,14 +676,14 @@ Validate the implementation plan against project constitution principles and tra
 
 Load the project constitution from the following locations (in priority order):
 
-1. **Project-specific**: `.specify/memory/constitution.md`
+1. **Project-specific**: `.projspec/memory/constitution.md`
 2. **Plugin default**: `$CLAUDE_PLUGIN_ROOT/memory/constitution.md`
 
 ```bash
 # Check for constitution file
 CONSTITUTION_PATH=""
-if [ -f ".specify/memory/constitution.md" ]; then
-    CONSTITUTION_PATH=".specify/memory/constitution.md"
+if [ -f ".projspec/memory/constitution.md" ]; then
+    CONSTITUTION_PATH=".projspec/memory/constitution.md"
 elif [ -f "$CLAUDE_PLUGIN_ROOT/memory/constitution.md" ]; then
     CONSTITUTION_PATH="$CLAUDE_PLUGIN_ROOT/memory/constitution.md"
 fi
