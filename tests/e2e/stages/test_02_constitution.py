@@ -60,38 +60,18 @@ class TestProjspecConstitution:
             "projspec plugin configuration directory"
         )
 
-    def test_03_templates_exist(self, file_verifier: FileVerifier) -> None:
-        """Test that .projspec/templates/ directory contains required template files.
+    def test_03_memory_dir_exists(self, file_verifier: FileVerifier) -> None:
+        """Test that .projspec/memory/ directory exists after constitution setup.
 
-        This test verifies that the templates directory exists and contains
-        the core template files needed for specification, planning, task
-        generation, and checklists.
+        This test verifies that the .projspec/memory/ directory is created by the
+        constitution command. This directory stores the constitution file.
 
         Args:
             file_verifier: FileVerifier fixture configured for the test project.
         """
-        # Verify templates directory exists
         file_verifier.assert_dir_exists(
-            ".projspec/templates/",
-            "projspec templates directory"
-        )
-
-        # Verify core template files exist
-        file_verifier.assert_exists(
-            ".projspec/templates/spec-template.md",
-            "specification template"
-        )
-        file_verifier.assert_exists(
-            ".projspec/templates/plan-template.md",
-            "implementation plan template"
-        )
-        file_verifier.assert_exists(
-            ".projspec/templates/tasks-template.md",
-            "task generation template"
-        )
-        file_verifier.assert_exists(
-            ".projspec/templates/checklist-template.md",
-            "checklist template"
+            ".projspec/memory/",
+            "projspec memory directory"
         )
 
     def test_04_constitution_file_created(self, file_verifier: FileVerifier) -> None:
