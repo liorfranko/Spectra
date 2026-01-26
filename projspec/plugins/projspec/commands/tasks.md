@@ -15,7 +15,7 @@ This command requires that `plan.md` exists in the current feature directory. Th
 ${CLAUDE_PLUGIN_ROOT}/scripts/check-prerequisites.sh --require-plan
 ```
 
-If the prerequisite check fails, run `/speckit.plan` first to generate the implementation plan.
+If the prerequisite check fails, run `/projspec.plan` first to generate the implementation plan.
 
 ## Workflow
 
@@ -33,7 +33,7 @@ ${CLAUDE_PLUGIN_ROOT}/scripts/check-prerequisites.sh --require-plan --json --inc
 
 **1.3: Verify plan.md exists**
 
-If plan.md is not found in AVAILABLE_DOCS, display an error message instructing the user to run `/speckit.plan` first, then stop execution.
+If plan.md is not found in AVAILABLE_DOCS, display an error message instructing the user to run `/projspec.plan` first, then stop execution.
 
 **1.4: Read available documents and extract context:**
 
@@ -1460,7 +1460,7 @@ Guide the user to the next command in the workflow:
 
 Your implementation tasks are ready. To begin executing tasks:
 
-  /speckit.implement
+  /projspec.implement
 
 This command will:
 1. Parse the generated tasks.md
@@ -1470,9 +1470,9 @@ This command will:
 
 **Optional commands before implementation:**
 
-- `/speckit.analyze` - Run cross-artifact consistency analysis
-- `/speckit.checklist` - Generate a requirements checklist
-- `/speckit.taskstoissues` - Convert tasks to GitHub issues
+- `/projspec.analyze` - Run cross-artifact consistency analysis
+- `/projspec.checklist` - Generate a requirements checklist
+- `/projspec.taskstoissues` - Convert tasks to GitHub issues
 ```
 
 **8.5: Final output format**
@@ -1502,7 +1502,7 @@ Complete final output displayed to user:
 
 Ready to implement? Run:
 
-  /speckit.implement
+  /projspec.implement
 
 ─────────────────────────────────────────────────────────────────
 ```
