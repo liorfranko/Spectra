@@ -137,6 +137,7 @@ class ClaudeRunner:
         log_dir: Path,
         debug: bool = False,
         timeout_override: int | None = None,
+        plugin_dir: Path | None = None,
     ) -> None:
         """Initialize the ClaudeRunner.
 
@@ -145,11 +146,13 @@ class ClaudeRunner:
             log_dir: Directory for log file output.
             debug: Enable streaming output to terminal. Defaults to False.
             timeout_override: Override default timeouts. Defaults to None.
+            plugin_dir: Path to plugin directory to load. Defaults to None.
         """
         self.work_dir = work_dir
         self.log_dir = log_dir
         self.debug = debug
         self.timeout_override = timeout_override
+        self.plugin_dir = plugin_dir
 
     def get_stage_timeout(self, stage: int) -> int:
         """Get the timeout for a specific stage.
@@ -220,6 +223,10 @@ class ClaudeRunner:
             "--allowedTools",
             tools_arg,
         ]
+
+        # Add plugin directory if configured
+        if self.plugin_dir is not None:
+            cmd.extend(["--plugin-dir", str(self.plugin_dir)])
 
         # Get timeout for this stage
         timeout = self.get_stage_timeout(stage)

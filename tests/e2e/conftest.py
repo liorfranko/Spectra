@@ -766,6 +766,7 @@ def claude_runner(test_project: E2EProject, e2e_config: E2EConfig) -> ClaudeRunn
         log_dir=test_project.log_dir,
         debug=e2e_config.debug,
         timeout_override=e2e_config.timeout_override,
+        plugin_dir=test_project.plugin_dir,
     )
 
 
