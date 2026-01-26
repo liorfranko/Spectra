@@ -148,22 +148,78 @@ class GitVerifier:
                 worktrees.append(Path(path_str))
         return worktrees
 
-    def assert_min_commits(self, min_commits: int, description: str) -> None:
+    def assert_min_commits(
+        self,
+        count: int,
+        message_pattern: str | None = None,
+        path: Path | None = None,
+        description: str | None = None,
+    ) -> None:
         """Assert that the repository has at least a minimum number of commits.
 
         Args:
-            min_commits: Minimum number of commits expected.
+            count: Minimum number of commits expected.
+            message_pattern: Optional regex pattern to filter commits by message.
+            path: Optional path to run git commands in (for worktrees).
             description: Human-readable description for error message.
 
         Raises:
             AssertionError: If fewer commits exist than required.
         """
-        commit_count = self.get_commit_count()
-        if commit_count < min_commits:
-            raise AssertionError(
-                f"Expected {description} with at least {min_commits} commits, "
-                f"but found only {commit_count} commits"
+        # Determine which path to use
+        git_path = path if path is not None else self.repo_path
+
+        # Build git command
+        if message_pattern:
+            # Filter by message pattern
+            result = subprocess.run(
+                ["git", "log", "--oneline", "--format=%s"],
+                cwd=git_path,
+                capture_output=True,
+                text=True,
             )
+            if result.returncode != 0:
+                raise AssertionError(
+                    f"Failed to get commit log at '{git_path}': {result.stderr.strip()}"
+                )
+
+            commit_messages = result.stdout.strip().split("\n")
+            matching_commits = [
+                msg for msg in commit_messages if msg and re.search(message_pattern, msg)
+            ]
+            matching_count = len(matching_commits)
+
+            if matching_count < count:
+                desc = description or f"commits matching '{message_pattern}'"
+                raise AssertionError(
+                    f"Expected at least {count} {desc}, "
+                    f"but found only {matching_count} matching commits. "
+                    f"Recent commit messages: {commit_messages[:10]}"
+                )
+        else:
+            # Count all commits
+            result = subprocess.run(
+                ["git", "rev-list", "--count", "HEAD"],
+                cwd=git_path,
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0:
+                raise AssertionError(
+                    f"Failed to count commits at '{git_path}': {result.stderr.strip()}"
+                )
+
+            try:
+                commit_count = int(result.stdout.strip())
+            except ValueError:
+                commit_count = 0
+
+            if commit_count < count:
+                desc = description or "commits"
+                raise AssertionError(
+                    f"Expected at least {count} {desc}, "
+                    f"but found only {commit_count} commits"
+                )
 
     def assert_commits_with_pattern(
         self, pattern: str, min_count: int, description: str
