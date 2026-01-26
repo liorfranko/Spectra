@@ -135,5 +135,71 @@ git worktree prune
 git worktree remove /path/to/missing/worktree --force
 ```
 
+## Cleanup After Merge
+
+Once a feature's PR is merged, the worktree and feature branch can be safely removed.
+
+### Pre-Cleanup Verification
+
+**Always verify the PR is merged before cleanup**:
+
+```bash
+# Check PR status (requires GitHub CLI)
+gh pr view <pr-number> --json state,mergedAt
+
+# Or verify specs exist in main repo
+cd /path/to/main-repo
+git checkout main && git pull
+ls specs/<feature-id>/  # Should show spec.md, plan.md, tasks.md
+```
+
+### Cleanup Steps
+
+```bash
+# 1. Navigate to main repo (not the worktree)
+cd /path/to/main-repo
+
+# 2. Remove the worktree
+git worktree remove worktrees/<feature-id>
+
+# 3. (Optional) Delete the feature branch if no longer needed
+git branch -d <feature-branch>
+
+# 4. Clean up any stale worktree references
+git worktree prune
+
+# 5. Verify cleanup
+git worktree list
+git branch -a | grep <feature-id>  # Should show nothing
+```
+
+### Example Cleanup Session
+
+```bash
+# Feature 007-worktree-workflow merged via PR #42
+cd /Users/dev/project
+
+# Verify PR is merged
+gh pr view 42 --json state
+# Output: {"state":"MERGED"}
+
+# Verify specs are in main
+git pull origin main
+ls specs/007-worktree-workflow/
+# Output: spec.md  plan.md  tasks.md
+
+# Safe to clean up
+git worktree remove worktrees/007-worktree-workflow
+git branch -d 007-worktree-workflow
+git worktree prune
+```
+
+### Safety Notes
+
+- **Never force-remove** (`--force`) without verifying PR is merged
+- If `git branch -d` fails, the branch has unmerged changes - investigate before using `-D`
+- Keep worktrees until PR is merged, not just created
+- Specs in the worktree are only safe in main after the PR merge completes
+
 ## Key Insight
 Keep a mental model of two workspaces: the main repo (configuration, scripts, session state) and the worktree (feature-specific code and specs). Use absolute paths when crossing between them.
