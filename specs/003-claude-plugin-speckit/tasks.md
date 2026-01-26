@@ -211,11 +211,6 @@ speckit/
 - [x] T062 [P] Create constitution command at speckit/commands/constitution.md with YAML frontmatter
 - [x] T063 Add constitution command logic in speckit/commands/constitution.md: interactive creation/update of project principles
 
-### Validate Command
-
-- [x] T064 [P] Create validate command at speckit/commands/validate.md with YAML frontmatter
-- [x] T065 Add validate command logic in speckit/commands/validate.md: validate current feature artifacts against checklists
-
 ### Checkpoint Command
 
 - [x] T066 [P] Create checkpoint command at speckit/commands/checkpoint.md with YAML frontmatter
