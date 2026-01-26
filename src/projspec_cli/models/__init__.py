@@ -14,12 +14,28 @@ from projspec_cli.models.config import (
     ProjectConfig,
     ProjectMetadata,
 )
+from projspec_cli.models.feature import (
+    FeaturePhase,
+    FeatureState,
+    TaskInfo,
+    TaskPriority,
+    TaskStatus,
+    WorktreeStatus,
+)
 
 __all__ = [
+    # Config models
     "ClaudeConfig",
     "FeaturesConfig",
     "GitConfig",
     "NumberingConfig",
     "ProjectConfig",
     "ProjectMetadata",
+    # Feature models
+    "FeaturePhase",
+    "FeatureState",
+    "TaskInfo",
+    "TaskPriority",
+    "TaskStatus",
+    "WorktreeStatus",
 ]
