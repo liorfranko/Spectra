@@ -21,12 +21,45 @@ If the prerequisite check fails, run `/speckit.plan` first to generate the imple
 
 ### Step 1: Check Prerequisites and Parse Available Documents
 
-<!-- T031: Implement prerequisite checking and document parsing -->
-- Verify plan.md exists and is valid
-- Load and parse spec.md for user stories and requirements
-- Load and parse plan.md for architecture and components
-- Optionally load data-model.md if present for entity information
-- Build document context for task generation
+**1.1: Run prerequisite check script**
+
+```bash
+${CLAUDE_PLUGIN_ROOT}/scripts/check-prerequisites.sh --require-plan --json --include-tasks
+```
+
+**1.2: Parse JSON output to extract:**
+- `FEATURE_DIR` - The path to the current feature directory
+- `AVAILABLE_DOCS` - List of documents that exist in the feature directory
+
+**1.3: Verify plan.md exists**
+
+If plan.md is not found in AVAILABLE_DOCS, display an error message instructing the user to run `/speckit.plan` first, then stop execution.
+
+**1.4: Read available documents and extract context:**
+
+| Document | Required | Extract |
+|----------|----------|---------|
+| `plan.md` | Yes | Technical Context section, Project Structure section, Component breakdown, Architecture decisions |
+| `spec.md` | Yes | User Stories section, Requirements section, Acceptance criteria |
+| `data-model.md` | No | Entity definitions, Relationships between entities |
+| `research.md` | No | Key Decisions section, Technology choices |
+
+For each document:
+- Check if it exists in AVAILABLE_DOCS
+- If required and missing, display error and stop
+- If optional and missing, continue without that context
+- Parse the relevant sections and store the extracted information
+
+**1.5: Store parsed context for subsequent steps**
+
+Create a structured context object containing:
+- Feature directory path
+- Parsed plan content (technical context, project structure, components)
+- Parsed spec content (user stories, requirements)
+- Parsed data model content (entities, relationships) - if available
+- Parsed research content (decisions) - if available
+
+This context will be used by Steps 2-7 to generate the tasks.
 
 ### Step 2: Extract User Stories from spec.md
 
