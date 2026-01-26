@@ -308,10 +308,168 @@ Create the data-model.md file in the feature directory with this structure:
 
 Write the completed data-model.md to `FEATURE_DIR/data-model.md`.
 
-### Step 4: Technical Context
+### Step 4: Phase 1 - Technical Context
 
-<!-- Placeholder for T025: Technical context implementation -->
-Establish the technical environment, dependencies, and integration points for the feature.
+Fill the Technical Context section of plan.md by determining the language, dependencies, platform requirements, and constraints for the feature implementation.
+
+#### 4.1: Determine Language and Runtime
+
+Analyze the spec.md and research.md to identify the best technology stack:
+
+1. **Check Research Decisions**: Review research.md for any technology decisions already made
+2. **Analyze Codebase Patterns**: Search for existing files to determine:
+   - Primary language used in the project (`*.ts`, `*.py`, `*.go`, `*.rs`, etc.)
+   - Runtime version from configuration files (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`)
+   - Package manager in use (`npm`, `yarn`, `pnpm`, `pip`, `poetry`, `cargo`)
+3. **Match Feature Requirements**: Ensure the chosen language/framework can meet the feature's functional requirements
+
+**Populate Language & Runtime Table**:
+```markdown
+### Language & Runtime
+
+| Aspect | Value |
+|--------|-------|
+| Primary Language | [e.g., TypeScript, Python, Bash] |
+| Runtime/Version | [e.g., Node.js 18+, Python 3.10+] |
+| Package Manager | [e.g., npm, yarn, pip, none] |
+```
+
+#### 4.2: Identify Primary Dependencies
+
+List the key dependencies required for the feature:
+
+1. **From Research**: Extract recommended libraries from research.md decision summaries
+2. **From Existing Codebase**: Check `package.json`, `requirements.txt`, or equivalent for already-installed dependencies that can be reused
+3. **From Spec Requirements**: Identify dependencies implied by functional requirements (e.g., "CLI interface" implies arg parsing library)
+
+**Categorize Dependencies**:
+- **Required**: Must be added to implement the feature
+- **Existing**: Already in the project, will be used
+- **Optional**: Nice-to-have, can implement without
+
+**Populate Dependencies Table**:
+```markdown
+### Dependencies
+
+| Dependency | Version | Purpose |
+|------------|---------|---------|
+| [lib-name] | [^x.y.z or existing] | [What it's used for] |
+```
+
+**Guidelines**:
+- Prefer dependencies already in the project
+- Minimize new external dependencies per constitution principles
+- Document why each dependency is necessary
+
+#### 4.3: Document Platform and Environment
+
+Define the target platform and environment requirements:
+
+1. **Target Platform**: Where will this feature run?
+   - CLI tool (macOS, Linux, Windows)
+   - Web application (browser, server)
+   - Plugin/Extension (specific host environment)
+
+2. **Minimum Requirements**: What must be present?
+   - OS versions
+   - Runtime versions
+   - Required system tools
+
+3. **Environment Variables**: What configuration is needed?
+   - Required environment variables
+   - Configuration file locations
+   - Default values
+
+**Populate Platform & Environment Table**:
+```markdown
+### Platform & Environment
+
+| Aspect | Value |
+|--------|-------|
+| Target Platform | [e.g., Claude Code plugin, CLI tool, Node.js server] |
+| Minimum Requirements | [e.g., Claude Code CLI, Bash 5.x, macOS/Linux] |
+| Environment Variables | [e.g., CLAUDE_PLUGIN_ROOT, None required] |
+```
+
+#### 4.4: Identify Constraints
+
+Document technical constraints that affect implementation:
+
+1. **Constitution Principles**: Read the project constitution (if exists) and extract relevant constraints:
+   ```bash
+   # Check for constitution file
+   ls -la $FEATURE_DIR/../constitution.md $PROJECT_ROOT/constitution.md $PROJECT_ROOT/.claude/constitution.md 2>/dev/null
+   ```
+
+2. **Existing Codebase Patterns**: Search for established conventions:
+   - File naming patterns
+   - Directory structure conventions
+   - Code style guidelines
+   - Testing patterns
+
+3. **Spec Requirements**: Extract non-functional requirements (NFR-###) that impose constraints:
+   - Performance requirements
+   - Compatibility requirements
+   - Security requirements
+
+4. **Integration Constraints**: Identify limitations from integration points:
+   - API compatibility requirements
+   - Version constraints from dependencies
+   - Platform-specific limitations
+
+**Populate Constraints List**:
+```markdown
+### Constraints
+
+- [Constraint 1: e.g., Must work with Claude Code plugin system]
+- [Constraint 2: e.g., No external network requests during core operations]
+- [Constraint 3: e.g., Must support both macOS and Linux]
+- [Constraint 4: e.g., File operations must be atomic]
+```
+
+#### 4.5: Document Testing Approach
+
+Define how the feature will be tested:
+
+1. **Test Framework**: Identify testing tools from the project
+   - Check for existing test directories (`tests/`, `__tests__/`, `spec/`)
+   - Identify test runner configuration (`jest.config.js`, `pytest.ini`, etc.)
+
+2. **Test Types**: Determine appropriate test types for this feature
+   - Unit tests for isolated logic
+   - Integration tests for component interaction
+   - End-to-end tests for user workflows
+
+3. **Coverage Requirements**: Note any coverage requirements from constitution or NFRs
+
+**Add Testing Subsection**:
+```markdown
+### Testing Approach
+
+| Aspect | Value |
+|--------|-------|
+| Test Framework | [e.g., Jest, pytest, bats-core, manual validation] |
+| Test Location | [e.g., tests/, __tests__/, speckit/tests/] |
+| Required Coverage | [e.g., Not specified, 80%, Critical paths only] |
+
+**Test Types**:
+- Unit: [Yes/No - what will be unit tested]
+- Integration: [Yes/No - what will be integration tested]
+- E2E: [Yes/No - what workflows will be tested end-to-end]
+```
+
+#### 4.6: Write Technical Context to plan.md
+
+Create or update plan.md in the feature directory with the Technical Context section:
+
+1. **Use Template**: Start from the plan-template.md structure
+2. **Fill Placeholders**: Replace all `[PLACEHOLDER]` values with determined values
+3. **Add Feature-Specific Details**: Expand tables if additional rows are needed
+4. **Cross-Reference**: Link constraints to their sources (constitution principles, NFRs, etc.)
+
+**Write Location**: `FEATURE_DIR/plan.md`
+
+**Validation**: Ensure all tables are properly filled with no remaining placeholders in the Technical Context section.
 
 ### Step 5: Quickstart Guide
 
