@@ -82,6 +82,10 @@ source "$SCRIPT_DIR/common.sh"
 eval $(get_feature_paths)
 check_feature_branch "$CURRENT_BRANCH" "$HAS_GIT" || exit 1
 
+# Warn if user should be in a worktree instead of main repo
+# This is advisory - script continues even if warning is shown
+check_worktree_context || true
+
 # If paths-only mode, output paths and exit (support JSON + paths-only combined)
 if $PATHS_ONLY; then
     if $JSON_MODE; then
