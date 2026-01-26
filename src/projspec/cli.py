@@ -11,7 +11,12 @@ import sys
 from importlib import resources
 from pathlib import Path
 
+from rich.console import Console
+
 from projspec.defaults import DEFAULT_CONFIG, DEFAULT_WORKFLOW
+
+# Module-level console instance for Rich output
+console = Console()
 
 
 def _is_git_repo(path: Path) -> bool:
@@ -90,14 +95,17 @@ def _run_init() -> None:
 
     # Check if we're in a git repository
     if not _is_git_repo(cwd):
-        print("Error: Not a git repository. Please run 'git init' first.")
+        console.print(
+            "[bold red]Error:[/bold red] Not a git repository. "
+            "Please run 'git init' first."
+        )
         sys.exit(1)
 
     projspec_dir = cwd / ".projspec"
 
     # Check if already initialized
     if projspec_dir.exists():
-        print("ProjSpec is already initialized in this directory.")
+        console.print("[yellow]ProjSpec is already initialized in this directory.[/yellow]")
         return
 
     # Create directories
@@ -114,7 +122,11 @@ def _run_init() -> None:
     (projspec_dir / "config.yaml").write_text(DEFAULT_CONFIG)
     (projspec_dir / "workflow.yaml").write_text(DEFAULT_WORKFLOW)
 
-    print("Initialized ProjSpec in current directory.")
+    # Display success message with details
+    console.print("[bold green]✓[/bold green] Initialized ProjSpec in current directory.")
+    console.print("  Created .projspec/config.yaml")
+    console.print("  Created .projspec/workflow.yaml")
+    console.print(f"  Created .projspec/phases/ ({len(PHASE_TEMPLATES)} templates)")
 
 
 def main() -> None:
