@@ -5,7 +5,7 @@
 
 ## Summary
 
-Enhance the projspec plugin to use git worktrees for feature isolation instead of simple branch switching. The current implementation already creates worktrees and symlinks specs, but requires improvements to ensure all commands work correctly from worktree context, provide better navigation guidance, and update documentation to reflect worktree-based terminology.
+Enhance the projspec plugin to use git worktrees for feature isolation instead of simple branch switching. The current implementation already creates worktrees with specs stored directly in the worktree, but requires improvements to ensure all commands work correctly from worktree context, provide better navigation guidance, and update documentation to reflect worktree-based terminology.
 
 ## Technical Context
 
@@ -13,7 +13,7 @@ Enhance the projspec plugin to use git worktrees for feature isolation instead o
 **Primary Dependencies**: Claude Code plugin system, Git 2.5+ (worktrees)
 **Storage**: N/A (file-based configuration only)
 **Testing**: Manual verification + bash script tests
-**Target Platform**: macOS/Linux (symlinks required)
+**Target Platform**: macOS/Linux
 **Project Type**: Single project - CLI tool/plugin
 **Performance Goals**: Sub-second script execution
 **Constraints**: Must maintain backward compatibility with existing features
@@ -74,11 +74,11 @@ specs/007-worktree-workflow/
 worktrees/
 └── <NNN-feature-name>/           # Created by create-new-feature.sh
     ├── .git                      # Worktree pointer file
-    ├── specs -> ../../specs      # Symlink to shared specs
+    ├── specs/<NNN-feature-name>/ # Feature specs (committed to feature branch)
     └── <source files>            # Feature-specific code changes
 ```
 
-**Structure Decision**: Single project structure with scripts in `.specify/scripts/bash/` and commands in `.claude/commands/`. Worktrees created in `worktrees/` directory with symlinks to shared `specs/`.
+**Structure Decision**: Single project structure with scripts in `.specify/scripts/bash/` and commands in `.claude/commands/`. Worktrees created in `worktrees/` directory with feature specs stored directly in worktree.
 
 ## Complexity Tracking
 
@@ -95,7 +95,6 @@ Based on Technical Context analysis, the following areas need research:
 1. **Git Worktree Edge Cases**: How git handles worktrees when:
    - Main repo is on a branch already checked out in a worktree
    - Worktree is deleted without proper cleanup
-   - Symlinks are broken or missing
 
 2. **Path Resolution Patterns**: Best practices for:
    - Detecting worktree vs main repo context
@@ -103,7 +102,6 @@ Based on Technical Context analysis, the following areas need research:
    - Handling nested worktree scenarios (worktree of a worktree)
 
 3. **Cross-Platform Considerations**: Verify:
-   - Symlink behavior on macOS/Linux
    - Git worktree command compatibility across Git versions
 
 ### Current State Analysis
@@ -144,7 +142,7 @@ Key entities for worktree context:
 
 | Entity | Description | Key Fields |
 |--------|-------------|------------|
-| WorktreeContext | Current execution context | `is_worktree`, `main_repo_path`, `worktree_path`, `branch_name`, `specs_symlink_valid` |
+| WorktreeContext | Current execution context | `is_worktree`, `main_repo_path`, `worktree_path`, `branch_name` |
 | FeatureContext | Feature-specific paths | `feature_dir`, `spec_file`, `plan_file`, `worktree_path` |
 | RepoContext | Repository state | `repo_root`, `has_git`, `current_branch`, `worktrees[]` |
 

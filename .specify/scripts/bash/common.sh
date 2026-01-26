@@ -2,6 +2,8 @@
 # Common functions and variables for all scripts
 
 # Get repository root, with fallback for non-git repositories
+# Note: In worktree context, returns the worktree root (not main repo)
+# Use get_main_repo_from_worktree() if you need the main repo path
 get_repo_root() {
     if git rev-parse --show-toplevel >/dev/null 2>&1; then
         git rev-parse --show-toplevel
@@ -62,6 +64,85 @@ has_git() {
     git rev-parse --show-toplevel >/dev/null 2>&1
 }
 
+# ============================================================================
+# Worktree Detection Functions
+# ============================================================================
+
+# Detect if current directory is inside a git worktree
+# Returns: 0 if worktree, 1 if not
+is_worktree() {
+    local git_common_dir=$(git rev-parse --git-common-dir 2>/dev/null)
+    local git_dir=$(git rev-parse --git-dir 2>/dev/null)
+    [[ -n "$git_common_dir" && -n "$git_dir" && "$git_common_dir" != "$git_dir" ]]
+}
+
+# Get the main repository path from a worktree
+# Returns: Absolute path to main repo, or empty if not in worktree
+get_main_repo_from_worktree() {
+    if is_worktree; then
+        local git_common_dir=$(git rev-parse --git-common-dir 2>/dev/null)
+        # Remove /.git suffix to get repo root
+        echo "${git_common_dir%/.git}"
+    fi
+}
+
+# List all worktrees (prunes stale entries first)
+# Usage: list_worktrees [format]
+#   format: "simple" (default) or "porcelain"
+list_worktrees() {
+    local format="${1:-simple}"
+
+    # Prune stale worktree entries first
+    git worktree prune 2>/dev/null
+
+    case "$format" in
+        porcelain)
+            git worktree list --porcelain
+            ;;
+        *)
+            git worktree list
+            ;;
+    esac
+}
+
+# Get worktree path for a given branch
+# Returns: Worktree path or empty if branch not in a worktree
+get_worktree_for_branch() {
+    local branch="$1"
+    [[ -z "$branch" ]] && return
+
+    git worktree list --porcelain 2>/dev/null | awk -v branch="$branch" '
+        /^worktree / { wt = substr($0, 10) }
+        /^branch refs\/heads\// {
+            b = substr($0, 19)
+            if (b == branch) print wt
+        }
+    '
+}
+
+# Check if user should be in a worktree instead of main repo
+# Prints guidance message and returns 1 if redirect needed
+check_worktree_context() {
+    local feature_branch="${1:-$(get_current_branch)}"
+
+    # Skip check if already in a worktree
+    if is_worktree; then
+        return 0
+    fi
+
+    # Check if the branch has an associated worktree
+    local worktree_path=$(get_worktree_for_branch "$feature_branch")
+
+    if [[ -n "$worktree_path" ]]; then
+        echo "[specify] Warning: Branch '$feature_branch' is checked out in a worktree" >&2
+        echo "[specify] Worktree location: $worktree_path" >&2
+        echo "[specify] Navigate there with: cd $worktree_path" >&2
+        return 1
+    fi
+
+    return 0
+}
+
 check_feature_branch() {
     local branch="$1"
     local has_git_repo="$2"
@@ -73,8 +154,8 @@ check_feature_branch() {
     fi
 
     if [[ ! "$branch" =~ ^[0-9]{3}- ]]; then
-        echo "ERROR: Not on a feature branch. Current branch: $branch" >&2
-        echo "Feature branches should be named like: 001-feature-name" >&2
+        echo "[specify] Error: Not on a feature branch. Current branch: $branch" >&2
+        echo "[specify] Feature branches should be named like: 001-feature-name" >&2
         return 1
     fi
 
@@ -118,8 +199,8 @@ find_feature_dir_by_prefix() {
         echo "$specs_dir/${matches[0]}"
     else
         # Multiple matches - this shouldn't happen with proper naming convention
-        echo "ERROR: Multiple spec directories found with prefix '$prefix': ${matches[*]}" >&2
-        echo "Please ensure only one spec directory exists per numeric prefix." >&2
+        echo "[specify] Error: Multiple spec directories found with prefix '$prefix': ${matches[*]}" >&2
+        echo "[specify] Please ensure only one spec directory exists per numeric prefix." >&2
         echo "$specs_dir/$branch_name"  # Return something to avoid breaking the script
     fi
 }

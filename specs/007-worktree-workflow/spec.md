@@ -31,11 +31,11 @@ A developer working in a worktree invokes projspec commands (e.g., `/projspec.pl
 
 **Why this priority**: Commands must work seamlessly from worktrees for developers to adopt the worktree workflow. This is critical for day-to-day development.
 
-**Independent Test**: Can be tested by navigating to a worktree and running `/projspec.plan`, verifying it correctly reads specs from the symlinked directory and creates plan artifacts.
+**Independent Test**: Can be tested by navigating to a worktree and running `/projspec.plan`, verifying it correctly reads specs from the worktree's specs directory and creates plan artifacts.
 
 **Acceptance Scenarios**:
 
-1. **Given** a developer is working in a worktree, **When** they run `/projspec.plan`, **Then** the script correctly locates and reads the feature spec from the symlinked specs directory.
+1. **Given** a developer is working in a worktree, **When** they run `/projspec.plan`, **Then** the script correctly locates and reads the feature spec from the worktree's specs directory.
 
 2. **Given** a developer runs a command from a worktree, **When** the script needs to access `.specify/` resources (templates, scripts), **Then** it correctly resolves paths to the main repository.
 
@@ -63,15 +63,15 @@ A developer wants to switch between different features or return to the main rep
 
 ### User Story 4 - Clean Up Completed Feature Worktrees (Priority: P3)
 
-After a feature is merged, a developer wants to clean up the associated worktree. The system provides guidance or automation for removing worktrees while preserving specs (if needed) and branches.
+After a feature is merged, a developer wants to clean up the associated worktree. The system provides guidance for removing worktrees after specs have been merged to main via PR.
 
 **Why this priority**: Cleanup prevents disk clutter but is a post-feature operation that doesn't block development.
 
-**Independent Test**: Can be tested by creating a worktree, then removing it with `git worktree remove`, and verifying specs remain in the shared directory.
+**Independent Test**: Can be tested by merging a feature PR, then removing the worktree with `git worktree remove`, and verifying specs are accessible in main repo's `specs/` directory.
 
 **Acceptance Scenarios**:
 
-1. **Given** a completed feature worktree exists, **When** the developer removes it with `git worktree remove worktrees/<feature>`, **Then** the worktree directory is deleted but specs remain in `specs/<feature>/`.
+1. **Given** a feature PR has been merged, **When** the developer removes the worktree with `git worktree remove worktrees/<feature>`, **Then** the worktree directory is deleted and specs are accessible in main repo's `specs/<feature>/` (via the merged PR).
 
 2. **Given** a worktree is removed, **When** the developer checks `git worktree list`, **Then** the removed worktree no longer appears.
 
@@ -104,7 +104,7 @@ After a feature is merged, a developer wants to clean up the associated worktree
 
 - **Worktree**: An isolated working directory containing a checkout of a feature branch, located at `worktrees/<feature-name>/`
 - **Main Repository**: The primary git repository containing configuration (`.specify/`) and shared scripts
-- **Feature Specs**: Specification files located at `worktree/specs/<feature-name>/`, committed to the feature branch
+- **Feature Specs**: Specification files located at `worktrees/<NNN-feature-name>/specs/<NNN-feature-name>/`, committed to the feature branch
 - **Feature Context**: The combination of worktree path, branch name, and spec directory that defines where a feature's work happens
 
 ## Success Criteria *(mandatory)*

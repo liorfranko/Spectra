@@ -87,3 +87,21 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 - Use absolute paths
 - ERROR on gate failures or unresolved clarifications
+
+## Worktree Support
+
+This command works seamlessly when executed from a git worktree context.
+
+**Path Resolution:**
+- All paths resolve correctly within the worktree directory
+- The `setup-plan.sh` script detects the worktree root automatically
+- SPECS_DIR points to the worktree's `specs/` directory
+
+**Artifact Location:**
+- All generated artifacts (plan.md, research.md, data-model.md, contracts/, quickstart.md) are created in the worktree's specs directory
+- These files will be committed to the feature branch associated with the worktree
+- The feature branch is isolated from main, allowing parallel feature development
+
+**Context Advisory:**
+- If running from the main repository while a worktree exists for the feature, an advisory warning may be shown
+- Always run from the worktree directory to ensure artifacts are created in the correct location

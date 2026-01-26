@@ -42,7 +42,7 @@ Represents the paths and state associated with a specific feature being develope
 |-------|------|-------------|---------|
 | `feature_num` | string | 3-digit feature number | `007` |
 | `feature_name` | string | Full branch/feature name | `007-worktree-workflow` |
-| `feature_dir` | string | Path to feature's spec directory | `/Users/dev/projspec/specs/007-worktree-workflow` |
+| `feature_dir` | string | Path to feature's spec directory (context-dependent) | `/Users/dev/projspec/worktrees/007-worktree-workflow/specs/007-worktree-workflow` (during dev) or `/Users/dev/projspec/specs/007-worktree-workflow` (after merge) |
 | `spec_file` | string | Path to spec.md | `{feature_dir}/spec.md` |
 | `plan_file` | string | Path to plan.md | `{feature_dir}/plan.md` |
 | `tasks_file` | string | Path to tasks.md | `{feature_dir}/tasks.md` |
@@ -56,7 +56,9 @@ Represents the paths and state associated with a specific feature being develope
 
 **Derivation Rules**:
 - `feature_num = feature_name | grep -o '^\d{3}'`
-- `feature_dir` is in main repo: `{main_repo}/specs/{feature_name}`
+- `feature_dir` location depends on context:
+  - During development (worktree exists): `{worktree_path}/specs/{feature_name}`
+  - After PR merge (worktree removed): `{main_repo}/specs/{feature_name}`
 - `worktree_path = git worktree list | find by branch`
 
 **Validation Rules**:

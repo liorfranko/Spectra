@@ -184,6 +184,60 @@ Given that feature description, do this:
 
 **NOTE:** The script creates and checks out the new branch and initializes the spec file before writing.
 
+## Worktree Workflow
+
+When you run `/projspec.specify`, the command creates an **isolated worktree** for your feature development. This keeps your main repository clean while you work on the new feature.
+
+### What Gets Created
+
+Running `/projspec.specify "Add user authentication"` creates:
+
+1. **A feature branch**: `NNN-user-auth` (where NNN is the next available feature number)
+2. **A dedicated worktree**: `worktrees/NNN-user-auth/` - a separate working directory for this feature
+3. **The specification file**: `worktrees/NNN-user-auth/specs/NNN-user-auth/spec.md`
+
+### Where to Find Your Worktree
+
+The worktree is created in the `worktrees/` directory at the root of your repository:
+
+```
+your-repo/
+  worktrees/
+    NNN-user-auth/        <- Your feature's isolated workspace
+      specs/
+        NNN-user-auth/
+          spec.md         <- Your specification file
+      .claude/            <- Full plugin available
+      ...                 <- Complete repo contents
+```
+
+### Next Steps After Specify
+
+After `/projspec.specify` completes, you must **navigate to the worktree** to continue working on the feature:
+
+```bash
+cd worktrees/NNN-user-auth
+```
+
+From within the worktree, you can:
+- Run `/projspec.clarify` to refine the specification
+- Run `/projspec.plan` to create the technical implementation plan
+- Run `/projspec.tasks` to generate implementation tasks
+- Make commits that go to the feature branch
+
+### How Changes Flow
+
+1. **In the worktree**: All your work (specs, plans, code) is committed to the feature branch
+2. **After PR merge**: When your pull request is merged to main, the specs appear in the main repository's `specs/` directory
+3. **Cleanup**: After merge, you can remove the worktree with `git worktree remove worktrees/NNN-feature-name`
+
+### Important Notes
+
+- Each worktree is a complete, independent working directory
+- Changes in the worktree only affect the feature branch
+- You can have multiple worktrees for different features simultaneously
+- The main repository remains on its original branch while you work in worktrees
+
 ## General Guidelines
 
 ## Quick Guidelines

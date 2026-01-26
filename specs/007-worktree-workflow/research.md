@@ -49,42 +49,7 @@ is_worktree() {
 
 ---
 
-## 2. Symlink Strategy
-
-### Decision: Use relative symlinks for specs directory
-
-**Rationale**: Relative symlinks (`../../specs`) remain valid when the repository is moved or cloned to a different location.
-
-**Alternatives Considered**:
-- Absolute symlinks: Break when repo is moved
-- Bind mounts: Platform-specific, requires elevated permissions
-- Git submodules: Overkill for this use case
-
-### Symlink Validation
-
-```bash
-validate_specs_symlink() {
-    local worktree_path="${1:-$(pwd)}"
-    # Check both that symlink exists AND target is accessible
-    [[ -L "$worktree_path/specs" && -d "$worktree_path/specs" ]]
-}
-```
-
-### Symlink Repair
-
-When symlink is broken or missing, it can be recreated:
-
-```bash
-repair_specs_symlink() {
-    local worktree_path="${1:-$(pwd)}"
-    rm -f "$worktree_path/specs"  # Remove broken symlink if exists
-    ln -s "../../specs" "$worktree_path/specs"
-}
-```
-
----
-
-## 3. Path Resolution from Worktrees
+## 2. Path Resolution from Worktrees
 
 ### Decision: Use git rev-parse --show-toplevel for repo root detection
 
@@ -123,7 +88,7 @@ get_main_repo_path() {
 
 ---
 
-## 4. Edge Cases and Error Handling
+## 3. Edge Cases and Error Handling
 
 ### Case 1: Branch Already Checked Out in Worktree
 
@@ -162,25 +127,7 @@ list_worktrees_clean() {
 }
 ```
 
-### Case 3: Broken Specs Symlink
-
-**Scenario**: Symlink exists but target directory is missing or inaccessible.
-
-**Solution**: Validate before operations, offer repair:
-
-```bash
-if ! validate_specs_symlink; then
-    echo "Specs symlink is broken. Attempting repair..." >&2
-    if repair_specs_symlink; then
-        echo "Symlink repaired successfully." >&2
-    else
-        echo "ERROR: Could not repair specs symlink. Manual intervention required." >&2
-        exit 1
-    fi
-fi
-```
-
-### Case 4: Command Run from Main Repo Context
+### Case 3: Command Run from Main Repo Context
 
 **Scenario**: User is in main repo on `main` branch, runs `/projspec.plan` for feature 007.
 
@@ -208,19 +155,7 @@ check_feature_worktree_context() {
 
 ---
 
-## 5. Cross-Platform Considerations
-
-### Symlinks on Different Platforms
-
-| Platform | Symlink Support | Notes |
-|----------|-----------------|-------|
-| macOS | Full | Default behavior |
-| Linux | Full | Default behavior |
-| Windows (WSL) | Full | Behaves like Linux |
-| Windows (Git Bash) | Partial | Requires developer mode or admin |
-| Windows (native) | Partial | May need configuration |
-
-**Decision**: Document that symlinks are required; provide fallback guidance for Windows users who cannot use symlinks.
+## 4. Cross-Platform Considerations
 
 ### Git Worktree Version Requirements
 
@@ -234,7 +169,7 @@ check_feature_worktree_context() {
 
 ---
 
-## 6. Documentation Terminology Updates
+## 5. Documentation Terminology Updates
 
 ### Terms to Replace
 
@@ -253,7 +188,7 @@ check_feature_worktree_context() {
 
 ---
 
-## 7. Implementation Recommendations
+## 6. Implementation Recommendations
 
 ### Priority 1: Worktree Utilities in common.sh
 
@@ -261,18 +196,15 @@ Add these functions to enable worktree-aware operations:
 
 1. `is_worktree()` - Detect worktree context
 2. `get_main_repo_from_worktree()` - Get main repo path
-3. `validate_specs_symlink()` - Check symlink health
-4. `repair_specs_symlink()` - Fix broken symlinks
-5. `get_worktree_for_branch()` - Find worktree by branch
-6. `check_worktree_context()` - Warn if should be in worktree
+3. `get_worktree_for_branch()` - Find worktree by branch
+4. `check_worktree_context()` - Warn if should be in worktree
 
 ### Priority 2: Update check-prerequisites.sh
 
 Add worktree context validation to prerequisite checks:
 
-1. Validate specs symlink if in worktree
-2. Warn if running from main repo when worktree exists
-3. Prune stale worktree entries
+1. Warn if running from main repo when worktree exists
+2. Prune stale worktree entries
 
 ### Priority 3: Update Documentation
 
@@ -296,7 +228,6 @@ The worktree-based workflow is already largely implemented. Key remaining work:
 
 1. **Utility functions** in `common.sh` for worktree detection and management
 2. **Context detection** to guide users to appropriate worktrees
-3. **Symlink validation** and repair for edge cases
-4. **Documentation updates** for consistent terminology
+3. **Documentation updates** for consistent terminology
 
 All research questions have been resolved. No blockers identified.

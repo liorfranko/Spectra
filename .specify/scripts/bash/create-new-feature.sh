@@ -15,27 +15,27 @@ while [ $i -le $# ]; do
             ;;
         --short-name)
             if [ $((i + 1)) -gt $# ]; then
-                echo 'Error: --short-name requires a value' >&2
+                echo '[specify] Error: --short-name requires a value' >&2
                 exit 1
             fi
             i=$((i + 1))
             next_arg="${!i}"
             # Check if the next argument is another option (starts with --)
             if [[ "$next_arg" == --* ]]; then
-                echo 'Error: --short-name requires a value' >&2
+                echo '[specify] Error: --short-name requires a value' >&2
                 exit 1
             fi
             SHORT_NAME="$next_arg"
             ;;
         --number)
             if [ $((i + 1)) -gt $# ]; then
-                echo 'Error: --number requires a value' >&2
+                echo '[specify] Error: --number requires a value' >&2
                 exit 1
             fi
             i=$((i + 1))
             next_arg="${!i}"
             if [[ "$next_arg" == --* ]]; then
-                echo 'Error: --number requires a value' >&2
+                echo '[specify] Error: --number requires a value' >&2
                 exit 1
             fi
             BRANCH_NUMBER="$next_arg"
@@ -45,8 +45,8 @@ while [ $i -le $# ]; do
             echo ""
             echo "Options:"
             echo "  --json              Output in JSON format"
-            echo "  --short-name <name> Provide a custom short name (2-4 words) for the branch"
-            echo "  --number N          Specify branch number manually (overrides auto-detection)"
+            echo "  --short-name <name> Provide a custom short name (2-4 words) for the feature worktree"
+            echo "  --number N          Specify feature number manually (overrides auto-detection)"
             echo "  --help, -h          Show this help message"
             echo ""
             echo "Examples:"
@@ -166,7 +166,7 @@ if git rev-parse --show-toplevel >/dev/null 2>&1; then
 else
     REPO_ROOT="$(find_repo_root "$SCRIPT_DIR")"
     if [ -z "$REPO_ROOT" ]; then
-        echo "Error: Could not determine repository root. Please run this script from within the repository." >&2
+        echo "[specify] Error: Could not determine repository root. Please run this script from within the repository." >&2
         exit 1
     fi
     HAS_GIT=false
@@ -284,10 +284,13 @@ if [ "$HAS_GIT" = true ]; then
     rm -rf "$WORKTREE_PATH/specs"
     ln -s "../../specs" "$WORKTREE_PATH/specs"
 
-    >&2 echo "[specify] Created worktree at: $WORKTREE_PATH"
-    >&2 echo "[specify] To start working: cd $WORKTREE_PATH"
+    >&2 echo "[specify] Created worktree for feature '$BRANCH_NAME' at: $WORKTREE_PATH"
+    >&2 echo "[specify] Navigate to your worktree: cd $WORKTREE_PATH"
+    >&2 echo ""
+    >&2 echo "[specify] Active worktrees:"
+    git worktree list | sed 's/^/  /' >&2
 else
-    >&2 echo "[specify] Warning: Git repository not detected; skipped worktree creation for $BRANCH_NAME"
+    >&2 echo "[specify] Warning: Git repository not detected; skipped worktree creation for feature '$BRANCH_NAME'"
 fi
 
 # Specs are always created in the main repository
