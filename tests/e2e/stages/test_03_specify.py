@@ -7,6 +7,8 @@ and proper file structure generation.
 
 import pytest
 
+from ..helpers import ClaudeRunner
+
 
 @pytest.mark.e2e
 @pytest.mark.stage(3)
@@ -17,4 +19,31 @@ class TestSpeckitSpecify:
     generates feature specifications from natural language descriptions.
     """
 
-    pass
+    def test_specify_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
+        """Test that /speckit.specify command executes successfully.
+
+        This test runs the /speckit.specify command with a sample feature
+        description and verifies that it completes without errors.
+
+        Args:
+            claude_runner: Fixture providing a configured ClaudeRunner instance.
+        """
+        prompt = (
+            "Run /speckit.specify with the following feature description: "
+            "'Add a simple todo list feature that allows users to create, "
+            "read, update, and delete todo items with a title and completion status.'"
+        )
+
+        result = claude_runner.run(
+            prompt=prompt,
+            stage=3,
+            log_name="specify_runs_successfully",
+        )
+
+        assert result.success, (
+            f"/speckit.specify command failed.\n"
+            f"Exit code: {result.exit_code}\n"
+            f"Timed out: {result.timed_out}\n"
+            f"Stderr: {result.stderr}\n"
+            f"Stdout (last 500 chars): {result.stdout[-500:] if result.stdout else 'empty'}"
+        )
