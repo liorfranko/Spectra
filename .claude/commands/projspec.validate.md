@@ -211,11 +211,11 @@ These conditions automatically fail validation:
 
 ```bash
 # Validate current feature
-/speckit.validate
+/projspec.validate
 
 # Validate specific feature
-/speckit.validate 001
+/projspec.validate 001
 
 # Validate with auto-fix
-/speckit.validate --fix
+/projspec.validate --fix
 ```
