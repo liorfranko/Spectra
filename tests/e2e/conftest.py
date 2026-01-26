@@ -61,10 +61,38 @@ class StageTracker:
 
     Example:
         >>> tracker = StageTracker.get_instance()
+        >>> tracker.reset()  # Ensure clean state for example
         >>> tracker.mark_passed(1)
         >>> tracker.mark_failed(2)
         >>> tracker.should_skip(3)  # Returns True because stage 2 failed
         True
+
+    Verification of first_failure tracking:
+
+        The first_failure attribute correctly records only the first failure
+        and subsequent failures do not override it:
+
+        >>> tracker = StageTracker.get_instance()
+        >>> tracker.reset()  # Start with clean state
+        >>> tracker.first_failure is None  # No failure recorded yet
+        True
+        >>> tracker.mark_failed(2)
+        >>> tracker.first_failure  # First failure is recorded
+        2
+        >>> tracker.mark_failed(4)  # Another stage fails
+        >>> tracker.first_failure  # Still shows the first failure, not overwritten
+        2
+        >>> tracker.mark_failed(1)  # Even an earlier stage number doesn't override
+        >>> tracker.first_failure  # Remains 2 (first chronological failure)
+        2
+
+        The reset() method clears the first_failure:
+
+        >>> tracker.reset()
+        >>> tracker.first_failure is None  # Cleared after reset
+        True
+        >>> tracker.stage_status  # Stage status also cleared
+        {}
     """
 
     _instance: "StageTracker | None" = None
