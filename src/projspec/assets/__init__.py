@@ -1,0 +1,1 @@
+# ProjSpec bundled assets
