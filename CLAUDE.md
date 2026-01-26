@@ -35,4 +35,19 @@ Python 3.11+: Follow standard conventions
 - 001-projspec-mvp: Added Python 3.11+ + pydantic, pyyaml, rich, pytest
 
 <!-- MANUAL ADDITIONS START -->
+
+## Worktree Workflow
+
+This project uses git worktrees for feature isolation:
+- New features are created in `worktrees/<NNN-feature-name>/`
+- Feature specs live in `worktrees/<feature>/specs/<feature>/`
+- Run projspec commands from the worktree directory
+- After PR merge, specs appear in main repo's `specs/` directory
+
+Key worktree functions in `.specify/scripts/bash/common.sh`:
+- `is_worktree()` - detect if in worktree context
+- `get_main_repo_from_worktree()` - get main repo path
+- `get_worktree_for_branch()` - find worktree by branch
+- `check_worktree_context()` - warn if should navigate to worktree
+
 <!-- MANUAL ADDITIONS END -->
