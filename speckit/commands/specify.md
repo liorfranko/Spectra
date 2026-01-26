@@ -298,8 +298,213 @@ After processing clarifications, prepare a summary for the user:
 - Report the 3 prioritized questions
 - Mention that additional clarifications can be addressed with `/speckit.clarify`
 
-<!-- T020: Add finalization step -->
-<!-- Finalize spec and report results -->
+### Step 6: Validate Specification
+
+Before finalizing, validate the specification against quality rules to ensure it meets requirements for a complete, implementation-agnostic specification.
+
+#### 6.1: Check Mandatory Sections
+
+Verify all required sections are present and non-empty:
+
+**Mandatory Sections Checklist:**
+| Section | Requirement | Validation |
+|---------|-------------|------------|
+| User Scenarios & Testing | At least 2 scenarios (US-001, US-002) | Count `### US-` headers |
+| Requirements | At least 1 functional requirement (FR-001) | Count `### FR-` headers |
+| Success Criteria | At least 1 success criterion (SC-001) | Count `### SC-` headers |
+| Edge Cases | At least 1 entry in the table | Check table has data rows |
+
+**Validation Logic:**
+1. Parse the spec.md file content
+2. Count occurrences of each section pattern
+3. Flag any section that doesn't meet minimum count
+
+**If validation fails:**
+- Report which sections are incomplete
+- Do not proceed to finalization
+- Suggest user provide additional details or rerun with more context
+
+#### 6.2: Verify No Implementation Details
+
+Scan the entire specification for implementation-specific language that should not appear in a spec:
+
+**Prohibited Content Categories:**
+
+| Category | Examples | Detection Pattern |
+|----------|----------|-------------------|
+| Programming Languages | Python, JavaScript, TypeScript, Java, Go, Rust, Ruby, C++, C#, PHP, Swift, Kotlin | Case-insensitive word match |
+| Frontend Frameworks | React, Vue, Angular, Svelte, Next.js, Nuxt, Remix, Astro | Case-insensitive word match |
+| Backend Frameworks | Django, Flask, FastAPI, Express, NestJS, Spring, Rails, Laravel | Case-insensitive word match |
+| Databases | PostgreSQL, MySQL, MongoDB, Redis, SQLite, DynamoDB, Cassandra | Case-insensitive word match |
+| API Specifications | REST endpoint, GraphQL schema, gRPC, WebSocket protocol | Phrase match |
+| Infrastructure | Docker, Kubernetes, AWS Lambda, Azure Functions, S3 bucket | Case-insensitive word match |
+
+**Scanning Process:**
+1. Read the full spec content (excluding code blocks in examples)
+2. Check each prohibited term against the content
+3. Collect all matches with their locations
+
+**If implementation details are found:**
+- List each occurrence with section and context
+- Mark the spec as needing revision
+- Suggest rephrasing to focus on "what" not "how":
+  - Instead of "Use PostgreSQL database" → "Data must be persisted and queryable"
+  - Instead of "React component" → "User interface element"
+  - Instead of "REST API endpoint" → "System interface"
+
+#### 6.3: Verify Requirements Format
+
+Validate that all functional requirements follow the correct format and are testable.
+
+**Format Requirements:**
+- Each requirement uses the `FR-###` identifier format (e.g., FR-001, FR-002)
+- Each requirement has a verification method defined
+- Requirements are atomic (one testable behavior per requirement)
+
+**Testability Criteria:**
+A requirement is testable if it includes:
+- **Clear action**: A specific behavior that can be observed
+- **Defined conditions**: When/where the behavior occurs
+- **Expected outcome**: What should happen (pass/fail determinable)
+
+**Validation Steps:**
+1. Extract all `### FR-###` sections
+2. For each requirement:
+   - Verify ID format matches `FR-\d{3}` pattern
+   - Check for verification/testing subsection or method
+   - Ensure no vague terms like "should be easy", "user-friendly", "fast enough"
+3. Flag non-compliant requirements
+
+**Vague Terms to Flag:**
+- "easy to use", "user-friendly", "intuitive"
+- "fast", "quick", "responsive" (without measurable threshold)
+- "robust", "reliable", "stable" (without specific criteria)
+- "as needed", "when appropriate", "sometimes"
+
+#### 6.4: Verify Success Criteria Format
+
+Validate that all success criteria are measurable and verifiable.
+
+**Format Requirements:**
+- Each criterion uses the `SC-###` identifier format (e.g., SC-001, SC-002)
+- Each criterion has a measurable target value
+- Each criterion has a verification method
+
+**Measurability Criteria:**
+A success criterion is measurable if it includes:
+- **Quantifiable metric**: A number, percentage, duration, or count
+- **Target value**: The threshold that defines success
+- **Measurement method**: How the metric will be collected
+
+**Validation Steps:**
+1. Extract all `### SC-###` sections
+2. For each criterion:
+   - Verify ID format matches `SC-\d{3}` pattern
+   - Check for numeric target (e.g., "< 2 seconds", "95%", "zero errors")
+   - Verify measurement method is specified
+3. Flag criteria without measurable targets
+
+**Examples of Valid vs Invalid:**
+| Invalid | Valid |
+|---------|-------|
+| "Feature should be fast" | "Page load time < 2 seconds (P95)" |
+| "Users should be satisfied" | "User satisfaction score >= 4.0/5.0 in feedback survey" |
+| "Low error rate" | "Error rate < 0.1% over 7-day window" |
+
+#### 6.5: Count NEEDS CLARIFICATION Markers
+
+Check that clarification needs are within acceptable limits.
+
+**Maximum Allowed:** 3 `[NEEDS CLARIFICATION]` markers
+
+**Counting Process:**
+1. Search for all occurrences of `[NEEDS CLARIFICATION` in the spec
+2. Count total occurrences
+3. Compare against maximum threshold
+
+**If count exceeds 3:**
+- The spec is considered too ambiguous to proceed
+- Report the count and recommend:
+  - Obtain more details from the user before continuing
+  - Run `/speckit.clarify` to resolve existing questions first
+  - Consider breaking the feature into smaller, clearer features
+
+**If count is 0-3:**
+- Spec passes this validation
+- Note the count in the validation report
+
+#### 6.6: Generate Validation Report
+
+Compile all validation results into a structured report.
+
+**Report Format:**
+```markdown
+## Specification Validation Report
+
+**Feature:** [FEATURE_ID]
+**Validated:** [TIMESTAMP]
+
+### Section Completeness
+| Section | Required | Found | Status |
+|---------|----------|-------|--------|
+| User Scenarios | >= 2 | [count] | [PASS/FAIL] |
+| Requirements | >= 1 | [count] | [PASS/FAIL] |
+| Success Criteria | >= 1 | [count] | [PASS/FAIL] |
+| Edge Cases | >= 1 | [count] | [PASS/FAIL] |
+
+### Implementation Details Check
+- **Status**: [PASS/FAIL]
+- **Violations Found**: [count]
+[If violations exist, list each with location]
+
+### Requirements Format Check
+- **Total Requirements**: [count]
+- **Properly Formatted**: [count]
+- **Testable**: [count]
+- **Status**: [PASS/FAIL]
+[If issues exist, list each requirement ID with issue description]
+
+### Success Criteria Format Check
+- **Total Criteria**: [count]
+- **Properly Formatted**: [count]
+- **Measurable**: [count]
+- **Status**: [PASS/FAIL]
+[If issues exist, list each criterion ID with issue description]
+
+### Clarification Markers
+- **Count**: [count] / 3 maximum
+- **Status**: [PASS/FAIL]
+
+### Overall Result
+- **Status**: [VALID/INVALID]
+- **Issues to Address**: [count]
+```
+
+#### 6.7: Handle Validation Results
+
+Based on the validation report, take appropriate action:
+
+**If ALL checks pass (Status: VALID):**
+1. Proceed to finalization
+2. Include validation summary in output to user
+3. Note that spec is ready for `/speckit.plan` command
+
+**If ANY check fails (Status: INVALID):**
+1. Do not mark spec as complete
+2. Display the full validation report to the user
+3. For each failure, provide actionable guidance:
+   - Missing sections: "Add at least [N] more [section type]"
+   - Implementation details: "Remove or rephrase: [specific term] in [section]"
+   - Format issues: "Update [ID] to include [missing element]"
+   - Vague requirements: "Add measurable threshold to [ID]"
+   - Too many clarifications: "Resolve open questions before proceeding"
+4. Offer to help fix issues: "Would you like me to help address these validation issues?"
+
+**Partial Pass Handling:**
+If the spec passes critical checks (sections present, no implementation details) but has minor format issues:
+- Warn the user but allow proceeding with caution
+- Recommend running `/speckit.clarify` to improve quality
+- Mark spec status as "Draft - Needs Review"
 
 ## Output
 
