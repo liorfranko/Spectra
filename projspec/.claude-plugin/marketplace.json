@@ -1,6 +1,6 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "speckit",
+  "name": "projspec",
   "description": "Specification-driven development workflow automation",
   "owner": {
     "name": "liorfr",
