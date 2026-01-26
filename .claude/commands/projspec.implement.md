@@ -279,6 +279,20 @@ You **MUST** consider the user input before proceeding (if not empty).
 - **Remote Backup**: Pushing after each task ensures work is backed up continuously
 - **Validation**: After implementation, verify `git log --oneline | wc -l` roughly equals the number of tasks
 
+## Worktree Context
+
+When running `/projspec.implement` from a git worktree (created via `/projspec.develop`):
+
+- **Isolated Development**: All source code modifications happen in the worktree directory, completely isolated from the main repository. This ensures your feature work does not interfere with other branches or ongoing work.
+
+- **Feature Branch Operations**: Git commits are made to the feature branch that is checked out in the worktree. Each spawned agent works within this worktree context, and all `git add`, `git commit`, and `git push` operations target the feature branch.
+
+- **Source Isolation Until Merge**: Files modified in the worktree remain isolated until the pull request is merged. The main branch and other worktrees are unaffected by changes made here.
+
+- **PR Merge Flow**: After all tasks are complete and the PR is merged, both source code changes and spec artifacts flow to the main branch together, maintaining a clean history.
+
+- **Agent Context**: Each spawned agent inherits the worktree as its working directory, ensuring all file operations (reads, writes, modifications) happen within the isolated worktree.
+
 ## Prerequisites
 
 - Complete task breakdown exists in tasks.md (run `/projspec.tasks` if missing)
