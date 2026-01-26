@@ -83,90 +83,6 @@ fi
 
 ---
 
-### validate_specs_symlink
-
-Checks whether the specs symlink in a worktree exists and points to a valid directory.
-
-**Signature**:
-```bash
-validate_specs_symlink [worktree_path] -> exit_code
-```
-
-**Parameters**:
-- `worktree_path` (optional): Path to check. Defaults to current directory.
-
-**Returns**:
-- Exit code `0`: Symlink exists and target directory is accessible
-- Exit code `1`: Symlink missing, broken, or target inaccessible
-
-**Implementation**:
-```bash
-validate_specs_symlink() {
-    local worktree_path="${1:-$(pwd)}"
-    [[ -L "$worktree_path/specs" && -d "$worktree_path/specs" ]]
-}
-```
-
-**Usage**:
-```bash
-if ! validate_specs_symlink; then
-    echo "Specs symlink is broken or missing"
-fi
-```
-
----
-
-### repair_specs_symlink
-
-Repairs or recreates the specs symlink in a worktree.
-
-**Signature**:
-```bash
-repair_specs_symlink [worktree_path] -> exit_code
-```
-
-**Parameters**:
-- `worktree_path` (optional): Path to repair. Defaults to current directory.
-
-**Returns**:
-- Exit code `0`: Symlink repaired successfully
-- Exit code `1`: Repair failed (not in a worktree or other error)
-
-**Implementation**:
-```bash
-repair_specs_symlink() {
-    local worktree_path="${1:-$(pwd)}"
-
-    if ! is_worktree; then
-        echo "Not in a worktree, cannot repair specs symlink" >&2
-        return 1
-    fi
-
-    # Remove existing symlink or file
-    rm -f "$worktree_path/specs"
-
-    # Create relative symlink to main repo specs
-    ln -s "../../specs" "$worktree_path/specs"
-
-    # Verify repair was successful
-    validate_specs_symlink "$worktree_path"
-}
-```
-
-**Usage**:
-```bash
-if ! validate_specs_symlink; then
-    if repair_specs_symlink; then
-        echo "Symlink repaired"
-    else
-        echo "Failed to repair symlink" >&2
-        exit 1
-    fi
-fi
-```
-
----
-
 ### get_worktree_for_branch
 
 Finds the worktree path for a given branch name.
@@ -302,9 +218,7 @@ list_worktrees() {
 | Scenario | Message |
 |----------|---------|
 | Not in git repo | `ERROR: Not in a git repository` |
-| Broken symlink | `ERROR: Specs symlink is broken. Run from worktree or repair manually.` |
 | Branch in worktree | `Warning: Branch 'X' is checked out in a worktree at Y` |
-| Symlink repair failed | `ERROR: Could not repair specs symlink` |
 
 ---
 
@@ -317,19 +231,13 @@ Add worktree context validation:
 ```bash
 # After loading common.sh
 
-# Validate specs symlink if in worktree
-if is_worktree && ! validate_specs_symlink; then
-    echo "Repairing broken specs symlink..." >&2
-    repair_specs_symlink || exit 1
-fi
-
 # Warn if should be in worktree
 check_worktree_context
 ```
 
 ### create-new-feature.sh
 
-Already handles worktree creation. Ensure output messages use "worktree" terminology consistently.
+Already handles worktree creation. Specs are created in the worktree's specs directory.
 
 ### setup-plan.sh / setup-tasks.sh
 
@@ -352,13 +260,10 @@ check_worktree_context
 2. **is_worktree from worktree** → returns 0
 3. **get_main_repo_from_worktree from main repo** → empty output
 4. **get_main_repo_from_worktree from worktree** → main repo path
-5. **validate_specs_symlink with valid symlink** → returns 0
-6. **validate_specs_symlink with broken symlink** → returns 1
-7. **repair_specs_symlink in worktree** → creates valid symlink
-8. **get_worktree_for_branch with existing worktree** → returns path
-9. **get_worktree_for_branch with no worktree** → empty output
-10. **check_worktree_context from worktree** → returns 0, no output
-11. **check_worktree_context from main repo with worktree** → returns 1, prints warning
+5. **get_worktree_for_branch with existing worktree** → returns path
+6. **get_worktree_for_branch with no worktree** → empty output
+7. **check_worktree_context from worktree** → returns 0, no output
+8. **check_worktree_context from main repo with worktree** → returns 1, prints warning
 
 ### Manual Testing Script
 
@@ -375,9 +280,6 @@ is_worktree && echo "YES" || echo "NO"
 
 echo -n "get_main_repo_from_worktree: "
 get_main_repo_from_worktree || echo "(empty)"
-
-echo -n "validate_specs_symlink: "
-validate_specs_symlink && echo "VALID" || echo "INVALID"
 
 echo -n "get_worktree_for_branch 007-worktree-workflow: "
 get_worktree_for_branch "007-worktree-workflow" || echo "(none)"

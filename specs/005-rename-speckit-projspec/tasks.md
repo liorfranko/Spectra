@@ -49,7 +49,6 @@ This is a plugin/configuration refactoring task. Paths reference:
 - [x] T012 [P] Rename `.claude/commands/speckit.tasks.md` to `.claude/commands/projspec.tasks.md`
 - [x] T013 [P] Rename `.claude/commands/speckit.taskstoissues.md` to `.claude/commands/projspec.taskstoissues.md`
 - [x] T014 [P] Rename `.claude/commands/speckit.checkpoint.md` to `.claude/commands/projspec.checkpoint.md`
-- [x] T015 [P] Rename `.claude/commands/speckit.validate.md` to `.claude/commands/projspec.validate.md`
 
 **Checkpoint**: All command files renamed. Directory structure complete.
 
@@ -81,7 +80,6 @@ This is a plugin/configuration refactoring task. Paths reference:
 - [x] T028 [P] [US1] Update `/speckit.` → `/projspec.` references in `.claude/commands/projspec.tasks.md`
 - [x] T029 [P] [US1] Update `/speckit.` → `/projspec.` references in `.claude/commands/projspec.taskstoissues.md`
 - [x] T030 [P] [US1] Update `/speckit.` → `/projspec.` references in `.claude/commands/projspec.checkpoint.md`
-- [x] T031 [P] [US1] Update `/speckit.` → `/projspec.` references in `.claude/commands/projspec.validate.md`
 
 ### Update Command Content - Plugin Commands (14 files)
 
@@ -95,7 +93,6 @@ This is a plugin/configuration refactoring task. Paths reference:
 - [x] T039 [P] [US1] Update `/speckit.` → `/projspec.` references in `projspec/plugins/projspec/commands/specify.md`
 - [x] T040 [P] [US1] Update `/speckit.` → `/projspec.` references in `projspec/plugins/projspec/commands/tasks.md`
 - [x] T041 [P] [US1] Update `/speckit.` → `/projspec.` references in `projspec/plugins/projspec/commands/issues.md`
-- [x] T042 [P] [US1] Update `/speckit.` → `/projspec.` references in `projspec/plugins/projspec/commands/validate.md`
 - [x] T043 [P] [US1] Update `/speckit.` → `/projspec.` references in `projspec/plugins/projspec/commands/checkpoint.md` (if exists)
 - [x] T044 [P] [US1] Update `/speckit.` → `/projspec.` references in `projspec/plugins/projspec/commands/learn.md` (if exists)
 

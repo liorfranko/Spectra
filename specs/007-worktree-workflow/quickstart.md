@@ -32,8 +32,7 @@ This guide explains how to work with projspec's worktree-based feature workflow.
 This creates:
 1. A new branch: `008-user-auth`
 2. A new worktree: `worktrees/008-user-auth/`
-3. A spec file: `specs/008-user-auth/spec.md`
-4. A symlink in the worktree: `specs -> ../../specs`
+3. A spec file: `worktrees/008-user-auth/specs/008-user-auth/spec.md` (in worktree, for feature branch commit)
 
 ### Step 2: Navigate to the worktree
 
@@ -43,7 +42,7 @@ cd worktrees/008-user-auth
 
 You're now in an isolated environment with:
 - Your feature branch checked out
-- Access to shared specs via symlink
+- Spec files in `specs/<feature>/` (committed to feature branch)
 - All source files ready for modification
 
 ### Step 3: Continue the workflow
@@ -61,33 +60,32 @@ Run subsequent commands from within the worktree:
 ## Understanding the Directory Structure
 
 ```
-projspec/                           # Main repository
-├── .specify/                       # Configuration and scripts (shared)
+projspec/                           # Main repository (on main branch)
+├── .specify/                       # Configuration and scripts
 │   ├── scripts/bash/               # All bash scripts
 │   ├── templates/                  # Document templates
 │   └── memory/                     # Persistent context
-├── specs/                          # All feature specs (shared)
+├── specs/                          # Specs from merged features
 │   ├── 001-projspec-mvp/
-│   ├── 007-worktree-workflow/
-│   └── 008-user-auth/
+│   └── 007-worktree-workflow/      # Merged from feature branch
 ├── worktrees/                      # Feature worktrees
 │   ├── 007-worktree-workflow/      # Isolated working directory
 │   │   ├── .git                    # Worktree pointer (not a directory)
-│   │   ├── specs -> ../../specs    # Symlink to shared specs
+│   │   ├── specs/007-worktree-workflow/  # Feature specs (on feature branch)
 │   │   └── src/                    # Feature-specific code
 │   └── 008-user-auth/
 │       ├── .git
-│       ├── specs -> ../../specs
+│       ├── specs/008-user-auth/    # Feature specs (on feature branch)
 │       └── src/
 └── src/                            # Main branch source (if any)
 ```
 
 ### Key Points
 
-- **Specs are shared**: All feature specs live in the main `specs/` directory
-- **Worktrees are isolated**: Each feature has its own copy of source files
-- **Scripts are shared**: The `.specify/` directory is in the main repo only
-- **Symlinks provide access**: Worktrees link to shared resources
+- **Specs are on feature branches**: Each worktree has its own specs directory
+- **Worktrees are isolated**: Each feature has its own copy of the full repo
+- **Standard git workflow**: Commit specs + code to feature branch, merge via PR
+- **No symlinks needed**: Git handles everything naturally
 
 ---
 
@@ -137,14 +135,15 @@ cat src/temp.txt  # work in progress
 
 ### Viewing a feature's spec
 
-From any location:
+From the worktree:
 ```bash
-# View spec for feature 007
-cat specs/007-worktree-workflow/spec.md
-
-# Or navigate to worktree and use relative path
 cd worktrees/007-worktree-workflow
-cat specs/007-worktree-workflow/spec.md  # Via symlink
+cat specs/007-worktree-workflow/spec.md
+```
+
+From main repo (for merged specs):
+```bash
+cat specs/007-worktree-workflow/spec.md  # Only available after PR is merged
 ```
 
 ### Running scripts from a worktree
@@ -186,16 +185,6 @@ git worktree list | grep 008-user-auth
 # /path/to/projspec/worktrees/008-user-auth  [008-user-auth]
 
 cd /path/to/projspec/worktrees/008-user-auth
-```
-
-### Broken specs symlink
-
-**Problem**: `ls specs` shows error or empty.
-
-**Solution**: Recreate the symlink:
-```bash
-rm -f specs
-ln -s ../../specs specs
 ```
 
 ### Worktree not showing in list

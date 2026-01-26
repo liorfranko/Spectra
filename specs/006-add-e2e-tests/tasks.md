@@ -144,12 +144,12 @@ This story is the orchestration layer - it depends on the stage tests from US2-U
 
 ### Implementation for User Story 5
 
-- [ ] T045 [US5] Create test_05_tasks.py with TestSpeckitTasks class in tests/e2e/stages/test_05_tasks.py
-- [ ] T046 [US5] Implement test_tasks_runs_successfully that runs /speckit.tasks via ClaudeRunner in tests/e2e/stages/test_05_tasks.py
-- [ ] T047 [US5] Implement test_tasks_file_created that uses FileVerifier to verify tasks.md exists in tests/e2e/stages/test_05_tasks.py
-- [ ] T048 [US5] Implement test_tasks_has_checkboxes that verifies tasks.md contains task checkboxes in tests/e2e/stages/test_05_tasks.py
-- [ ] T049 [US5] Implement test_tasks_has_phases that verifies tasks.md contains phase sections in tests/e2e/stages/test_05_tasks.py
-- [ ] T050 [US5] Add @pytest.mark.e2e and @pytest.mark.stage(5) decorators to all stage 5 tests
+- [x] T045 [US5] Create test_05_tasks.py with TestSpeckitTasks class in tests/e2e/stages/test_05_tasks.py
+- [x] T046 [US5] Implement test_tasks_runs_successfully that runs /speckit.tasks via ClaudeRunner in tests/e2e/stages/test_05_tasks.py
+- [x] T047 [US5] Implement test_tasks_file_created that uses FileVerifier to verify tasks.md exists in tests/e2e/stages/test_05_tasks.py
+- [x] T048 [US5] Implement test_tasks_has_checkboxes that verifies tasks.md contains task checkboxes in tests/e2e/stages/test_05_tasks.py
+- [x] T049 [US5] Implement test_tasks_has_phases that verifies tasks.md contains phase sections in tests/e2e/stages/test_05_tasks.py
+- [x] T050 [US5] Add @pytest.mark.e2e and @pytest.mark.stage(5) decorators to all stage 5 tests
 
 **Checkpoint**: Stage 5 (tasks) tests complete and independently runnable
 
@@ -163,14 +163,14 @@ This story is the orchestration layer - it depends on the stage tests from US2-U
 
 ### Implementation for User Story 6
 
-- [ ] T051 [US6] Create test_06_implement.py with TestSpeckitImplement class in tests/e2e/stages/test_06_implement.py
-- [ ] T052 [US6] Implement test_implement_runs_successfully that runs /speckit.implement via ClaudeRunner in tests/e2e/stages/test_06_implement.py
-- [ ] T053 [US6] Implement test_implement_produces_code that verifies implementation artifacts created in tests/e2e/stages/test_06_implement.py
-- [ ] T054 [US6] Add @pytest.mark.e2e and @pytest.mark.stage(6) decorators to stage 6 tests
-- [ ] T055 [US6] Verify --stage N filtering works correctly in tests/e2e/conftest.py
-- [ ] T056 [US6] Verify --stage N-M range filtering works correctly in tests/e2e/conftest.py
-- [ ] T057 [US6] Verify --e2e-debug enables streaming output in ClaudeRunner in tests/e2e/helpers/claude_runner.py
-- [ ] T058 [US6] Verify --timeout-all overrides all stage timeouts in ClaudeRunner in tests/e2e/helpers/claude_runner.py
+- [x] T051 [US6] Create test_06_implement.py with TestSpeckitImplement class in tests/e2e/stages/test_06_implement.py
+- [x] T052 [US6] Implement test_implement_runs_successfully that runs /speckit.implement via ClaudeRunner in tests/e2e/stages/test_06_implement.py
+- [x] T053 [US6] Implement test_implement_produces_code that verifies implementation artifacts created in tests/e2e/stages/test_06_implement.py
+- [x] T054 [US6] Add @pytest.mark.e2e and @pytest.mark.stage(6) decorators to stage 6 tests
+- [x] T055 [US6] Verify --stage N filtering works correctly in tests/e2e/conftest.py
+- [x] T056 [US6] Verify --stage N-M range filtering works correctly in tests/e2e/conftest.py
+- [x] T057 [US6] Verify --e2e-debug enables streaming output in ClaudeRunner in tests/e2e/helpers/claude_runner.py
+- [x] T058 [US6] Verify --timeout-all overrides all stage timeouts in ClaudeRunner in tests/e2e/helpers/claude_runner.py
 
 **Checkpoint**: All CLI options work and Stage 6 tests complete
 
@@ -180,12 +180,12 @@ This story is the orchestration layer - it depends on the stage tests from US2-U
 
 **Purpose**: Improvements that affect multiple stages
 
-- [ ] T059 [P] Add .gitignore entries for tests/e2e/output/ directories
-- [ ] T060 [P] Add error messages for Claude CLI not authenticated in ClaudeRunner
-- [ ] T061 [P] Add error messages for timeout exceeded in ClaudeRunner
-- [ ] T062 Verify all assertion error messages are clear and actionable in FileVerifier
-- [ ] T063 Verify all assertion error messages are clear and actionable in GitVerifier
-- [ ] T064 Run full E2E test suite to validate end-to-end workflow
+- [x] T059 [P] Add .gitignore entries for tests/e2e/output/ directories
+- [x] T060 [P] Add error messages for Claude CLI not authenticated in ClaudeRunner
+- [x] T061 [P] Add error messages for timeout exceeded in ClaudeRunner
+- [x] T062 Verify all assertion error messages are clear and actionable in FileVerifier
+- [x] T063 Verify all assertion error messages are clear and actionable in GitVerifier
+- [x] T064 Run full E2E test suite to validate end-to-end workflow
 
 ---
 

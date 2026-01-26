@@ -13,13 +13,13 @@ A developer invokes the `/projspec.specify` command to create a new feature. The
 
 **Why this priority**: This is the entry point to the entire workflow. Without a clear worktree creation process, developers cannot work on features in isolation.
 
-**Independent Test**: Can be fully tested by running `/projspec.specify` and verifying a new worktree is created at `worktrees/<feature-name>/` with the feature branch checked out and a symlink to shared specs.
+**Independent Test**: Can be fully tested by running `/projspec.specify` and verifying a new worktree is created at `worktrees/<feature-name>/` with the feature branch checked out and spec files in the worktree's specs directory.
 
 **Acceptance Scenarios**:
 
 1. **Given** a developer invokes `/projspec.specify` with a feature description, **When** the feature is created, **Then** a new worktree is created at `worktrees/<NNN-feature-name>/` with the feature branch checked out.
 
-2. **Given** a worktree is created, **When** the developer examines the worktree directory, **Then** they find a symlink `specs -> ../../specs` pointing to the shared specs directory in the main repository.
+2. **Given** a worktree is created, **When** the developer examines the worktree directory, **Then** they find the feature spec at `specs/<NNN-feature-name>/spec.md` ready to be committed to the feature branch.
 
 3. **Given** a worktree exists, **When** the developer navigates to it and runs `git branch`, **Then** the feature branch `NNN-feature-name` is shown as the current branch.
 
@@ -83,7 +83,6 @@ After a feature is merged, a developer wants to clean up the associated worktree
 
 - What happens when a developer tries to checkout a feature branch in the main repo that's already checked out in a worktree? Git returns `fatal: 'branch' is already checked out` error - this is expected behavior and the user should be directed to use the worktree.
 - How does the system handle running commands from the main repository instead of a worktree? Commands should detect context and provide helpful guidance to navigate to the appropriate worktree.
-- What happens if the specs symlink is broken or deleted in a worktree? Commands should detect this and offer to recreate the symlink.
 - How does the system handle worktree paths with special characters or spaces? Worktree paths should be sanitized to use only alphanumeric characters and hyphens.
 
 ## Requirements *(mandatory)*
@@ -91,21 +90,21 @@ After a feature is merged, a developer wants to clean up the associated worktree
 ### Functional Requirements
 
 - **FR-001**: System MUST create git worktrees in `worktrees/<NNN-feature-name>/` directory when starting a new feature
-- **FR-002**: System MUST create a symlink `specs -> ../../specs` in each worktree to provide access to shared specification files
+- **FR-002**: System MUST create the feature spec directory at `worktrees/<NNN-feature-name>/specs/<NNN-feature-name>/` for commits to the feature branch
 - **FR-003**: System MUST display worktree path and navigation instructions after feature creation
 - **FR-004**: All projspec scripts MUST correctly resolve paths when executed from a worktree context
-- **FR-005**: Scripts MUST access `.specify/` resources (templates, scripts, memory) from the main repository regardless of current working directory
+- **FR-005**: Scripts MUST access `.specify/` resources (templates, scripts, memory) from the repository root
 - **FR-006**: Source code modifications during `/projspec.implement` MUST occur in the worktree directory, not the main repository
 - **FR-007**: Documentation and command help MUST use "worktree" terminology instead of "branch" where appropriate
-- **FR-008**: System MUST preserve specs in the shared `specs/` directory when a worktree is removed
+- **FR-008**: Specs MUST be committed to the feature branch and merged via PR to main
 - **FR-009**: The `.specify/scripts/bash/common.sh` MUST provide reliable worktree detection and path resolution functions
 - **FR-010**: Commands executed from main repository context MUST detect if they should be run from a worktree and provide guidance
 
 ### Key Entities
 
 - **Worktree**: An isolated working directory containing a checkout of a feature branch, located at `worktrees/<feature-name>/`
-- **Main Repository**: The primary git repository containing configuration (`.specify/`), shared scripts, and the `specs/` directory
-- **Specs Symlink**: A symbolic link in each worktree pointing to the shared specs directory: `worktree/specs -> ../../specs`
+- **Main Repository**: The primary git repository containing configuration (`.specify/`) and shared scripts
+- **Feature Specs**: Specification files located at `worktree/specs/<feature-name>/`, committed to the feature branch
 - **Feature Context**: The combination of worktree path, branch name, and spec directory that defines where a feature's work happens
 
 ## Success Criteria *(mandatory)*
@@ -117,13 +116,12 @@ After a feature is merged, a developer wants to clean up the associated worktree
 - **SC-003**: Developers can work on multiple features simultaneously without any cross-contamination of changes
 - **SC-004**: No data loss occurs when navigating between worktrees with uncommitted changes
 - **SC-005**: Documentation accurately describes worktree workflow with zero references to "checkout branch" for feature work
-- **SC-006**: Worktree cleanup preserves all spec artifacts in the shared `specs/` directory
+- **SC-006**: Specs are properly merged to main via PR when feature is complete
 
 ## Assumptions
 
 - Git version 2.5+ is available (worktrees were introduced in 2.5)
 - Developers have sufficient disk space for multiple worktrees
 - The project structure follows the standard layout with `worktrees/` and `specs/` at repository root
-- Symlinks are supported on the filesystem (standard on macOS/Linux)
-- The `.specify/` directory remains in the main repository only (not duplicated in worktrees)
-- Specs are shared across all worktrees via symlinks to enable cross-feature visibility
+- The `.specify/` directory is shared across worktrees (part of the git checkout)
+- Specs are committed to feature branches and merged to main via PRs

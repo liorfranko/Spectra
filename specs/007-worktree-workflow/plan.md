@@ -110,8 +110,8 @@ Based on Technical Context analysis, the following areas need research:
 
 Based on code exploration, the current implementation already handles:
 
-- ✅ Worktree creation in `create-new-feature.sh` (lines 274-291)
-- ✅ Symlink creation for specs (`ln -s "../../specs" "$WORKTREE_PATH/specs"`)
+- ✅ Worktree creation in `create-new-feature.sh`
+- ✅ Specs created in worktree for feature branch commits
 - ✅ Basic path resolution via `get_repo_root()` using git rev-parse
 - ✅ Branch detection via `get_current_branch()`
 
@@ -169,25 +169,6 @@ get_main_repo_from_worktree() {
     fi
 }
 
-# Check if specs symlink exists and is valid
-# Returns: 0 if valid, 1 if missing/broken
-validate_specs_symlink() {
-    local worktree_path="${1:-$(pwd)}"
-    [[ -L "$worktree_path/specs" && -d "$worktree_path/specs" ]]
-}
-
-# Repair broken specs symlink
-repair_specs_symlink() {
-    local worktree_path="${1:-$(pwd)}"
-    local main_repo=$(get_main_repo_from_worktree)
-    if [[ -n "$main_repo" ]]; then
-        rm -f "$worktree_path/specs"
-        ln -s "../../specs" "$worktree_path/specs"
-        return 0
-    fi
-    return 1
-}
-
 # Get worktree path for a given branch
 # Returns: Worktree path or empty if branch not in a worktree
 get_worktree_for_branch() {
@@ -232,20 +213,19 @@ check_worktree_context() {
 2. **Update scripts** to use worktree context detection
 3. **Update commands** to provide worktree guidance
 4. **Update documentation** with worktree terminology
-5. **Add edge case handling** for broken symlinks
 
 ### Acceptance Criteria Mapping
 
 | Requirement | Implementation |
 |-------------|----------------|
 | FR-001 | Already implemented in `create-new-feature.sh` |
-| FR-002 | Already implemented (symlink creation) |
+| FR-002 | Updated to create specs in worktree (committed to feature branch) |
 | FR-003 | Already implemented (navigation instructions printed) |
-| FR-004 | Add `validate_specs_symlink()` + repair functionality |
-| FR-005 | Verify `get_repo_root()` finds main repo from worktree |
+| FR-004 | Verify path resolution works from worktree context |
+| FR-005 | Verify `get_repo_root()` finds repo root from worktree |
 | FR-006 | Update implement command for worktree-aware paths |
 | FR-007 | Update documentation and help text |
-| FR-008 | Already works (specs in main repo, worktree removal doesn't affect) |
+| FR-008 | Standard git PR flow (specs merge with feature) |
 | FR-009 | Add `is_worktree()`, `get_main_repo_from_worktree()`, etc. |
 | FR-010 | Add `check_worktree_context()` to relevant scripts |
 

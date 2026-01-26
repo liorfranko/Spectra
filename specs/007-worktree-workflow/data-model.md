@@ -21,7 +21,6 @@ Represents the current execution context, determining whether code is running in
 | `worktree_path` | string | Absolute path to the worktree root | `/Users/dev/projspec/worktrees/007-worktree-workflow` |
 | `main_repo_path` | string | Absolute path to the main repository | `/Users/dev/projspec` |
 | `branch_name` | string | Name of the branch checked out in this worktree | `007-worktree-workflow` |
-| `specs_symlink_valid` | boolean | True if specs symlink exists and points to valid directory | `true` |
 | `git_dir` | string | Path to the .git directory/file | `/Users/dev/projspec/worktrees/007-worktree-workflow/.git` |
 | `git_common_dir` | string | Path to the shared .git directory in main repo | `/Users/dev/projspec/.git` |
 
@@ -31,7 +30,6 @@ Represents the current execution context, determining whether code is running in
 - `worktree_path = git rev-parse --show-toplevel`
 
 **Validation Rules**:
-- If `is_worktree` is true, `specs_symlink_valid` should be validated
 - `branch_name` should match pattern `^\d{3}-[a-z0-9-]+$`
 
 ---

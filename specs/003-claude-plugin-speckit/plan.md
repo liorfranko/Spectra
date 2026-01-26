@@ -69,8 +69,7 @@ speckit/                           # Plugin root directory
 │   ├── constitution.md            # /speckit:constitution command
 │   ├── checkpoint.md              # /speckit:checkpoint command
 │   ├── learn.md                   # /speckit:learn command
-│   ├── review-pr.md               # /speckit:review-pr command
-│   └── validate.md                # /speckit:validate command
+│   └── review-pr.md               # /speckit:review-pr command
 │
 ├── agents/                        # Optional subagents for complex tasks
 │   ├── code-reviewer.md           # Code review specialist
