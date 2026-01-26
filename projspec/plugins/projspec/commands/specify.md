@@ -164,7 +164,7 @@ Leave Q-001 and Q-002 as placeholders for clarification questions (handled in St
 **Revision History:**
 - Version: `0.1`
 - Date: Current date in YYYY-MM-DD format
-- Author: `Claude (speckit)`
+- Author: `Claude (projspec)`
 - Changes: `Initial draft from feature description`
 
 #### 4.4: Write Specification File
@@ -223,7 +223,7 @@ If more than 3 ambiguities are found, prioritize using these criteria (in order)
 2. **Scope-defining**: Ambiguities that significantly affect feature scope
 3. **Risk-bearing**: Ambiguities that could lead to rework if assumed incorrectly
 
-Defer lower-priority ambiguities to the `/speckit.clarify` command for later resolution.
+Defer lower-priority ambiguities to the `/projspec.clarify` command for later resolution.
 
 #### 5.3: Mark Clarification Items
 
@@ -288,7 +288,7 @@ After processing clarifications, prepare a summary for the user:
 **If clarifications are needed (1-3 items):**
 - List each question with its ID and brief description
 - Indicate the suggested defaults that will be used if not clarified
-- Inform user they can run `/speckit.clarify` to address these questions
+- Inform user they can run `/projspec.clarify` to address these questions
 
 **If no clarifications are needed:**
 - Note that the specification is complete and ready for planning
@@ -296,7 +296,7 @@ After processing clarifications, prepare a summary for the user:
 
 **If more than 3 ambiguities were found:**
 - Report the 3 prioritized questions
-- Mention that additional clarifications can be addressed with `/speckit.clarify`
+- Mention that additional clarifications can be addressed with `/projspec.clarify`
 
 ### Step 6: Validate Specification
 
@@ -426,7 +426,7 @@ Check that clarification needs are within acceptable limits.
 - The spec is considered too ambiguous to proceed
 - Report the count and recommend:
   - Obtain more details from the user before continuing
-  - Run `/speckit.clarify` to resolve existing questions first
+  - Run `/projspec.clarify` to resolve existing questions first
   - Consider breaking the feature into smaller, clearer features
 
 **If count is 0-3:**
@@ -487,7 +487,7 @@ Based on the validation report, take appropriate action:
 **If ALL checks pass (Status: VALID):**
 1. Proceed to finalization
 2. Include validation summary in output to user
-3. Note that spec is ready for `/speckit.plan` command
+3. Note that spec is ready for `/projspec.plan` command
 
 **If ANY check fails (Status: INVALID):**
 1. Do not mark spec as complete
@@ -503,7 +503,7 @@ Based on the validation report, take appropriate action:
 **Partial Pass Handling:**
 If the spec passes critical checks (sections present, no implementation details) but has minor format issues:
 - Warn the user but allow proceeding with caution
-- Recommend running `/speckit.clarify` to improve quality
+- Recommend running `/projspec.clarify` to improve quality
 - Mark spec status as "Draft - Needs Review"
 
 ### Step 7: Generate Requirements Checklist
@@ -537,7 +537,7 @@ Create a requirements checklist based on the checklist template format. The chec
 ## Overview
 
 This checklist validates that the feature specification is complete, well-formed,
-and ready for implementation planning. All items should pass before running `/speckit.plan`.
+and ready for implementation planning. All items should pass before running `/projspec.plan`.
 
 ---
 ```
@@ -630,7 +630,7 @@ Format: - [ITEM_REF] Description of issue or note
 2. Add notes for any failed or concerning items
 3. Update the summary table when complete
 4. Mark final status based on results
-5. Address any failed items before running `/speckit.plan`
+5. Address any failed items before running `/projspec.plan`
 ```
 
 #### 7.3: Write Requirements Checklist
@@ -688,9 +688,9 @@ Based on the specification state, recommend appropriate next steps:
 1. **Review Open Questions**: The specification has [count] open question(s) that should be addressed:
    [List Q-### IDs with brief descriptions]
 
-2. **Run `/speckit.clarify`**: This command will help resolve open questions interactively
+2. **Run `/projspec.clarify`**: This command will help resolve open questions interactively
 
-3. **Then proceed to `/speckit.plan`**: After clarifications are resolved, generate the implementation plan
+3. **Then proceed to `/projspec.plan`**: After clarifications are resolved, generate the implementation plan
 ```
 
 **If No Open Questions (spec is complete):**
@@ -701,7 +701,7 @@ Based on the specification state, recommend appropriate next steps:
 
 2. **Validate with Checklist**: Use `checklists/requirements.md` to verify spec quality
 
-3. **Run `/speckit.plan`**: Generate the implementation plan with architecture and design decisions
+3. **Run `/projspec.plan`**: Generate the implementation plan with architecture and design decisions
 ```
 
 #### 8.3: Display Feature Context
