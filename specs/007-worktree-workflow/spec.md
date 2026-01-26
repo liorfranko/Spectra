@@ -31,11 +31,11 @@ A developer working in a worktree invokes projspec commands (e.g., `/projspec.pl
 
 **Why this priority**: Commands must work seamlessly from worktrees for developers to adopt the worktree workflow. This is critical for day-to-day development.
 
-**Independent Test**: Can be tested by navigating to a worktree and running `/projspec.plan`, verifying it correctly reads specs from the symlinked directory and creates plan artifacts.
+**Independent Test**: Can be tested by navigating to a worktree and running `/projspec.plan`, verifying it correctly reads specs from the worktree's specs directory and creates plan artifacts.
 
 **Acceptance Scenarios**:
 
-1. **Given** a developer is working in a worktree, **When** they run `/projspec.plan`, **Then** the script correctly locates and reads the feature spec from the symlinked specs directory.
+1. **Given** a developer is working in a worktree, **When** they run `/projspec.plan`, **Then** the script correctly locates and reads the feature spec from the worktree's specs directory.
 
 2. **Given** a developer runs a command from a worktree, **When** the script needs to access `.specify/` resources (templates, scripts), **Then** it correctly resolves paths to the main repository.
 
