@@ -213,12 +213,139 @@ Store the execution queue and task data for use in subsequent steps (Step 2 onwa
 
 ### Step 2: Execute Tasks and Update Status
 
-<!-- T040: Implement task execution with agent spawning -->
-- For each ready task, spawn an implementation agent
-- Pass task context, acceptance criteria, and file references to agent
-- Monitor agent execution and capture results
-- Update task status in tasks.md (pending -> in_progress -> completed)
-- Handle task failures with appropriate error reporting
+**2.1: For each ready task from the execution queue, spawn a Task tool agent**
+
+For each task in the ready queue, invoke the Task tool with the following template:
+
+```yaml
+Task tool:
+  subagent_type: "general-purpose"
+  description: "[TaskID] Brief description"
+  prompt: |
+    You are implementing a specific task in isolation with a fresh context.
+
+    TASK DETAILS:
+    - Task ID: [TaskID]
+    - Description: [Full task description from tasks.md]
+    - File to modify: [file path from task]
+
+    CONTEXT:
+    [Include relevant excerpts from plan.md - architecture, file structure, patterns]
+    [Include relevant user stories from spec.md if applicable]
+    [Include data model details from data-model.md if the task involves entities]
+
+    CONSTITUTION PRINCIPLES:
+    [Key principles from constitution.md that apply to this task]
+
+    INSTRUCTIONS:
+    [Specific implementation instructions for this task]
+
+    DO NOT:
+    - Implement other tasks
+    - Deviate from the plan
+    - Skip error handling
+    - Ignore constitution requirements
+
+    When complete, report what was modified.
+```
+
+For sequential tasks, spawn one agent at a time and wait for completion before proceeding to the next task.
+
+For parallel tasks (marked with `[P]`), spawn multiple agents simultaneously in a single message with multiple Task tool calls:
+
+```yaml
+# Parallel execution - multiple Task tool calls in one message
+Task tool 1:
+  description: "[T010] First parallel task"
+  prompt: ...
+
+Task tool 2:
+  description: "[T011] Second parallel task"
+  prompt: ...
+
+Task tool 3:
+  description: "[T012] Third parallel task"
+  prompt: ...
+```
+
+**2.2: After agent completes successfully, commit and update status**
+
+After each agent reports successful completion:
+
+1. **Stage changes**:
+   ```bash
+   git add -A
+   ```
+
+2. **Commit with task ID**:
+   ```bash
+   git commit -m "[TaskID] Task description
+
+   Co-Authored-By: Claude Sonnet 4.5 (1M context) <noreply@anthropic.com>"
+   ```
+
+   For parallel tasks, commit each task separately in completion order:
+   ```bash
+   git commit -m "[T010] First parallel task description
+
+   Co-Authored-By: Claude Sonnet 4.5 (1M context) <noreply@anthropic.com>"
+   ```
+
+3. **Push to remote**:
+   ```bash
+   git push
+   ```
+
+   For parallel tasks, push all commits together after all have been committed:
+   ```bash
+   git push
+   ```
+
+4. **Update tasks.md**: Change the task status from pending to completed:
+   - Find the line: `- [ ] T### Description (file path)`
+   - Replace with: `- [x] T### Description (file path)`
+   - Write the updated content back to tasks.md
+
+**2.3: Handle agent failure**
+
+If an agent fails to complete its task:
+
+1. **Report the error**:
+   ```markdown
+   ## Task Failed: [TaskID]
+
+   **Error**: [Agent error output or failure reason]
+
+   **Task**: [Task description]
+   **File**: [File path]
+   ```
+
+2. **Ask user for action**:
+   ```markdown
+   How would you like to proceed?
+
+   1. **Retry** - Spawn the same agent again with the same prompt
+   2. **Skip** - Mark task as skipped and move to the next task (not recommended)
+   3. **Abort** - Stop implementation and review the task breakdown
+
+   Please respond with: retry, skip, or abort
+   ```
+
+3. **Handle user response**:
+   - **retry**: Re-spawn the agent with the same task context
+   - **skip**: Log the skip, do NOT mark the task as completed, move to next task
+   - **abort**: Stop execution and report current progress
+
+**2.4: Move to next task in queue**
+
+After successful completion or user-directed action:
+
+1. Remove the completed/skipped task from the execution queue
+2. Re-evaluate blocked tasks (handled in Step 4)
+3. Get the next task from the ready queue
+4. If ready queue is not empty, return to step 2.1
+5. If ready queue is empty but blocked tasks exist, proceed to Step 4
+6. If no pending tasks remain, proceed to Step 3 for final reporting
 
 ### Step 3: Track Progress and Report
 
