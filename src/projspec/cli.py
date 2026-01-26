@@ -49,7 +49,12 @@ def _is_git_repo(path: Path) -> bool:
 PHASE_TEMPLATES = ["spec.md", "plan.md", "tasks.md", "implement.md", "review.md"]
 
 # Command template filenames bundled with the package
-COMMAND_TEMPLATES = ["projspec.init.md", "projspec.status.md", "projspec.new.md"]
+COMMAND_TEMPLATES = [
+    "projspec.init.md",
+    "projspec.status.md",
+    "projspec.new.md",
+    "projspec.spec.md",
+]
 
 
 def create_parser() -> argparse.ArgumentParser:
