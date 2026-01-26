@@ -13,7 +13,7 @@ from ..helpers import ClaudeRunner, FileVerifier
 
 @pytest.mark.e2e
 @pytest.mark.stage(1)
-class TestSpeckitInit:
+class TestProjspecInit:
     """Test class for verifying projspec plugin initialization.
 
     Tests in this class verify that the `specify init` command properly
