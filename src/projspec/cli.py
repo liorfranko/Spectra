@@ -15,6 +15,7 @@ from rich.console import Console
 from rich.table import Table
 
 from projspec.defaults import DEFAULT_CONFIG, DEFAULT_WORKFLOW
+from projspec.models import TaskState, TaskStatus
 from projspec.state import load_active_specs
 
 # Module-level console instance for Rich output
@@ -131,6 +132,34 @@ def _run_init() -> None:
     console.print(f"  Created .projspec/phases/ ({len(PHASE_TEMPLATES)} templates)")
 
 
+def _calculate_progress(tasks: list[TaskState]) -> str:
+    """Calculate task progress string for a spec.
+
+    Args:
+        tasks: List of TaskState objects for the spec.
+
+    Returns:
+        Progress string in one of the formats:
+        - "X/Y (Z in progress)" if there are in-progress tasks
+        - "X/Y ✓" if all tasks are completed
+        - "X/Y" for other cases with tasks
+        - "—" (em dash) if no tasks are defined
+    """
+    if not tasks:
+        return "—"
+
+    total = len(tasks)
+    completed = sum(1 for t in tasks if t.status == TaskStatus.completed)
+    in_progress = sum(1 for t in tasks if t.status == TaskStatus.in_progress)
+
+    if completed == total and total > 0:
+        return f"{completed}/{total} ✓"
+    elif in_progress > 0:
+        return f"{completed}/{total} ({in_progress} in progress)"
+    else:
+        return f"{completed}/{total}"
+
+
 def _get_phase_color(phase: str) -> str:
     """Return the Rich color for a given phase.
 
@@ -156,7 +185,8 @@ def _print_spec_status(specs: list) -> None:
     """Display specs in a formatted Rich table.
 
     Creates a table with columns for ID, Name, Phase (with color coding),
-    and Branch. The phase column is color-coded based on the workflow stage.
+    Progress, and Branch. The phase column is color-coded based on the
+    workflow stage.
 
     Args:
         specs: List of SpecState objects to display.
@@ -166,6 +196,7 @@ def _print_spec_status(specs: list) -> None:
     table.add_column("ID", style="bold")
     table.add_column("Name")
     table.add_column("Phase")
+    table.add_column("Progress")
     table.add_column("Branch", style="dim")
 
     for spec in specs:
@@ -173,7 +204,8 @@ def _print_spec_status(specs: list) -> None:
         phase_value = spec.phase.value if hasattr(spec.phase, "value") else spec.phase
         phase_color = _get_phase_color(phase_value)
         phase_styled = f"[{phase_color}]{phase_value}[/{phase_color}]"
-        table.add_row(spec.spec_id, spec.name, phase_styled, spec.branch)
+        progress = _calculate_progress(spec.tasks)
+        table.add_row(spec.spec_id, spec.name, phase_styled, progress, spec.branch)
 
     console.print(table)
 
