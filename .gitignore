@@ -28,3 +28,4 @@
 # Claude Code session files (keep learning observations tracked)
 .specify/learning/.current-session-dir
 .specify/learning/.current-session-id
+worktrees/
