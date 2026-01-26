@@ -11,18 +11,18 @@ $ARGUMENTS
 
 ## Overview
 
-The `/speckit.learn` command manages the auto-learning system that captures corrections, patterns, and preferences across sessions. It provides access to:
+The `/projspec.learn` command manages the auto-learning system that captures corrections, patterns, and preferences across sessions. It provides access to:
 
 - **Instincts**: Atomic learnings with confidence scores (stored in `.specify/learning/instincts/`)
 - **Skills**: Promoted high-confidence patterns (stored in `.claude/skills/learned/`)
 
 ## Subcommands
 
-### `/speckit.learn` (default)
+### `/projspec.learn` (default)
 
 Review current session patterns and any pending instincts. Interactively decide what to save or promote.
 
-### `/speckit.learn list`
+### `/projspec.learn list`
 
 List all active instincts and learned skills.
 
@@ -46,7 +46,7 @@ List all active instincts and learned skills.
 | skill-001.md | Error Resolution | Auto-promoted |
 ```
 
-### `/speckit.learn status`
+### `/projspec.learn status`
 
 Show auto-learning system statistics.
 
@@ -88,7 +88,7 @@ Show auto-learning system statistics.
 - Archived instincts: 0
 ```
 
-### `/speckit.learn analyze`
+### `/projspec.learn analyze`
 
 Trigger background analysis of pending sessions.
 
@@ -98,7 +98,7 @@ Trigger background analysis of pending sessions.
 2. Report created/reinforced instincts
 3. Suggest high-confidence instincts for review
 
-### `/speckit.learn promote`
+### `/projspec.learn promote`
 
 Manually promote high-confidence instincts to skills.
 
@@ -138,7 +138,7 @@ Then after review:
 **Confidence adjustments:**
 
 - +0.1: Reinforced in new session
-- +0.15: Explicit user confirmation via `/speckit.learn`
+- +0.15: Explicit user confirmation via `/projspec.learn`
 - -0.05: Decay per 7 days without reinforcement
 - -0.2: User contradiction detected
 
@@ -220,7 +220,7 @@ Skip patterns that are:
 ## Notes
 
 - Instincts are captured automatically via hooks during sessions
-- Run `/speckit.learn analyze` to process pending sessions
-- High-confidence instincts can be promoted to skills via `/speckit.learn promote`
+- Run `/projspec.learn analyze` to process pending sessions
+- High-confidence instincts can be promoted to skills via `/projspec.learn promote`
 - Skills in `.claude/skills/learned/` are automatically loaded by Claude Code
 - Very high-confidence patterns may be added to CLAUDE.md for project-wide guidance
