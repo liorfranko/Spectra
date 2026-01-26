@@ -1,0 +1,18 @@
+{"event_id":"pre-72473084000","phase":"pre","timestamp":"2026-01-26T15:17:52.3NZ","tool":"Bash","input":".specify/scripts/bash/check-prerequisites.sh --json --paths-only 2>/dev/null || echo '{\"}
+{"event_id":"post-78314302000","pre_event_id":"pre-72473084000","phase":"post","timestamp":"2026-01-26T15:17:58.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-84560089000","phase":"pre","timestamp":"2026-01-26T15:18:04.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/spec.md"}
+{"event_id":"pre-84583178000","phase":"pre","timestamp":"2026-01-26T15:18:04.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/plan.md"}
+{"event_id":"pre-84636514000","phase":"pre","timestamp":"2026-01-26T15:18:04.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/quickstart.md"}
+{"event_id":"pre-84643064000","phase":"pre","timestamp":"2026-01-26T15:18:04.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/.specify/memory/constitution.md"}
+{"event_id":"pre-84663452000","phase":"pre","timestamp":"2026-01-26T15:18:04.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/research.md"}
+{"event_id":"pre-84672932000","phase":"pre","timestamp":"2026-01-26T15:18:04.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/data-model.md"}
+{"event_id":"post-84796934000","pre_event_id":"pre-84672932000","phase":"post","timestamp":"2026-01-26T15:18:04.3NZ","tool":"Read","success":true}
+{"event_id":"post-84822790000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:18:04.3NZ","tool":"Read","success":true}
+{"event_id":"post-84840099000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:18:04.3NZ","tool":"Read","success":true}
+{"event_id":"post-84847873000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:18:04.3NZ","tool":"Read","success":true}
+{"event_id":"post-84866558000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:18:04.3NZ","tool":"Read","success":true}
+{"event_id":"post-84870640000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:18:04.3NZ","tool":"Read","success":true}
+{"event_id":"pre-88625698000","phase":"pre","timestamp":"2026-01-26T15:18:08.3NZ","tool":"Glob","input":"specs/002-projspec-claude-code/contracts/*.md"}
+{"event_id":"pre-88635430000","phase":"pre","timestamp":"2026-01-26T15:18:08.3NZ","tool":"Glob","input":"specs/002-projspec-claude-code/checklists/*.md"}
+{"event_id":"post-89334624000","pre_event_id":"pre-88635430000","phase":"post","timestamp":"2026-01-26T15:18:09.3NZ","tool":"Glob","success":true}
+{"event_id":"post-89552141000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:18:09.3NZ","tool":"Glob","success":true}

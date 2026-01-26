@@ -1,71 +1,6 @@
 {
   "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'r=$PWD; while [ \"$r\" != / ] && [ ! -d \"$r/.specify\" ]; do r=$(dirname \"$r\"); done; [ -d \"$r/.specify\" ] && \"$r/.specify/hooks/memory-persistence/session-start.sh\"'"
-          }
-        ]
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'r=$PWD; while [ \"$r\" != / ] && [ ! -d \"$r/.specify\" ]; do r=$(dirname \"$r\"); done; [ -d \"$r/.specify\" ] && \"$r/.specify/hooks/auto-learn/session-start.sh\"'"
-          }
-        ],
-        "description": "Initialize auto-learning session tracking"
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "tool == \"Edit\" || tool == \"Write\"",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'r=$PWD; while [ \"$r\" != / ] && [ ! -d \"$r/.specify\" ]; do r=$(dirname \"$r\"); done; [ -d \"$r/.specify\" ] && \"$r/.specify/hooks/strategic-compact/suggest-compact.sh\"'"
-          }
-        ],
-        "description": "Suggest manual compaction at logical intervals"
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'r=$PWD; while [ \"$r\" != / ] && [ ! -d \"$r/.specify\" ]; do r=$(dirname \"$r\"); done; [ -d \"$r/.specify\" ] && \"$r/.specify/hooks/auto-learn/pre-tool-use.sh\"'"
-          }
-        ],
-        "description": "Capture tool context for auto-learning"
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'r=$PWD; while [ \"$r\" != / ] && [ ! -d \"$r/.specify\" ]; do r=$(dirname \"$r\"); done; [ -d \"$r/.specify\" ] && \"$r/.specify/hooks/auto-learn/post-tool-use.sh\"'"
-          }
-        ],
-        "description": "Capture tool results and detect corrections"
-      }
-    ],
     "Stop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'r=$PWD; while [ \"$r\" != / ] && [ ! -d \"$r/.specify\" ]; do r=$(dirname \"$r\"); done; [ -d \"$r/.specify\" ] && \"$r/.specify/hooks/memory-persistence/session-end.sh\"'"
-          }
-        ],
-        "description": "Persist session state on end"
-      },
       {
         "matcher": "*",
         "hooks": [
@@ -75,37 +10,6 @@
           }
         ],
         "description": "Evaluate session for extractable patterns"
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'r=$PWD; while [ \"$r\" != / ] && [ ! -d \"$r/.specify\" ]; do r=$(dirname \"$r\"); done; [ -d \"$r/.specify\" ] && \"$r/.specify/hooks/auto-learn/session-end.sh\"'"
-          }
-        ],
-        "description": "Queue session for auto-learning analysis (non-blocking)"
-      }
-    ],
-    "PreCompact": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'r=$PWD; while [ \"$r\" != / ] && [ ! -d \"$r/.specify\" ]; do r=$(dirname \"$r\"); done; [ -d \"$r/.specify\" ] && \"$r/.specify/hooks/memory-persistence/pre-compact.sh\"'"
-          }
-        ]
-      },
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'r=$PWD; while [ \"$r\" != / ] && [ ! -d \"$r/.specify\" ]; do r=$(dirname \"$r\"); done; [ -d \"$r/.specify\" ] && \"$r/.specify/hooks/auto-learn/pre-compact.sh\"'"
-          }
-        ],
-        "description": "Snapshot high-confidence instincts before compaction"
       }
     ]
   }

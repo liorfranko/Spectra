@@ -1,0 +1,1 @@
+{"event_id":"pre-87264104000","phase":"pre","timestamp":"2026-01-26T15:24:47.3NZ","tool":"Bash","input":".specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks"}

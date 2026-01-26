@@ -1,0 +1,26 @@
+{"event_id":"pre-89017109000","phase":"pre","timestamp":"2026-01-26T15:21:29.3NZ","tool":"Bash","input":"git status"}
+{"event_id":"pre-89041500000","phase":"pre","timestamp":"2026-01-26T15:21:29.3NZ","tool":"Bash","input":"git diff --stat"}
+{"event_id":"pre-89044658000","phase":"pre","timestamp":"2026-01-26T15:21:29.3NZ","tool":"Bash","input":"git log --oneline -5"}
+{"event_id":"post-89295042000","pre_event_id":"pre-89044658000","phase":"post","timestamp":"2026-01-26T15:21:29.3NZ","tool":"Bash","success":true}
+{"event_id":"post-89297670000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:21:29.3NZ","tool":"Bash","success":true}
+{"event_id":"post-89321973000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:21:29.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-96656619000","phase":"pre","timestamp":"2026-01-26T15:21:36.3NZ","tool":"Bash","input":"ls -la specs/"}
+{"event_id":"pre-96673125000","phase":"pre","timestamp":"2026-01-26T15:21:36.3NZ","tool":"Bash","input":"ls -la .claude/skills/learned/"}
+{"event_id":"post-96893426000","pre_event_id":"pre-96673125000","phase":"post","timestamp":"2026-01-26T15:21:36.3NZ","tool":"Bash","success":true}
+{"event_id":"post-98585122000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:21:38.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-07648008000","phase":"pre","timestamp":"2026-01-26T15:21:47.3NZ","tool":"Bash","input":"git add PRD.md specs/001-projspec-mvp/checklists/requirements.md specs/001-projspec-mvp/contracts/state-schema.yaml specs/001-projspec-mvp/data-model.md specs/001-projspec-mvp/plan.md specs/001-projsp"}
+{"event_id":"pre-07933489000","phase":"pre","timestamp":"2026-01-26T15:21:47.3NZ","tool":"Bash","input":"git add CLAUDE.md specs/ .claude/skills/learned/"}
+{"event_id":"pre-11845326000","phase":"pre","timestamp":"2026-01-26T15:21:51.3NZ","tool":"Bash","input":"ls -la"}
+{"event_id":"post-12111217000","pre_event_id":"pre-11845326000","phase":"post","timestamp":"2026-01-26T15:21:52.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-18700485000","phase":"pre","timestamp":"2026-01-26T15:21:58.3NZ","tool":"Bash","input":"cat .git"}
+{"event_id":"post-18952050000","pre_event_id":"pre-18700485000","phase":"post","timestamp":"2026-01-26T15:21:58.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-19048098000","phase":"pre","timestamp":"2026-01-26T15:21:59.3NZ","tool":"Bash","input":"git add -u"}
+{"event_id":"post-19355564000","pre_event_id":"pre-19048098000","phase":"post","timestamp":"2026-01-26T15:21:59.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-24058394000","phase":"pre","timestamp":"2026-01-26T15:22:04.3NZ","tool":"Bash","input":"git add CLAUDE.md .claude/skills/learned/"}
+{"event_id":"post-24353801000","pre_event_id":"pre-24058394000","phase":"post","timestamp":"2026-01-26T15:22:04.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-24445386000","phase":"pre","timestamp":"2026-01-26T15:22:04.3NZ","tool":"Bash","input":"git status"}
+{"event_id":"post-24740718000","pre_event_id":"pre-24445386000","phase":"post","timestamp":"2026-01-26T15:22:04.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-32035670000","phase":"pre","timestamp":"2026-01-26T15:22:12.3NZ","tool":"Bash","input":"git commit -m \"}
+{"event_id":"post-33944966000","pre_event_id":"pre-32035670000","phase":"post","timestamp":"2026-01-26T15:22:13.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-37101896000","phase":"pre","timestamp":"2026-01-26T15:22:17.3NZ","tool":"Bash","input":"git push origin 002-projspec-claude-code"}
+{"event_id":"post-28338458000","pre_event_id":"pre-37101896000","phase":"post","timestamp":"2026-01-26T15:23:48.3NZ","tool":"Bash","success":true}

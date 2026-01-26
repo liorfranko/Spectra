@@ -1,0 +1,65 @@
+{"event_id":"pre-57129121000","phase":"pre","timestamp":"2026-01-26T15:34:17.3NZ","tool":"Bash","input":".specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks"}
+{"event_id":"post-57546354000","pre_event_id":"pre-57129121000","phase":"post","timestamp":"2026-01-26T15:34:17.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-61844675000","phase":"pre","timestamp":"2026-01-26T15:34:21.3NZ","tool":"Glob","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/checklists/*.md"}
+{"event_id":"post-62952656000","pre_event_id":"pre-61844675000","phase":"post","timestamp":"2026-01-26T15:34:22.3NZ","tool":"Glob","success":true}
+{"event_id":"pre-65485246000","phase":"pre","timestamp":"2026-01-26T15:34:25.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/checklists/requirements.md"}
+{"event_id":"post-65628218000","pre_event_id":"pre-65485246000","phase":"post","timestamp":"2026-01-26T15:34:25.3NZ","tool":"Read","success":true}
+{"event_id":"pre-73965750000","phase":"pre","timestamp":"2026-01-26T15:34:33.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/tasks.md"}
+{"event_id":"pre-73991356000","phase":"pre","timestamp":"2026-01-26T15:34:33.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/data-model.md"}
+{"event_id":"pre-74030621000","phase":"pre","timestamp":"2026-01-26T15:34:34.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/research.md"}
+{"event_id":"pre-74039502000","phase":"pre","timestamp":"2026-01-26T15:34:34.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/plan.md"}
+{"event_id":"pre-74048337000","phase":"pre","timestamp":"2026-01-26T15:34:34.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/quickstart.md"}
+{"event_id":"post-74196761000","pre_event_id":"pre-74048337000","phase":"post","timestamp":"2026-01-26T15:34:34.3NZ","tool":"Read","success":true}
+{"event_id":"post-74201322000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:34:34.3NZ","tool":"Read","success":true}
+{"event_id":"post-74224407000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:34:34.3NZ","tool":"Read","success":true}
+{"event_id":"post-74227052000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:34:34.3NZ","tool":"Read","success":true}
+{"event_id":"post-74239274000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:34:34.3NZ","tool":"Read","success":true}
+{"event_id":"pre-78098526000","phase":"pre","timestamp":"2026-01-26T15:34:38.3NZ","tool":"Glob","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/contracts/*"}
+{"event_id":"post-78720639000","pre_event_id":"pre-78098526000","phase":"post","timestamp":"2026-01-26T15:34:38.3NZ","tool":"Glob","success":true}
+{"event_id":"pre-81304489000","phase":"pre","timestamp":"2026-01-26T15:34:41.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/specs/002-projspec-claude-code/contracts/cli-interface.md"}
+{"event_id":"post-81487788000","pre_event_id":"pre-81304489000","phase":"post","timestamp":"2026-01-26T15:34:41.3NZ","tool":"Read","success":true}
+{"event_id":"pre-88368000000","phase":"pre","timestamp":"2026-01-26T15:34:48.3NZ","tool":"Bash","input":"git rev-parse --git-dir 2>/dev/null && echo \"}
+{"event_id":"post-66873409000","pre_event_id":"pre-88368000000","phase":"post","timestamp":"2026-01-26T15:36:06.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-67006856000","phase":"pre","timestamp":"2026-01-26T15:36:06.3NZ","tool":"Glob","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/.gitignore"}
+{"event_id":"pre-67029265000","phase":"pre","timestamp":"2026-01-26T15:36:07.3NZ","tool":"Glob","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/Dockerfile*"}
+{"event_id":"pre-67031102000","phase":"pre","timestamp":"2026-01-26T15:36:07.3NZ","tool":"Glob","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/pyproject.toml"}
+{"event_id":"post-68159664000","pre_event_id":"pre-67031102000","phase":"post","timestamp":"2026-01-26T15:36:08.3NZ","tool":"Glob","success":true}
+{"event_id":"post-68400441000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:36:08.3NZ","tool":"Glob","success":true}
+{"event_id":"post-68642659000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:36:08.3NZ","tool":"Glob","success":true}
+{"event_id":"pre-72508792000","phase":"pre","timestamp":"2026-01-26T15:36:12.3NZ","tool":"Glob","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/.specify/memory/constitution.md"}
+{"event_id":"post-73159674000","pre_event_id":"pre-72508792000","phase":"post","timestamp":"2026-01-26T15:36:13.3NZ","tool":"Glob","success":true}
+{"event_id":"pre-77777089000","phase":"pre","timestamp":"2026-01-26T15:36:17.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/.specify/memory/constitution.md"}
+{"event_id":"post-77957657000","pre_event_id":"pre-77777089000","phase":"post","timestamp":"2026-01-26T15:36:17.3NZ","tool":"Read","success":true}
+{"event_id":"pre-11581494000","phase":"pre","timestamp":"2026-01-26T15:36:51.3NZ","tool":"Task","input":""}
+{"event_id":"pre-15397905000","phase":"pre","timestamp":"2026-01-26T15:36:55.3NZ","tool":"Bash","input":"mkdir -p /Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli/{models,services,utils}"}
+{"event_id":"post-47511282000","pre_event_id":"pre-15397905000","phase":"post","timestamp":"2026-01-26T15:37:27.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-71684540000","phase":"pre","timestamp":"2026-01-26T15:37:51.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli/__init__.py"}
+{"event_id":"post-71899392000","pre_event_id":"pre-71684540000","phase":"post","timestamp":"2026-01-26T15:37:51.3NZ","tool":"Write","success":true}
+{"event_id":"pre-72060423000","phase":"pre","timestamp":"2026-01-26T15:37:52.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli/__main__.py"}
+{"event_id":"post-72268181000","pre_event_id":"pre-72060423000","phase":"post","timestamp":"2026-01-26T15:37:52.3NZ","tool":"Write","success":true}
+{"event_id":"pre-72425122000","phase":"pre","timestamp":"2026-01-26T15:37:52.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli/cli.py"}
+{"event_id":"post-72639242000","pre_event_id":"pre-72425122000","phase":"post","timestamp":"2026-01-26T15:37:52.3NZ","tool":"Write","success":true}
+{"event_id":"pre-72787589000","phase":"pre","timestamp":"2026-01-26T15:37:52.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli/models/__init__.py"}
+{"event_id":"post-72998715000","pre_event_id":"pre-72787589000","phase":"post","timestamp":"2026-01-26T15:37:52.3NZ","tool":"Write","success":true}
+{"event_id":"pre-73131049000","phase":"pre","timestamp":"2026-01-26T15:37:53.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli/models/config.py"}
+{"event_id":"post-73289933000","pre_event_id":"pre-73131049000","phase":"post","timestamp":"2026-01-26T15:37:53.3NZ","tool":"Write","success":true}
+{"event_id":"pre-73420314000","phase":"pre","timestamp":"2026-01-26T15:37:53.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli/models/feature.py"}
+{"event_id":"post-73615431000","pre_event_id":"pre-73420314000","phase":"post","timestamp":"2026-01-26T15:37:53.3NZ","tool":"Write","success":true}
+{"event_id":"pre-73757884000","phase":"pre","timestamp":"2026-01-26T15:37:53.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli/services/__init__.py"}
+{"event_id":"post-73979320000","pre_event_id":"pre-73757884000","phase":"post","timestamp":"2026-01-26T15:37:53.3NZ","tool":"Write","success":true}
+{"event_id":"pre-74117250000","phase":"pre","timestamp":"2026-01-26T15:37:54.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli/services/init.py"}
+{"event_id":"post-74324802000","pre_event_id":"pre-74117250000","phase":"post","timestamp":"2026-01-26T15:37:54.3NZ","tool":"Write","success":true}
+{"event_id":"pre-74491572000","phase":"pre","timestamp":"2026-01-26T15:37:54.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli/services/status.py"}
+{"event_id":"post-74706841000","pre_event_id":"pre-74491572000","phase":"post","timestamp":"2026-01-26T15:37:54.3NZ","tool":"Write","success":true}
+{"event_id":"pre-74840895000","phase":"pre","timestamp":"2026-01-26T15:37:54.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli/utils/__init__.py"}
+{"event_id":"post-75057881000","pre_event_id":"pre-74840895000","phase":"post","timestamp":"2026-01-26T15:37:55.3NZ","tool":"Write","success":true}
+{"event_id":"pre-75215206000","phase":"pre","timestamp":"2026-01-26T15:37:55.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli/utils/git.py"}
+{"event_id":"post-75406987000","pre_event_id":"pre-75215206000","phase":"post","timestamp":"2026-01-26T15:37:55.3NZ","tool":"Write","success":true}
+{"event_id":"pre-75550059000","phase":"pre","timestamp":"2026-01-26T15:37:55.3NZ","tool":"Write","input":"/Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli/utils/paths.py"}
+{"event_id":"post-75746363000","pre_event_id":"pre-75550059000","phase":"post","timestamp":"2026-01-26T15:37:55.3NZ","tool":"Write","success":true}
+{"event_id":"pre-79163328000","phase":"pre","timestamp":"2026-01-26T15:37:59.3NZ","tool":"Bash","input":"find /Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli -type f -name \"}
+{"event_id":"post-79511643000","pre_event_id":"pre-79163328000","phase":"post","timestamp":"2026-01-26T15:37:59.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-82540761000","phase":"pre","timestamp":"2026-01-26T15:38:02.3NZ","tool":"Bash","input":"tree /Users/liorfr/Development/projspec/worktrees/002-projspec-claude-code/src/projspec_cli"}
+{"event_id":"post-90266603000","pre_event_id":"pre-82540761000","phase":"post","timestamp":"2026-01-26T15:38:10.3NZ","tool":"Bash","success":true}
+{"event_id":"post-00474311000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T15:38:20.3NZ","tool":"Task","success":true}
+{"event_id":"pre-04473120000","phase":"pre","timestamp":"2026-01-26T15:38:24.3NZ","tool":"Bash","input":"git add -A && git status"}
