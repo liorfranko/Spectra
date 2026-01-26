@@ -670,8 +670,185 @@ Follow these steps to [accomplish the primary use case]:
 
 ### Step 6: Constitution Check
 
-<!-- Placeholder for T027: Constitution check implementation -->
-Validate the plan against project constitution principles and architectural guidelines.
+Validate the implementation plan against project constitution principles and track any violations.
+
+#### 6.1: Read Constitution
+
+Load the project constitution from the following locations (in priority order):
+
+1. **Project-specific**: `.specify/memory/constitution.md`
+2. **Plugin default**: `$CLAUDE_PLUGIN_ROOT/memory/constitution.md`
+
+```bash
+# Check for constitution file
+CONSTITUTION_PATH=""
+if [ -f ".specify/memory/constitution.md" ]; then
+    CONSTITUTION_PATH=".specify/memory/constitution.md"
+elif [ -f "$CLAUDE_PLUGIN_ROOT/memory/constitution.md" ]; then
+    CONSTITUTION_PATH="$CLAUDE_PLUGIN_ROOT/memory/constitution.md"
+fi
+```
+
+If no constitution exists, skip the constitution check and note in the plan:
+```markdown
+## Constitution Check
+
+**Status**: SKIPPED - No constitution file found
+```
+
+#### 6.2: Evaluate Each Principle
+
+For each principle defined in the constitution, evaluate the planned implementation:
+
+**Compliance Statuses**:
+- **PASS**: Implementation fully complies with the principle
+- **PARTIAL**: Implementation partially complies with justified trade-offs
+- **VIOLATION**: Implementation does not comply with the principle
+
+**Evaluation Process**:
+1. Read each principle from the constitution (typically numbered P-001, P-002, etc.)
+2. Cross-reference with:
+   - Technical Context (dependencies, platform choices)
+   - Data Model (entity design, storage approach)
+   - Research decisions (technology choices)
+3. Determine compliance status
+4. Document justification for any non-PASS status
+
+**Justification Requirements for Non-PASS**:
+```markdown
+| Principle | Status | Justification | Mitigation |
+|-----------|--------|---------------|------------|
+| P-001: [Name] | PARTIAL | [Why full compliance not possible] | [How impact is reduced] |
+| P-002: [Name] | VIOLATION | [Why violation is necessary] | [What compensating controls exist] |
+```
+
+#### 6.3: Add Constitution Check Section to plan.md
+
+Add the Constitution Check section to the plan.md file after the Technical Context section:
+
+```markdown
+## Constitution Check
+
+**Constitution Source**: [path to constitution file]
+**Check Date**: [ISO 8601 date]
+
+### Principle Compliance
+
+| Principle | Description | Status | Notes |
+|-----------|-------------|--------|-------|
+| P-001 | [Brief description] | PASS | - |
+| P-002 | [Brief description] | PASS | Complies via [specific implementation choice] |
+| P-003 | [Brief description] | PARTIAL | See justification below |
+
+### Compliance Details
+
+#### Principles with Full Compliance (PASS)
+
+- **P-001**: [How the implementation satisfies this principle]
+- **P-002**: [How the implementation satisfies this principle]
+
+#### Principles with Partial Compliance (PARTIAL)
+
+**P-003: [Principle Name]**
+- **Requirement**: [What the principle requires]
+- **Current Plan**: [What the plan does instead]
+- **Justification**: [Why full compliance is not feasible]
+- **Mitigation**: [How the impact is minimized]
+
+#### Principles with Violations (VIOLATION)
+
+**P-00X: [Principle Name]**
+- **Requirement**: [What the principle requires]
+- **Violation**: [How the plan violates this]
+- **Justification**: [Why this violation is necessary]
+- **Mitigation**: [Compensating controls or future remediation]
+- **Governance**: [Required approval or override documentation]
+```
+
+#### 6.4: Track Violations in Complexity Section
+
+If any VIOLATION status exists, it must be documented in the Complexity Tracking section of plan.md:
+
+**Add to Complexity Tracking**:
+```markdown
+## Complexity Tracking
+
+### Constitution Violations
+
+| Violation | Principle | Impact | Justification | Approver |
+|-----------|-----------|--------|---------------|----------|
+| [Brief description] | P-00X | [High/Medium/Low] | [Why necessary] | [Who approved or TBD] |
+
+### Violation Details
+
+#### [Violation Title]
+
+**Principle Violated**: P-00X: [Principle Name]
+
+**Description**: [Detailed description of the violation]
+
+**Business Justification**:
+[Why this violation is necessary for the feature to succeed]
+
+**Technical Justification**:
+[Why alternative approaches that would comply are not feasible]
+
+**Risk Assessment**:
+- **Impact**: [What could go wrong]
+- **Likelihood**: [How likely is the negative outcome]
+- **Severity**: [How bad would it be]
+
+**Mitigation Plan**:
+1. [Immediate mitigation step]
+2. [Ongoing monitoring or control]
+3. [Future remediation plan if applicable]
+
+**Required Governance**:
+- [ ] Technical lead review
+- [ ] Architecture review (if High impact)
+- [ ] Documented exception approval
+```
+
+**Violation Handling Rules**:
+- Violations CANNOT be ignored or hidden
+- Each violation requires explicit justification
+- High-impact violations require governance approval before implementation
+- Violations should be flagged for future remediation when possible
+
+#### 6.5: Determine Gate Status
+
+The Constitution Check is a quality gate that determines if planning can proceed:
+
+**Gate Criteria**:
+```markdown
+### Gate Status
+
+**Constitution Check Result**: [PASS | FAIL]
+
+**Criteria**:
+- PASS: All principles are PASS or PARTIAL with documented justification
+- FAIL: Any VIOLATION exists without proper governance approval
+
+**Action Required**:
+- [None - proceed to next phase | Obtain governance approval for violations]
+```
+
+**Gate Decision Matrix**:
+
+| Highest Status | Gate Result | Action |
+|----------------|-------------|--------|
+| All PASS | PASS | Proceed to project structure |
+| Any PARTIAL | PASS | Proceed with documented trade-offs |
+| Any VIOLATION (justified + approved) | PASS | Proceed with governance documentation |
+| Any VIOLATION (not approved) | FAIL | Halt - obtain approval or revise plan |
+
+**On FAIL**:
+1. Stop the planning workflow
+2. Report the violations that need approval
+3. Request governance review
+4. Resume only after approvals are documented
+
+**Output**: Add gate status to the plan.md Constitution Check section.
 
 ### Step 7: Project Structure
 
