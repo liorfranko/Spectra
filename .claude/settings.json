@@ -1,16 +1,2 @@
 {
-  "hooks": {
-    "Stop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash -c 'r=$PWD; while [ \"$r\" != / ] && [ ! -d \"$r/.specify\" ]; do r=$(dirname \"$r\"); done; [ -d \"$r/.specify\" ] && \"$r/.specify/scripts/bash/evaluate-session.sh\"'"
-          }
-        ],
-        "description": "Evaluate session for extractable patterns"
-      }
-    ]
-  }
 }
