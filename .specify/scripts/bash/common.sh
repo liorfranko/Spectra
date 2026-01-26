@@ -118,6 +118,29 @@ get_worktree_for_branch() {
     '
 }
 
+# Check if user should be in a worktree instead of main repo
+# Prints guidance message and returns 1 if redirect needed
+check_worktree_context() {
+    local feature_branch="${1:-$(get_current_branch)}"
+
+    # Skip check if already in a worktree
+    if is_worktree; then
+        return 0
+    fi
+
+    # Check if the branch has an associated worktree
+    local worktree_path=$(get_worktree_for_branch "$feature_branch")
+
+    if [[ -n "$worktree_path" ]]; then
+        echo "Warning: Branch '$feature_branch' is checked out in a worktree" >&2
+        echo "Worktree location: $worktree_path" >&2
+        echo "Navigate there with: cd $worktree_path" >&2
+        return 1
+    fi
+
+    return 0
+}
+
 check_feature_branch() {
     local branch="$1"
     local has_git_repo="$2"
