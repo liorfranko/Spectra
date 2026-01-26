@@ -1,0 +1,18 @@
+{
+  "name": "projspec",
+  "version": "0.1.0",
+  "description": "Spec-driven development workflow orchestrator for Claude Code",
+  "commands": [
+    {"name": "init", "description": "Initialize ProjSpec in current directory"},
+    {"name": "status", "description": "Show status of all active specs"},
+    {"name": "new", "description": "Create a new spec with isolated worktree"},
+    {"name": "spec", "description": "Define specification document"},
+    {"name": "plan", "description": "Create implementation plan"},
+    {"name": "tasks", "description": "Generate task list from plan"},
+    {"name": "implement", "description": "Implement next ready task"},
+    {"name": "review", "description": "Review implementation against spec"},
+    {"name": "resume", "description": "Resume from last saved state"},
+    {"name": "next", "description": "Advance to next phase"},
+    {"name": "archive", "description": "Merge branch and cleanup worktree"}
+  ]
+}
