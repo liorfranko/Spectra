@@ -271,28 +271,44 @@ class FileVerifier:
         matches = re.findall(pattern, content)
         return len(matches)
 
-    def find_file(self, patterns: list[str]) -> Path | None:
-        """Find the first existing file from a list of path patterns.
+    def find_file(
+        self,
+        pattern: str,
+        base_path: Path | None = None,
+    ) -> Path | None:
+        """Find a file matching a regex pattern.
 
         Args:
-            patterns: List of relative path patterns to check in order.
+            pattern: Regular expression pattern to match against file paths
+                (relative to base_path). The pattern is matched against the
+                relative path from base_path.
+            base_path: Base directory to search in. If None, uses self.base_path.
 
         Returns:
-            Absolute Path to the first existing file, or None if no file
+            Absolute Path to the first matching file, or None if no file
             is found.
 
         Example:
-            >>> readme = verifier.find_file([
-            ...     "README.md",
-            ...     "readme.md",
-            ...     "README.txt"
-            ... ])
-            >>> if readme:
-            ...     print(f"Found readme at {readme}")
+            >>> spec = verifier.find_file(
+            ...     pattern=r"specs/\\d+-.*/spec\\.md",
+            ...     base_path=worktree_path
+            ... )
+            >>> if spec:
+            ...     print(f"Found spec at {spec}")
         """
-        for pattern in patterns:
-            full_path = self._resolve_path(pattern)
-            if full_path.exists() and full_path.is_file():
-                return full_path
+        search_path = base_path if base_path is not None else self.base_path
+        regex = re.compile(pattern)
+
+        # Walk the directory tree to find matching files
+        for file_path in search_path.rglob("*"):
+            if file_path.is_file():
+                # Get the relative path from base for matching
+                try:
+                    relative = file_path.relative_to(search_path)
+                    if regex.search(str(relative)):
+                        return file_path
+                except ValueError:
+                    # Path is not relative to search_path, skip
+                    continue
 
         return None
