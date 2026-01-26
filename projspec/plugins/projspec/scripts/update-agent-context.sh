@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# speckit/scripts/update-agent-context.sh - Update CLAUDE.md with feature context
+# projspec/scripts/update-agent-context.sh - Update CLAUDE.md with feature context
 # Reads plan.md and updates CLAUDE.md with technologies, structure, and changes
 set -euo pipefail
 
@@ -152,7 +152,7 @@ extract_structure() {
     # If not found, try looking at the Documentation Layout
     if [[ -z "$structure" ]]; then
         structure=$(awk '/### Documentation Layout/,/### Source Code Layout/' "$plan_file" 2>/dev/null | \
-                    grep "specs/\|src/\|tests/\|speckit/" | \
+                    grep "specs/\|src/\|tests/\|projspec/" | \
                     head -5)
     fi
 
@@ -450,10 +450,10 @@ main() {
     local plan_file="${FEATURE_DIR}/plan.md"
     if [[ ! -f "$plan_file" ]]; then
         if [[ "$OUTPUT_JSON" == "true" ]]; then
-            json_output "error" "true" "message" "plan.md not found in $FEATURE_DIR - run /speckit.plan first"
+            json_output "error" "true" "message" "plan.md not found in $FEATURE_DIR - run /projspec.plan first"
             exit 1
         else
-            error "plan.md not found in $FEATURE_DIR - run /speckit.plan first"
+            error "plan.md not found in $FEATURE_DIR - run /projspec.plan first"
         fi
     fi
 
