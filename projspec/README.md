@@ -1,29 +1,29 @@
-# speckit
+# ProjSpec
 
 Specification-driven development workflow automation for Claude Code.
 
-speckit provides a structured approach to feature development by guiding you through specification, planning, task generation, and implementation phases. It ensures consistency and traceability throughout the development lifecycle.
+ProjSpec provides a structured approach to feature development by guiding you through specification, planning, task generation, and implementation phases. It ensures consistency and traceability throughout the development lifecycle.
 
 ## Prerequisites
 
 - **Claude Code CLI** - The Claude Code command-line interface
 - **Git** - Version control (repository must be initialized)
 - **macOS or Linux** - Currently supported platforms
-- **GitHub CLI** (optional) - Required for `/speckit.taskstoissues` command
+- **GitHub CLI** (optional) - Required for `/projspec.taskstoissues` command
 
 ## Installation
 
 For local development, add the plugin using the `--plugin-dir` flag:
 
 ```bash
-claude --plugin-dir /path/to/speckit
+claude --plugin-dir /path/to/projspec
 ```
 
 Or add it to your Claude Code configuration for persistent use:
 
 ```bash
 # Add to your shell profile (.bashrc, .zshrc, etc.)
-alias claude="claude --plugin-dir /path/to/speckit"
+alias claude="claude --plugin-dir /path/to/projspec"
 ```
 
 ## Quick Start
@@ -33,7 +33,7 @@ alias claude="claude --plugin-dir /path/to/speckit"
 Define your feature requirements:
 
 ```
-/speckit.specify my new feature that handles user authentication
+/projspec.specify my new feature that handles user authentication
 ```
 
 This creates a structured specification with user scenarios, functional requirements, and success criteria.
@@ -43,7 +43,7 @@ This creates a structured specification with user scenarios, functional requirem
 Identify and resolve ambiguous areas:
 
 ```
-/speckit.clarify
+/projspec.clarify
 ```
 
 Asks up to 5 targeted questions and encodes answers back into the spec.
@@ -53,7 +53,7 @@ Asks up to 5 targeted questions and encodes answers back into the spec.
 Create an implementation plan from your spec:
 
 ```
-/speckit.plan
+/projspec.plan
 ```
 
 This produces a detailed design with architecture decisions and constitution compliance checks.
@@ -63,7 +63,7 @@ This produces a detailed design with architecture decisions and constitution com
 Break down the plan into actionable tasks:
 
 ```
-/speckit.tasks
+/projspec.tasks
 ```
 
 Creates a dependency-ordered task list ready for implementation.
@@ -73,7 +73,7 @@ Creates a dependency-ordered task list ready for implementation.
 Execute the implementation plan:
 
 ```
-/speckit.implement
+/projspec.implement
 ```
 
 Processes and executes all tasks defined in tasks.md.
@@ -83,7 +83,7 @@ Processes and executes all tasks defined in tasks.md.
 Run comprehensive code review:
 
 ```
-/speckit.review-pr
+/projspec.review-pr
 ```
 
 Uses specialized agents to ensure code quality before PR creation.
@@ -92,75 +92,75 @@ Uses specialized agents to ensure code quality before PR creation.
 
 ## Commands Reference
 
-speckit includes 13 commands for the complete development workflow.
+ProjSpec includes 13 commands for the complete development workflow.
 
 ### Core Workflow Commands
 
 | Command | Description | Arguments |
 |---------|-------------|-----------|
-| `/speckit.specify` | Create or update feature spec with requirements and success criteria | Feature description or empty for interactive |
-| `/speckit.clarify` | Identify underspecified areas and ask up to 5 targeted clarification questions | None |
-| `/speckit.plan` | Generate implementation plan with constitution compliance | None |
-| `/speckit.tasks` | Generate structured, dependency-ordered task list from plan | None |
-| `/speckit.implement` | Implement tasks from task list with guided workflow | Task ID or empty for next task |
-| `/speckit.taskstoissues` | Convert tasks into GitHub issues (requires GitHub CLI) | None |
+| `/projspec.specify` | Create or update feature spec with requirements and success criteria | Feature description or empty for interactive |
+| `/projspec.clarify` | Identify underspecified areas and ask up to 5 targeted clarification questions | None |
+| `/projspec.plan` | Generate implementation plan with constitution compliance | None |
+| `/projspec.tasks` | Generate structured, dependency-ordered task list from plan | None |
+| `/projspec.implement` | Implement tasks from task list with guided workflow | Task ID or empty for next task |
+| `/projspec.taskstoissues` | Convert tasks into GitHub issues (requires GitHub CLI) | None |
 
 ### Quality & Validation Commands
 
 | Command | Description | Arguments |
 |---------|-------------|-----------|
-| `/speckit.validate` | Validate current feature artifacts against checklists and quality criteria | `spec`, `plan`, `tasks`, `all`, or empty |
-| `/speckit.checklist` | Generate a custom checklist for the current feature based on requirements | Checklist type |
-| `/speckit.analyze` | Perform cross-artifact consistency and quality analysis | None |
-| `/speckit.review-pr` | Comprehensive PR review using specialized agents | `full`, `quick`, `security`, `performance`, `style` |
+| `/projspec.validate` | Validate current feature artifacts against checklists and quality criteria | `spec`, `plan`, `tasks`, `all`, or empty |
+| `/projspec.checklist` | Generate a custom checklist for the current feature based on requirements | Checklist type |
+| `/projspec.analyze` | Perform cross-artifact consistency and quality analysis | None |
+| `/projspec.review-pr` | Comprehensive PR review using specialized agents | `full`, `quick`, `security`, `performance`, `style` |
 
 ### Project Configuration Commands
 
 | Command | Description | Arguments |
 |---------|-------------|-----------|
-| `/speckit.constitution` | Create or update project constitution with foundational principles | `interactive`, `add "principle"`, `update`, or empty |
+| `/projspec.constitution` | Create or update project constitution with foundational principles | `interactive`, `add "principle"`, `update`, or empty |
 
 ---
 
 ## Command Details & Examples
 
-### /speckit.specify
+### /projspec.specify
 
 Create or update a feature specification from a natural language description.
 
 ```bash
 # Interactive mode
-/speckit.specify
+/projspec.specify
 
 # With feature description
-/speckit.specify implement user authentication with OAuth support
+/projspec.specify implement user authentication with OAuth support
 
 # Update existing spec
-/speckit.specify  # Then follow prompts to update
+/projspec.specify  # Then follow prompts to update
 ```
 
 **Output:** Creates `spec.md` with user scenarios, functional requirements, success criteria, and edge cases.
 
 ---
 
-### /speckit.clarify
+### /projspec.clarify
 
 Identify underspecified areas and ask targeted clarification questions.
 
 ```bash
-/speckit.clarify
+/projspec.clarify
 ```
 
 **Behavior:** Analyzes current spec.md, identifies up to 5 areas needing clarification, asks questions interactively, and updates the spec with answers.
 
 ---
 
-### /speckit.plan
+### /projspec.plan
 
 Generate an implementation plan with constitution compliance checks.
 
 ```bash
-/speckit.plan
+/projspec.plan
 ```
 
 **Prerequisites:** Requires `spec.md` to exist.
@@ -169,12 +169,12 @@ Generate an implementation plan with constitution compliance checks.
 
 ---
 
-### /speckit.tasks
+### /projspec.tasks
 
 Generate a structured, dependency-ordered task list from the implementation plan.
 
 ```bash
-/speckit.tasks
+/projspec.tasks
 ```
 
 **Prerequisites:** Requires `plan.md` to exist.
@@ -183,16 +183,16 @@ Generate a structured, dependency-ordered task list from the implementation plan
 
 ---
 
-### /speckit.implement
+### /projspec.implement
 
 Execute the implementation plan by processing tasks.
 
 ```bash
 # Start from first pending task
-/speckit.implement
+/projspec.implement
 
 # Implement specific task
-/speckit.implement T015
+/projspec.implement T015
 ```
 
 **Prerequisites:** Requires `tasks.md` to exist.
@@ -201,12 +201,12 @@ Execute the implementation plan by processing tasks.
 
 ---
 
-### /speckit.taskstoissues
+### /projspec.taskstoissues
 
 Convert tasks into actionable GitHub issues.
 
 ```bash
-/speckit.taskstoissues
+/projspec.taskstoissues
 ```
 
 **Prerequisites:** Requires `tasks.md` and GitHub CLI (`gh`) authenticated.
@@ -215,18 +215,18 @@ Convert tasks into actionable GitHub issues.
 
 ---
 
-### /speckit.validate
+### /projspec.validate
 
 Validate current feature artifacts against quality criteria.
 
 ```bash
 # Validate all artifacts
-/speckit.validate
+/projspec.validate
 
 # Validate specific artifact
-/speckit.validate spec
-/speckit.validate plan
-/speckit.validate tasks
+/projspec.validate spec
+/projspec.validate plan
+/projspec.validate tasks
 ```
 
 **Checks performed:**
@@ -238,50 +238,50 @@ Validate current feature artifacts against quality criteria.
 
 ---
 
-### /speckit.checklist
+### /projspec.checklist
 
 Generate a custom checklist for the current feature.
 
 ```bash
-/speckit.checklist requirements
-/speckit.checklist implementation
+/projspec.checklist requirements
+/projspec.checklist implementation
 ```
 
 **Output:** Creates checklists based on spec requirements and project constitution.
 
 ---
 
-### /speckit.analyze
+### /projspec.analyze
 
 Perform cross-artifact consistency and quality analysis.
 
 ```bash
-/speckit.analyze
+/projspec.analyze
 ```
 
 **Behavior:** Analyzes spec.md, plan.md, and tasks.md for consistency, missing traceability, and quality issues.
 
 ---
 
-### /speckit.review-pr
+### /projspec.review-pr
 
 Comprehensive pull request review using specialized agents.
 
 ```bash
 # Full review (default)
-/speckit.review-pr
+/projspec.review-pr
 
 # Quick review for critical issues
-/speckit.review-pr quick
+/projspec.review-pr quick
 
 # Security-focused review
-/speckit.review-pr security
+/projspec.review-pr security
 
 # Performance analysis
-/speckit.review-pr performance
+/projspec.review-pr performance
 
 # Style check only
-/speckit.review-pr style
+/projspec.review-pr style
 ```
 
 **Review agents invoked:**
@@ -296,22 +296,22 @@ Comprehensive pull request review using specialized agents.
 
 ---
 
-### /speckit.constitution
+### /projspec.constitution
 
 Create or update the project constitution with foundational principles.
 
 ```bash
 # View current constitution
-/speckit.constitution
+/projspec.constitution
 
 # Interactive creation/update
-/speckit.constitution interactive
+/projspec.constitution interactive
 
 # Add a specific principle
-/speckit.constitution add "All API endpoints must have rate limiting"
+/projspec.constitution add "All API endpoints must have rate limiting"
 
 # Update existing
-/speckit.constitution update
+/projspec.constitution update
 ```
 
 **Output:** Creates/updates `.specify/memory/constitution.md` with principles, constraints, quality gates, and governance rules.
@@ -320,7 +320,7 @@ Create or update the project constitution with foundational principles.
 
 ## Agents Reference
 
-speckit includes 6 specialized agents for code analysis and review tasks.
+ProjSpec includes 6 specialized agents for code analysis and review tasks.
 
 | Agent | Description | Primary Use |
 |-------|-------------|-------------|
@@ -392,12 +392,12 @@ If prerequisites are not met, commands provide clear error messages:
 
 ```
 Error: spec.md not found.
-Run /speckit.specify first to create a specification.
+Run /projspec.specify first to create a specification.
 ```
 
 ```
 Error: Not in a feature directory.
-Navigate to a feature directory under specs/ or run /speckit.specify to start.
+Navigate to a feature directory under specs/ or run /projspec.specify to start.
 ```
 
 ---
