@@ -2,6 +2,8 @@
 # Common functions and variables for all scripts
 
 # Get repository root, with fallback for non-git repositories
+# Note: In worktree context, returns the worktree root (not main repo)
+# Use get_main_repo_from_worktree() if you need the main repo path
 get_repo_root() {
     if git rev-parse --show-toplevel >/dev/null 2>&1; then
         git rev-parse --show-toplevel
