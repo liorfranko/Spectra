@@ -8,7 +8,7 @@ stages can run.
 
 import pytest
 
-from ..helpers import ClaudeRunner
+from ..helpers import ClaudeRunner, FileVerifier
 
 
 @pytest.mark.e2e
@@ -47,4 +47,19 @@ class TestSpeckitInit:
             f"Timed out: {result.timed_out}\n"
             f"STDOUT:\n{result.stdout}\n"
             f"STDERR:\n{result.stderr}"
+        )
+
+    def test_specify_dir_created(self, file_verifier: FileVerifier) -> None:
+        """Test that .specify/ directory is created after initialization.
+
+        This test verifies that the `specify init` command creates the
+        .specify/ directory in the project root. This directory is the
+        primary storage location for projspec plugin state and artifacts.
+
+        Args:
+            file_verifier: FileVerifier fixture configured for the test project.
+        """
+        file_verifier.assert_dir_exists(
+            ".specify/",
+            "projspec plugin configuration directory"
         )
