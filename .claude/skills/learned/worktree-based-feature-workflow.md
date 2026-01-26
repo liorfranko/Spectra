@@ -39,5 +39,101 @@ cd $WORKTREE && $MAIN_REPO/.specify/scripts/bash/setup-plan.sh --json
 # specs/001-feature/plan.md -> $WORKTREE/specs/001-feature/plan.md
 ```
 
+## Multi-Worktree Navigation
+
+When working with multiple features simultaneously, each in its own worktree:
+
+### Listing All Active Worktrees
+
+```bash
+# Show all worktrees with their branches and paths
+git worktree list
+
+# Example output:
+# /Users/dev/project                       abc1234 [main]
+# /Users/dev/project/worktrees/001-auth    def5678 [001-auth]
+# /Users/dev/project/worktrees/002-api     ghi9012 [002-api]
+```
+
+### Navigating Between Worktrees
+
+```bash
+# From main repo to a worktree
+cd worktrees/001-auth
+
+# From one worktree to another (relative navigation)
+cd ../002-api
+
+# Using absolute paths (recommended for scripts)
+cd /Users/dev/project/worktrees/001-auth
+```
+
+### Identifying Current Worktree
+
+```bash
+# Check which branch you're on
+git branch --show-current
+
+# Get the worktree root directory
+git rev-parse --show-toplevel
+
+# Verify you're in a worktree (not main)
+git rev-parse --git-common-dir  # Shows path to main .git if in worktree
+```
+
+### Key Behaviors
+
+- **Isolation**: Each worktree is a complete, independent working copy
+- **No interference**: Changes in one worktree don't affect others
+- **Shared history**: All worktrees share the same git history and remote
+- **Branch lock**: A branch can only be checked out in one worktree at a time
+
+## Troubleshooting
+
+### "Branch already checked out" Error
+
+```
+fatal: 'feature-branch' is already checked out at '/path/to/worktree'
+```
+
+**Solution**: Navigate to the existing worktree instead of creating a new checkout:
+```bash
+# Find where the branch is checked out
+git worktree list | grep feature-branch
+
+# Navigate to that worktree
+cd /path/to/worktree
+```
+
+### Stale Worktrees
+
+When worktree directories are deleted manually (not via `git worktree remove`):
+
+```bash
+# List worktrees - stale ones show as "prunable"
+git worktree list
+
+# Clean up stale worktree references
+git worktree prune
+
+# Verify cleanup
+git worktree list
+```
+
+### Worktree Not Found
+
+If a worktree path doesn't exist but git still references it:
+
+```bash
+# Check worktree status
+git worktree list
+
+# Prune if marked as prunable
+git worktree prune
+
+# Or explicitly remove the reference
+git worktree remove /path/to/missing/worktree --force
+```
+
 ## Key Insight
 Keep a mental model of two workspaces: the main repo (configuration, scripts, session state) and the worktree (feature-specific code and specs). Use absolute paths when crossing between them.
