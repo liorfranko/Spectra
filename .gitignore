@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Environment files (if any)
+.env
+.env.local
+.env.*.local
+
+# Claude Code session files (keep learning observations tracked)
+.specify/learning/.current-session-dir
+.specify/learning/.current-session-id
