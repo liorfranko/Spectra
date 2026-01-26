@@ -5,6 +5,7 @@ for end-to-end tests that validate the complete projspec workflow
 using Claude Code subprocess execution.
 """
 
+from dataclasses import dataclass
 from enum import Enum
 
 
@@ -157,3 +158,76 @@ class StageTracker:
         """
         self.first_failure = None
         self.stage_status = {}
+
+
+@dataclass
+class E2EConfig:
+    """Configuration object parsed from pytest CLI options.
+
+    This dataclass holds configuration settings for E2E test execution,
+    including stage filtering, debug mode, and timeout overrides.
+
+    Attributes:
+        stage_filter: Range of stages to run (start, end inclusive).
+            If None, all stages are run.
+        debug: Enable debug mode with streaming output.
+        timeout_override: Override all stage timeouts in seconds.
+            If None, default timeouts are used.
+
+    Validation Rules:
+        - stage_filter range must be 1-6 inclusive
+        - timeout_override must be positive if set
+
+    Example:
+        >>> config = E2EConfig(stage_filter=(1, 3), debug=True)
+        >>> config.should_run_stage(2)
+        True
+        >>> config.should_run_stage(5)
+        False
+    """
+
+    stage_filter: tuple[int, int] | None = None
+    debug: bool = False
+    timeout_override: int | None = None
+
+    def __post_init__(self) -> None:
+        """Validate configuration after initialization.
+
+        Raises:
+            ValueError: If stage_filter values are not in range 1-6,
+                or if timeout_override is not positive.
+        """
+        if self.stage_filter is not None:
+            start, end = self.stage_filter
+            if not (1 <= start <= 6):
+                raise ValueError(
+                    f"stage_filter start must be between 1 and 6, got {start}"
+                )
+            if not (1 <= end <= 6):
+                raise ValueError(
+                    f"stage_filter end must be between 1 and 6, got {end}"
+                )
+            if start > end:
+                raise ValueError(
+                    f"stage_filter start ({start}) must be <= end ({end})"
+                )
+
+        if self.timeout_override is not None and self.timeout_override <= 0:
+            raise ValueError(
+                f"timeout_override must be positive, got {self.timeout_override}"
+            )
+
+    def should_run_stage(self, stage: int) -> bool:
+        """Determine if a stage should be run based on the stage filter.
+
+        Args:
+            stage: The stage number to check.
+
+        Returns:
+            True if the stage should be run (either no filter is set,
+            or the stage is within the filter range inclusive).
+        """
+        if self.stage_filter is None:
+            return True
+        start, end = self.stage_filter
+        return start <= stage <= end
