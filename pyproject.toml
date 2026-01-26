@@ -65,6 +65,16 @@ Issues = "https://github.com/projspec/projspec-cli/issues"
 [tool.hatch.build.targets.wheel]
 packages = ["src/projspec_cli"]
 
+[tool.hatch.build.targets.wheel.sources]
+"src" = ""
+
+[tool.hatch.build]
+include = [
+    "src/projspec_cli/**/*.py",
+    "src/projspec_cli/resources/**/*.md",
+    "src/projspec_cli/resources/**/*.sh",
+]
+
 [tool.ruff]
 target-version = "py311"
 line-length = 88
