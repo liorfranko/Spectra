@@ -266,7 +266,7 @@ You **MUST** consider the user input before proceeding (if not empty).
   - Total commits made (should match tasks completed)
   - Verification: "X tasks = X commits ✓" or warning if mismatch
   - Summary of completed work by phase
-  - Next suggested step: `/speckit.review-pr`
+  - Next suggested step: `/projspec.review-pr`
 
 ## Important Notes
 
@@ -281,7 +281,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Prerequisites
 
-- Complete task breakdown exists in tasks.md (run `/speckit.tasks` if missing)
+- Complete task breakdown exists in tasks.md (run `/projspec.tasks` if missing)
 - Git repository is initialized and has a remote configured
 - Working directory is clean or all changes are committed
 - User has push permissions to remote repository
