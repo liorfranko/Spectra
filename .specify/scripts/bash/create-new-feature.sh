@@ -280,18 +280,18 @@ if [ "$HAS_GIT" = true ]; then
     # Create worktree with a new branch based on current HEAD
     git worktree add -b "$BRANCH_NAME" "$WORKTREE_PATH"
 
-    # Remove specs directory if it exists and create symlink to main repo specs
-    rm -rf "$WORKTREE_PATH/specs"
-    ln -s "../../specs" "$WORKTREE_PATH/specs"
-
     >&2 echo "[specify] Created worktree at: $WORKTREE_PATH"
     >&2 echo "[specify] To start working: cd $WORKTREE_PATH"
+
+    # Specs are created in the worktree (committed to feature branch)
+    FEATURE_DIR="$WORKTREE_PATH/specs/$BRANCH_NAME"
 else
     >&2 echo "[specify] Warning: Git repository not detected; skipped worktree creation for $BRANCH_NAME"
+
+    # Without git, specs are created in the main specs directory
+    FEATURE_DIR="$SPECS_DIR/$BRANCH_NAME"
 fi
 
-# Specs are always created in the main repository
-FEATURE_DIR="$SPECS_DIR/$BRANCH_NAME"
 mkdir -p "$FEATURE_DIR"
 
 TEMPLATE="$REPO_ROOT/.specify/templates/spec-template.md"
