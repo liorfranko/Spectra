@@ -1,5 +1,5 @@
 {
   "enabledPlugins": {
-    "speckit@speckit": true
+    "projspec@projspec": true
   }
 }
