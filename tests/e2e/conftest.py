@@ -12,7 +12,7 @@ from typing import Generator
 
 import pytest
 
-from .helpers import E2EProject
+from .helpers import ClaudeRunner, E2EProject, FileVerifier, GitVerifier
 
 
 class StageStatus(Enum):
@@ -525,3 +525,103 @@ def test_project(request: pytest.FixtureRequest) -> E2EProject:
     project.setup()
 
     return project
+
+
+# =============================================================================
+# Function-Scoped Fixtures
+# =============================================================================
+
+
+@pytest.fixture
+def project_path(test_project: E2EProject) -> Path:
+    """Provide the project path for test functions.
+
+    This function-scoped fixture extracts the project path from the
+    session-scoped test_project fixture for convenient access in tests.
+
+    Args:
+        test_project: The session-scoped E2EProject fixture.
+
+    Returns:
+        Path to the test project directory.
+
+    Example:
+        >>> def test_example(project_path):
+        ...     assert project_path.exists()
+        ...     config_file = project_path / "config.yaml"
+    """
+    return test_project.project_path
+
+
+@pytest.fixture
+def claude_runner(test_project: E2EProject, e2e_config: E2EConfig) -> ClaudeRunner:
+    """Create a ClaudeRunner configured for the test project.
+
+    This function-scoped fixture creates a ClaudeRunner instance configured
+    with the test project's working directory and log directory, along with
+    debug and timeout settings from the E2E configuration.
+
+    Args:
+        test_project: The session-scoped E2EProject fixture.
+        e2e_config: The session-scoped E2EConfig fixture.
+
+    Returns:
+        ClaudeRunner instance ready for executing Claude CLI commands.
+
+    Example:
+        >>> def test_example(claude_runner):
+        ...     result = claude_runner.run(
+        ...         prompt="Create a file",
+        ...         stage=1,
+        ...         log_name="test"
+        ...     )
+        ...     assert result.success
+    """
+    return ClaudeRunner(
+        work_dir=test_project.project_path,
+        log_dir=test_project.log_dir,
+        debug=e2e_config.debug,
+        timeout_override=e2e_config.timeout_override,
+    )
+
+
+@pytest.fixture
+def file_verifier(test_project: E2EProject) -> FileVerifier:
+    """Create a FileVerifier for the test project.
+
+    This function-scoped fixture creates a FileVerifier instance configured
+    with the test project's base path for verifying file existence and content.
+
+    Args:
+        test_project: The session-scoped E2EProject fixture.
+
+    Returns:
+        FileVerifier instance for asserting file conditions.
+
+    Example:
+        >>> def test_example(file_verifier):
+        ...     file_verifier.assert_exists("README.md", "Project readme")
+        ...     file_verifier.assert_contains("config.py", r"DEBUG", "Debug setting")
+    """
+    return FileVerifier(base_path=test_project.project_path)
+
+
+@pytest.fixture
+def git_verifier(test_project: E2EProject) -> GitVerifier:
+    """Create a GitVerifier for the test project.
+
+    This function-scoped fixture creates a GitVerifier instance configured
+    with the test project's repository path for verifying git state.
+
+    Args:
+        test_project: The session-scoped E2EProject fixture.
+
+    Returns:
+        GitVerifier instance for asserting git repository conditions.
+
+    Example:
+        >>> def test_example(git_verifier):
+        ...     git_verifier.assert_is_repo()
+        ...     git_verifier.assert_branch_matches(r"main", "main branch")
+    """
+    return GitVerifier(repo_path=test_project.project_path)

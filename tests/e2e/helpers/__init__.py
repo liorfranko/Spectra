@@ -6,6 +6,7 @@ used across E2E test modules.
 
 from .claude_runner import ClaudeResult, ClaudeRunner
 from .file_verifier import FileVerifier
+from .git_verifier import GitVerifier
 from .test_environment import E2EProject
 
 __all__ = [
@@ -13,4 +14,5 @@ __all__ = [
     "ClaudeRunner",
     "E2EProject",
     "FileVerifier",
+    "GitVerifier",
 ]
