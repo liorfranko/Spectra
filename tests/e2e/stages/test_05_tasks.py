@@ -20,4 +20,30 @@ class TestSpeckitTasks:
     including proper checkbox formatting and phase organization.
     """
 
-    pass
+    def test_tasks_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
+        """Test that /speckit.tasks command executes successfully.
+
+        This test runs the /speckit.tasks command on the feature plan
+        created in stage 4 and verifies that it completes without errors.
+
+        Args:
+            claude_runner: Fixture providing a configured ClaudeRunner instance.
+        """
+        prompt = (
+            "Run /speckit.tasks to generate actionable tasks from the "
+            "current implementation plan."
+        )
+
+        result = claude_runner.run(
+            prompt=prompt,
+            stage=5,
+            log_name="tasks_runs_successfully",
+        )
+
+        assert result.success, (
+            f"/speckit.tasks command failed.\n"
+            f"Exit code: {result.exit_code}\n"
+            f"Timed out: {result.timed_out}\n"
+            f"Stderr: {result.stderr}\n"
+            f"Stdout (last 500 chars): {result.stdout[-500:] if result.stdout else 'empty'}"
+        )
