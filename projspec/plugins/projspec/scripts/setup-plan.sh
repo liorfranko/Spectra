@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# speckit/scripts/setup-plan.sh - Initialize plan workflow for a feature
+# projspec/scripts/setup-plan.sh - Initialize plan workflow for a feature
 # Prepares the feature directory for plan generation by verifying spec.md
 # and creating necessary directory structure
 set -euo pipefail
