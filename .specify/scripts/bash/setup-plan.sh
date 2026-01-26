@@ -27,6 +27,10 @@ done
 SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
+# Warn if user should be in a worktree instead of main repo
+# This is advisory - script continues even if warning is shown
+check_worktree_context || true
+
 # Get all paths and variables from common functions
 eval $(get_feature_paths)
 
