@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "projspec",
+  "description": "Specification-driven development workflow automation",
+  "owner": {
+    "name": "liorfr",
+    "email": "lior@example.com"
+  },
+  "plugins": [
+    {
+      "name": "projspec",
+      "description": "Specification-driven development workflow automation",
+      "version": "1.0.0",
+      "author": {
+        "name": "liorfr",
+        "email": "lior@example.com"
+      },
+      "source": "./plugins/projspec",
+      "category": "development"
+    }
+  ]
+}
