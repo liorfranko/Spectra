@@ -7,10 +7,35 @@ Provides the command-line interface for ProjSpec with subcommands:
 """
 
 import argparse
+import sys
 from importlib import resources
 from pathlib import Path
 
 from projspec.defaults import DEFAULT_CONFIG, DEFAULT_WORKFLOW
+
+
+def _is_git_repo(path: Path) -> bool:
+    """Check if the given path is inside a git repository.
+
+    Checks for the presence of a .git directory or file (worktrees use a file)
+    in the given path or any of its parent directories.
+
+    Args:
+        path: The directory path to check.
+
+    Returns:
+        True if the path is inside a git repository, False otherwise.
+    """
+    current = path.resolve()
+    while current != current.parent:
+        git_path = current / ".git"
+        if git_path.exists():
+            return True
+        current = current.parent
+    # Check root directory as well
+    if (current / ".git").exists():
+        return True
+    return False
 
 # Phase template filenames bundled with the package
 PHASE_TEMPLATES = ["spec.md", "plan.md", "tasks.md", "implement.md", "review.md"]
@@ -62,6 +87,12 @@ def _copy_default_phases(target_dir: Path) -> None:
 def _run_init() -> None:
     """Initialize a new .projspec/ structure in the current directory."""
     cwd = Path.cwd()
+
+    # Check if we're in a git repository
+    if not _is_git_repo(cwd):
+        print("Error: Not a git repository. Please run 'git init' first.")
+        sys.exit(1)
+
     projspec_dir = cwd / ".projspec"
 
     # Create directories
