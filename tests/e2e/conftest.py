@@ -428,6 +428,64 @@ def pytest_runtest_setup(item: pytest.Item) -> None:
     Raises:
         pytest.skip.Exception: If the test should be skipped due to
             a prior stage failure.
+
+    Stage Skipping Behavior:
+        This function implements the cascade skip pattern for dependent stages.
+        When StageTracker.should_skip() returns True (meaning an earlier stage
+        has failed), pytest.skip() is called with a message in the format:
+
+            "Stage {N} skipped due to stage {M} failure"
+
+        where N is the current stage number and M is the stage that failed first.
+
+    Verification of Stage Skipping Logic:
+
+        The skipping behavior follows this decision flow:
+
+        1. Extract stage number from test item's @pytest.mark.stage(N) marker
+        2. If no stage marker exists, allow test to run (return early)
+        3. Query StageTracker.should_skip(stage) to check for prior failures
+        4. If should_skip returns True, call pytest.skip() with descriptive message
+
+        Example scenario demonstrating the skip cascade:
+
+        >>> tracker = StageTracker.get_instance()
+        >>> tracker.reset()  # Clean state for example
+
+        Stage 1 runs and passes:
+        >>> tracker.mark_passed(1)
+        >>> tracker.should_skip(2)  # Stage 2 can run
+        False
+
+        Stage 2 runs and fails:
+        >>> tracker.mark_failed(2)
+        >>> tracker.first_failure
+        2
+
+        All subsequent stages (3, 4, 5, 6) will be skipped:
+        >>> tracker.should_skip(3)  # Stage 3 should skip
+        True
+        >>> tracker.should_skip(4)  # Stage 4 should skip
+        True
+        >>> tracker.should_skip(5)  # Stage 5 should skip
+        True
+        >>> tracker.should_skip(6)  # Stage 6 should skip
+        True
+
+        Earlier stages are not affected (they already ran):
+        >>> tracker.should_skip(1)  # Stage 1 already ran, not skipped
+        False
+        >>> tracker.should_skip(2)  # Stage 2 already ran, not skipped
+        False
+
+    Skip Message Format:
+        When a stage is skipped, the message provides context for debugging:
+
+        - "Stage 3 skipped due to stage 2 failure" - Stage 2 failed first
+        - "Stage 6 skipped due to stage 1 failure" - Early failure, many skips
+
+        This message is visible in pytest output with -v flag and helps
+        identify which stage caused the cascade failure.
     """
     stage = _get_stage_from_item(item)
     if stage is None:
