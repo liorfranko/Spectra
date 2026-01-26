@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# speckit/scripts/create-new-feature.sh - Create a new feature branch and directory structure
+# projspec/scripts/create-new-feature.sh - Create a new feature branch and directory structure
 # Creates git branch (or worktree), specs directory, and checklists directory
 set -euo pipefail
 
