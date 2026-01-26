@@ -3,6 +3,79 @@
 This module provides shared fixtures, configuration, and utilities
 for end-to-end tests that validate the complete projspec workflow
 using Claude Code subprocess execution.
+
+Pytest Markers for E2E Tests
+============================
+
+This module defines and registers custom pytest markers for organizing
+and filtering E2E tests:
+
+Available Markers:
+------------------
+
+@pytest.mark.e2e
+    Marks a test as an end-to-end test. Use this marker on all E2E tests
+    to allow selective test execution:
+
+        pytest -m e2e                    # Run only E2E tests
+        pytest -m "not e2e"              # Run everything except E2E tests
+
+@pytest.mark.stage(N)
+    Marks a test as belonging to stage N (where N is 1-6). Stages represent
+    sequential workflow phases that depend on each other:
+
+        @pytest.mark.stage(1)  # Initialization stage
+        @pytest.mark.stage(2)  # Specification stage
+        @pytest.mark.stage(3)  # Planning stage
+        @pytest.mark.stage(4)  # Task generation stage
+        @pytest.mark.stage(5)  # Implementation stage
+        @pytest.mark.stage(6)  # Verification stage
+
+    Stage Dependency:
+        If stage N fails, all stages > N are automatically skipped.
+        This ensures tests don't run in an invalid state.
+
+Test Output and Status Display
+==============================
+
+Pytest displays pass/fail/skip status clearly in various output modes:
+
+Verbose Output (-v or -vv):
+    pytest tests/e2e/ -v
+
+    Output shows each test with its status:
+        tests/e2e/test_workflow.py::test_stage_1_init PASSED
+        tests/e2e/test_workflow.py::test_stage_2_specify PASSED
+        tests/e2e/test_workflow.py::test_stage_3_plan FAILED
+        tests/e2e/test_workflow.py::test_stage_4_tasks SKIPPED (Stage 4 skipped due to stage 3 failure)
+        tests/e2e/test_workflow.py::test_stage_5_implement SKIPPED (Stage 4 skipped due to stage 3 failure)
+
+Short Summary (-r flags):
+    pytest tests/e2e/ -ra    # Show all non-passing test summaries
+    pytest tests/e2e/ -rs    # Show skip reasons
+    pytest tests/e2e/ -rf    # Show failure reasons
+
+Stage Filtering (--stage option):
+    pytest tests/e2e/ --stage 3       # Run only stage 3
+    pytest tests/e2e/ --stage 2-4     # Run stages 2, 3, and 4
+
+Debug Mode (--e2e-debug):
+    pytest tests/e2e/ --e2e-debug     # Stream Claude output in real-time
+
+Example Commands for Clear Status Display:
+------------------------------------------
+
+    # Run E2E tests with verbose output and skip reasons
+    pytest tests/e2e/ -v -rs
+
+    # Run specific stages with extra verbose output
+    pytest tests/e2e/ --stage 1-3 -vv
+
+    # Run E2E tests with debug streaming and show all summaries
+    pytest tests/e2e/ --e2e-debug -v -ra
+
+    # Run only E2E-marked tests with timing info
+    pytest -m e2e -v --durations=5
 """
 
 from dataclasses import dataclass
@@ -314,6 +387,31 @@ def pytest_addoption(parser: pytest.Parser) -> None:
             "Override all stage timeouts to the specified number of seconds. "
             "Useful for slow environments or when debugging with breakpoints."
         ),
+    )
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    """Register custom markers for E2E tests.
+
+    This hook registers the custom markers used in E2E tests to avoid
+    pytest warnings about unknown markers. Markers are documented in
+    the module docstring.
+
+    Args:
+        config: The pytest configuration object.
+
+    Registered Markers:
+        e2e: Marks tests as end-to-end tests for selective execution.
+        stage(num): Marks tests as belonging to a specific workflow stage (1-6).
+    """
+    config.addinivalue_line(
+        "markers",
+        "e2e: marks tests as end-to-end tests (deselect with '-m \"not e2e\"')"
+    )
+    config.addinivalue_line(
+        "markers",
+        "stage(num): marks test as belonging to stage num (1-6). "
+        "If stage N fails, stages > N are automatically skipped."
     )
 
 
