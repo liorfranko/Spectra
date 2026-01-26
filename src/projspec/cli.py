@@ -7,6 +7,9 @@ Provides the command-line interface for ProjSpec with subcommands:
 """
 
 import argparse
+from pathlib import Path
+
+from projspec.defaults import DEFAULT_CONFIG, DEFAULT_WORKFLOW
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -33,6 +36,24 @@ def create_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _run_init() -> None:
+    """Initialize a new .projspec/ structure in the current directory."""
+    cwd = Path.cwd()
+    projspec_dir = cwd / ".projspec"
+
+    # Create directories
+    (projspec_dir / "phases").mkdir(parents=True, exist_ok=True)
+    (projspec_dir / "specs" / "active").mkdir(parents=True, exist_ok=True)
+    (projspec_dir / "specs" / "completed").mkdir(parents=True, exist_ok=True)
+    (cwd / "worktrees").mkdir(exist_ok=True)
+
+    # Write config files
+    (projspec_dir / "config.yaml").write_text(DEFAULT_CONFIG)
+    (projspec_dir / "workflow.yaml").write_text(DEFAULT_WORKFLOW)
+
+    print("Initialized ProjSpec in current directory.")
+
+
 def main() -> None:
     """Main entry point for the ProjSpec CLI."""
     parser = create_parser()
@@ -42,10 +63,9 @@ def main() -> None:
         parser.print_help()
         return
 
-    # Command dispatch will be added in subsequent tasks
+    # Command dispatch
     if args.command == "init":
-        # Handler will be implemented in T014
-        pass
+        _run_init()
     elif args.command == "status":
         # Handler will be implemented in T025
         pass
