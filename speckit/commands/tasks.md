@@ -626,12 +626,389 @@ Story: As a user, I want to log in so that I can access my dashboard.
 
 ### Step 6: Generate Dependency Graph
 
-<!-- T036: Implement dependency graph generation -->
-- Analyze task relationships and prerequisites
-- Assign unique task IDs (e.g., T001, T002, ...)
-- Set blockedBy references based on logical dependencies
-- Validate no circular dependencies exist
-- Optimize task ordering for parallel execution where possible
+This step creates a comprehensive dependency structure that visualizes task relationships, enables parallel execution planning, and ensures correct execution ordering.
+
+**6.1: Create Dependencies section in tasks.md**
+
+Generate a Dependencies section that documents both phase-level and task-level dependencies.
+
+**6.1.1: Phase dependencies**
+
+Document how phases depend on each other:
+
+```markdown
+## Dependencies
+
+### Phase Dependencies
+
+| Phase | Depends On | Description |
+|-------|------------|-------------|
+| Phase 1: Setup | None | Initial project setup, no prerequisites |
+| Phase 2: Foundational | Phase 1 | Requires project structure and configuration |
+| Phase 3: {Story Title} | Phase 2 | Requires foundational entities and utilities |
+| Phase 4: {Story Title} | Phase 2, Phase 3* | Requires foundation; *optional dependency on Phase 3 |
+| ... | ... | ... |
+```
+
+Phase dependency rules:
+- Phase 1 (Setup) has no dependencies
+- Phase 2 (Foundational) depends on Phase 1 completion
+- User story phases (3+) depend on Phase 2 completion
+- User story phases MAY have optional dependencies on earlier story phases if they share entities or components
+
+**6.1.2: Task dependencies within phases**
+
+For each phase, document the internal task dependency structure:
+
+```markdown
+### Phase 2: Foundational - Internal Dependencies
+
+| Task | Depends On | Parallel Group |
+|------|------------|----------------|
+| T100 | T001, T002 | - |
+| T101 | T100 | A |
+| T102 | T100 | A |
+| T103 | T101, T102 | - |
+```
+
+Parallel Group indicates tasks that can execute simultaneously (same letter = same parallel group).
+
+**6.2: Create dependency table**
+
+Generate a comprehensive dependency table covering all tasks:
+
+```markdown
+### Complete Task Dependency Table
+
+| Task ID | Description | Blocked By | Blocks | Parallel |
+|---------|-------------|------------|--------|----------|
+| T001 | Create project directory structure | - | T002, T003, T100 | Yes |
+| T002 | Initialize package.json | T001 | T004, T005 | Yes |
+| T003 | Create .env.example template | T001 | T100 | Yes |
+| T004 | Install production dependencies | T002 | T100 | No |
+| T005 | Install dev dependencies | T002 | T100 | No |
+| T100 | Define User model schema | T001-T005 | T101, T102, T103 | No |
+| T101 | Implement User validation | T100 | T104 | Yes |
+| T102 | Create User repository | T100 | T104 | Yes |
+| T103 | Add User serialization | T100 | T104 | Yes |
+| T104 | Integrate User with auth service | T101, T102, T103 | T200 | No |
+| ... | ... | ... | ... | ... |
+```
+
+Table columns:
+- **Task ID**: Unique task identifier
+- **Description**: Brief task description
+- **Blocked By**: Task IDs that must complete before this task can start (use `-` for no blockers)
+- **Blocks**: Task IDs that are waiting for this task to complete
+- **Parallel**: Whether this task can run in parallel with other tasks in its group
+
+**6.2.1: Dependency table generation rules**
+
+1. Parse all tasks from Phases 1-N
+2. For each task, identify:
+   - Direct blockers (tasks explicitly referenced in `blockedBy`)
+   - Implicit blockers (phase dependencies)
+   - Tasks it blocks (reverse lookup of `blockedBy` references)
+3. Mark parallel capability based on `[P]` marker
+
+**6.3: Generate parallel execution examples**
+
+Create practical examples showing how tasks can be executed in parallel to optimize development time.
+
+**6.3.1: Identify parallel task groups**
+
+Analyze all tasks marked with `[P]` and group them by execution window:
+
+```markdown
+### Parallel Execution Groups
+
+#### Group A: Initial Setup (Phase 1)
+Tasks that can run simultaneously at project start:
+- T001: Create project directory structure
+- T002: Create .gitignore
+- T003: Create README.md
+
+**Execution**: All 3 tasks can start immediately, no waiting required.
+
+#### Group B: Configuration (Phase 1)
+Tasks that can run after Group A completes:
+- T004: Initialize package.json
+- T005: Create tsconfig.json
+- T006: Create .env.example
+
+**Execution**: All 3 tasks can start once directory structure exists.
+
+#### Group C: Foundation Entities (Phase 2)
+Independent entity implementations:
+- T101: Implement User validation
+- T102: Create User repository
+- T103: Add User serialization
+
+**Execution**: All 3 can run in parallel after T100 (User model) completes.
+
+#### Group D: Story Components (Phase 3)
+Independent UI components:
+- T205: Create LoginForm component
+- T206: Create auth state management
+
+**Execution**: Both can run in parallel after core implementation tasks.
+```
+
+**6.3.2: Example execution flow**
+
+Provide a complete execution flow example showing optimal parallelization:
+
+```markdown
+### Example Execution Flow
+
+This example shows how a 2-developer team could execute tasks optimally:
+
+**Sprint 1, Day 1:**
+```
+Developer A                    Developer B
+─────────────                  ─────────────
+T001 Create directories        T002 Create .gitignore
+     │                              │
+     ├──────────┬──────────────────┘
+     ▼          ▼
+T004 package.json              T005 tsconfig.json
+     │                              │
+     └──────────┬──────────────────┘
+                ▼
+         (Both complete)
+```
+
+**Sprint 1, Day 2:**
+```
+Developer A                    Developer B
+─────────────                  ─────────────
+T100 Define User model         (waiting)
+     │
+     ├─────────────────────────────┐
+     ▼                             ▼
+T101 User validation           T102 User repository
+     │                             │
+     ├─────────────────────────────┘
+     ▼
+T104 Integrate with auth
+```
+
+**Sprint 1, Day 3:**
+```
+Developer A                    Developer B
+─────────────                  ─────────────
+T200 Implement auth service    T205 [P] LoginForm component
+     │                              │
+     │                         T206 [P] Auth state mgmt
+     │                              │
+     └─────────────────────────────┘
+                ▼
+         T207 Connect form to service
+```
+
+**Estimated time savings:**
+- Sequential execution: 15 task-units
+- Parallel execution: 9 task-units
+- Time saved: 40%
+```
+
+**6.3.3: Parallel execution warnings**
+
+Document situations where parallel execution should be avoided:
+
+```markdown
+### Parallel Execution Warnings
+
+**Do NOT run in parallel:**
+
+1. **Shared file modifications**
+   - T104 and T105 both modify `src/services/index.ts`
+   - Run sequentially to avoid merge conflicts
+
+2. **Database migrations**
+   - T110 and T111 both create database migrations
+   - Run sequentially to maintain migration order
+
+3. **Package installations with conflicts**
+   - T004 and T007 install packages with peer dependency conflicts
+   - Run T004 first, then T007
+
+4. **Test execution during implementation**
+   - T209 tests depend on T203 implementation
+   - Wait for implementation before running tests
+```
+
+**6.4: Create ASCII dependency diagram**
+
+Generate a visual dependency diagram for complex relationships.
+
+**6.4.1: Simple linear dependencies**
+
+```markdown
+### Dependency Diagram: Phase 1 → Phase 2 Flow
+
+┌─────────────────────────────────────────────────────────────────┐
+│ PHASE 1: SETUP                                                  │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌───────┐     ┌───────┐     ┌───────┐                         │
+│  │ T001  │────▶│ T002  │────▶│ T004  │                         │
+│  │ dirs  │     │ pkg   │     │ deps  │                         │
+│  └───────┘     └───────┘     └───────┘                         │
+│       │                           │                             │
+│       │        ┌───────┐          │                             │
+│       └───────▶│ T003  │──────────┤                             │
+│                │ env   │          │                             │
+│                └───────┘          │                             │
+│                                   ▼                             │
+│                          ┌─────────────┐                        │
+│                          │ PHASE 1     │                        │
+│                          │ COMPLETE    │                        │
+│                          └─────────────┘                        │
+│                                   │                             │
+└───────────────────────────────────│─────────────────────────────┘
+                                    │
+                                    ▼
+┌───────────────────────────────────────────────────────────────────┐
+│ PHASE 2: FOUNDATIONAL                                             │
+└───────────────────────────────────────────────────────────────────┘
+```
+
+**6.4.2: Parallel branching diagram**
+
+```markdown
+### Dependency Diagram: Parallel Entity Implementation
+
+                        ┌───────────────┐
+                        │     T100      │
+                        │  User Model   │
+                        └───────┬───────┘
+                                │
+            ┌───────────────────┼───────────────────┐
+            │                   │                   │
+            ▼                   ▼                   ▼
+    ┌───────────────┐   ┌───────────────┐   ┌───────────────┐
+    │     T101      │   │     T102      │   │     T103      │
+    │  Validation   │   │  Repository   │   │ Serialization │
+    │     [P]       │   │     [P]       │   │     [P]       │
+    └───────┬───────┘   └───────┬───────┘   └───────┬───────┘
+            │                   │                   │
+            └───────────────────┼───────────────────┘
+                                │
+                                ▼
+                        ┌───────────────┐
+                        │     T104      │
+                        │  Integration  │
+                        └───────────────┘
+
+[P] = Can execute in parallel
+```
+
+**6.4.3: Complex cross-phase dependencies**
+
+```markdown
+### Dependency Diagram: Cross-Phase Story Dependencies
+
+PHASE 2                    PHASE 3 (US-001)              PHASE 4 (US-002)
+─────────                  ───────────────               ───────────────
+
+┌─────────┐
+│  T100   │
+│  User   │
+│  Model  │
+└────┬────┘
+     │
+     ├─────────────────────┐
+     │                     │
+     ▼                     ▼
+┌─────────┐           ┌─────────┐
+│  T104   │           │  T200   │
+│  Auth   │──────────▶│  Login  │
+│ Service │           │ Service │
+└─────────┘           └────┬────┘
+                           │
+                           │                         ┌─────────┐
+                           │                         │  T300   │
+                           ├────────────────────────▶│ Profile │
+                           │                         │ Service │
+                           │                         └────┬────┘
+                           ▼                              │
+                      ┌─────────┐                         │
+                      │  T214   │                         │
+                      │  US-001 │                         │
+                      │  CKPT   │                         │
+                      └────┬────┘                         │
+                           │                              │
+                           └──────────────────────────────┤
+                                                          ▼
+                                                     ┌─────────┐
+                                                     │  T314   │
+                                                     │  US-002 │
+                                                     │  CKPT   │
+                                                     └─────────┘
+
+LEGEND:
+─────▶  Direct dependency (blockedBy)
+─ ─ ─▶  Optional/soft dependency
+CKPT    Checkpoint task
+```
+
+**6.4.4: Diagram generation guidelines**
+
+When generating ASCII diagrams:
+
+1. **Use consistent symbols**:
+   - `┌─┐└─┘│─` for boxes
+   - `───▶` for dependencies
+   - `─ ─▶` for optional dependencies
+   - `[P]` marker for parallel tasks
+
+2. **Layout rules**:
+   - Earlier phases on the left
+   - Later phases on the right
+   - Parallel tasks at the same vertical level
+   - Dependencies flow left-to-right or top-to-bottom
+
+3. **Include legend** for complex diagrams
+
+4. **Limit width** to 80 characters for terminal compatibility
+
+5. **Break large diagrams** into phase-specific sections
+
+**6.4.5: Store dependency data for validation**
+
+After generating the dependency graph, store the structured data for use in Step 7 (validation):
+
+```
+dependencyGraph = {
+  phases: [
+    {
+      number: 1,
+      name: "Setup",
+      dependsOn: [],
+      tasks: ["T001", "T002", ...]
+    },
+    ...
+  ],
+  tasks: {
+    "T001": { blockedBy: [], blocks: ["T002", "T003", "T100"] },
+    "T002": { blockedBy: ["T001"], blocks: ["T004", "T005"] },
+    ...
+  },
+  parallelGroups: [
+    { name: "A", tasks: ["T001", "T002", "T003"] },
+    { name: "B", tasks: ["T101", "T102", "T103"] },
+    ...
+  ],
+  criticalPath: ["T001", "T004", "T100", "T104", "T200", ...]
+}
+```
+
+This data structure enables:
+- Circular dependency detection in Step 7
+- Execution order optimization
+- Progress tracking and estimation
+- Bottleneck identification
 
 ### Step 7: Validate Task Format
 
