@@ -47,3 +47,33 @@ class TestSpeckitPlan:
             f"Stderr: {result.stderr}\n"
             f"Stdout (last 500 chars): {result.stdout[-500:] if result.stdout else 'empty'}"
         )
+
+    def test_plan_file_created(
+        self, file_verifier: FileVerifier, git_verifier: GitVerifier
+    ) -> None:
+        """Test that plan.md file is created in the feature spec directory.
+
+        The /speckit.plan command should create a plan.md file within
+        the specs/<feature-id>/ directory in the feature worktree.
+
+        Args:
+            file_verifier: Fixture providing a configured FileVerifier instance.
+            git_verifier: Fixture providing a configured GitVerifier instance.
+        """
+        # Get the worktree path for the feature
+        worktree_path = git_verifier.get_worktree_path(pattern=r"worktrees/\d+-.*")
+        assert worktree_path is not None, (
+            "Could not find feature worktree matching pattern 'worktrees/\\d+-.*'. "
+            "The /speckit.specify command should have created a numbered worktree."
+        )
+
+        # Find the plan.md file in the worktree's specs directory
+        plan_file = file_verifier.find_file(
+            pattern=r"specs/\d+-.*/plan\.md",
+            base_path=worktree_path,
+        )
+        assert plan_file is not None, (
+            f"plan.md not found in worktree at {worktree_path}. "
+            "Expected a file matching pattern 'specs/<number>-<name>/plan.md'. "
+            "The /speckit.plan command should create this file."
+        )
