@@ -206,6 +206,42 @@ git worktree list  # Now shows only valid worktrees
 source .specify/scripts/bash/common.sh
 ```
 
+### Where are specs after PR is merged?
+
+**Question**: I merged my feature PR. Where are the specs now?
+
+**Answer**: When your PR is merged to main:
+1. **Specs are in `specs/<feature>/`** on the main branch (e.g., `specs/008-user-auth/`)
+2. **The worktree can be removed** - it was a temporary workspace
+3. **All planning artifacts are preserved** - spec.md, plan.md, tasks.md are in main
+
+```bash
+# After merge, verify specs are in main
+git checkout main
+git pull
+ls specs/008-user-auth/  # spec.md, plan.md, tasks.md
+
+# Now safe to remove the worktree
+git worktree remove worktrees/008-user-auth
+```
+
+### Worktree removal fails with "dirty" error
+
+**Problem**: `git worktree remove` says the worktree has uncommitted changes.
+
+**Solution**: If changes are not needed, force removal:
+```bash
+git worktree remove --force worktrees/008-user-auth
+```
+
+If changes are needed, commit or stash them first:
+```bash
+cd worktrees/008-user-auth
+git stash   # Save changes
+cd ../..
+git worktree remove worktrees/008-user-auth
+```
+
 ---
 
 ## Best Practices
