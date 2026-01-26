@@ -63,11 +63,61 @@ This context will be used by Steps 2-7 to generate the tasks.
 
 ### Step 2: Extract User Stories from spec.md
 
-<!-- T032: Implement user story extraction -->
-- Parse the User Stories section from spec.md
-- Extract story identifiers, descriptions, and acceptance criteria
-- Map stories to their functional requirements
-- Identify story dependencies and priorities
+**2.1: Parse the User Scenarios section from spec.md**
+
+Locate the "User Scenarios" or "User Stories" section in the parsed spec.md content. This section contains the primary user-facing functionality that drives task generation.
+
+**2.2: For each user scenario, extract the following fields:**
+
+| Field | Format | Description |
+|-------|--------|-------------|
+| Story ID | `US-###` | Unique identifier for the user story (e.g., US-001, US-002) |
+| Title/Description | String | Brief description of what the user wants to accomplish |
+| Priority | `P1`, `P2`, `P3` | Priority level where P1 is highest priority |
+| Acceptance Criteria | List | Testable conditions that define story completion |
+| Related Requirements | `FR-###` | Functional requirement identifiers this story satisfies |
+
+For each story found, create a structured object:
+```
+{
+  id: "US-###",
+  title: "Story title",
+  description: "Full story description",
+  priority: "P1" | "P2" | "P3",
+  acceptanceCriteria: ["Criterion 1", "Criterion 2", ...],
+  relatedRequirements: ["FR-001", "FR-002", ...]
+}
+```
+
+**2.3: Sort stories by priority**
+
+Order the extracted stories by priority level:
+1. P1 stories first (critical path, must-have functionality)
+2. P2 stories second (important but not blocking)
+3. P3 stories last (nice-to-have, can be deferred)
+
+Within the same priority level, maintain the original document order.
+
+**2.4: Create a story-to-tasks mapping structure**
+
+Initialize a mapping structure that will be populated in subsequent steps:
+```
+storyToTasksMap = {
+  "US-001": {
+    story: { ... },      // The extracted story object
+    tasks: [],           // Will be populated with generated task IDs
+    dependencies: [],    // Other story IDs this story depends on
+    entities: []         // Entity names this story interacts with (from Step 3)
+  },
+  ...
+}
+```
+
+This mapping structure enables:
+- Traceability from tasks back to user stories
+- Dependency analysis between stories
+- Phase organization based on story priorities
+- Validation that all stories have corresponding tasks
 
 ### Step 3: Map Entities from data-model.md
 
