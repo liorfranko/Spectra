@@ -311,6 +311,13 @@ class ClaudeRunner:
                 stderr = e.stderr if isinstance(e.stderr, str) else e.stderr.decode("utf-8", errors="replace")
             exit_code = -1
 
+        except FileNotFoundError:
+            stderr = (
+                "Claude CLI not found. Please ensure the 'claude' command is installed "
+                "and available in your PATH. Install it with: npm install -g @anthropic-ai/claude-cli"
+            )
+            exit_code = -1
+
         except subprocess.SubprocessError as e:
             stderr = str(e)
             exit_code = -1
@@ -337,6 +344,24 @@ class ClaudeRunner:
 
         # Determine success
         success = exit_code == 0 and not timed_out
+
+        # Check for authentication errors
+        auth_error_patterns = [
+            "not authenticated",
+            "authentication required",
+            "please log in",
+            "API key",
+            "unauthorized",
+        ]
+        combined_output = (stdout + stderr).lower()
+        for pattern in auth_error_patterns:
+            if pattern.lower() in combined_output:
+                stderr = (
+                    f"Claude CLI authentication error detected. {stderr}\n\n"
+                    "Please authenticate with: claude login"
+                )
+                success = False
+                break
 
         return ClaudeResult(
             success=success,
