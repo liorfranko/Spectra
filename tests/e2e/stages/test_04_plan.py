@@ -1,6 +1,6 @@
-"""Stage 4 tests for /speckit.plan command.
+"""Stage 4 tests for /projspec.plan command.
 
-This module contains end-to-end tests that verify the /speckit.plan
+This module contains end-to-end tests that verify the /projspec.plan
 command works correctly, including plan creation, content validation,
 and proper technical context generation.
 """
@@ -12,8 +12,8 @@ from ..helpers import ClaudeRunner, FileVerifier, GitVerifier
 
 @pytest.mark.e2e
 @pytest.mark.stage(4)
-class TestSpeckitPlan:
-    """Test class for /speckit.plan command functionality.
+class TestProjspecPlan:
+    """Test class for /projspec.plan command functionality.
 
     Tests in this class verify that the plan command correctly
     generates implementation plans from feature specifications,
@@ -21,16 +21,16 @@ class TestSpeckitPlan:
     """
 
     def test_01_plan_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
-        """Test that /speckit.plan command executes successfully.
+        """Test that /projspec.plan command executes successfully.
 
-        This test runs the /speckit.plan command on the feature spec
+        This test runs the /projspec.plan command on the feature spec
         created in stage 3 and verifies that it completes without errors.
 
         Args:
             claude_runner: Fixture providing a configured ClaudeRunner instance.
         """
         prompt = (
-            "Run /speckit.plan to generate an implementation plan for the "
+            "Run /projspec.plan to generate an implementation plan for the "
             "current feature specification."
         )
 
@@ -41,7 +41,7 @@ class TestSpeckitPlan:
         )
 
         assert result.success, (
-            f"/speckit.plan command failed.\n"
+            f"/projspec.plan command failed.\n"
             f"Exit code: {result.exit_code}\n"
             f"Timed out: {result.timed_out}\n"
             f"Stderr: {result.stderr}\n"
@@ -53,7 +53,7 @@ class TestSpeckitPlan:
     ) -> None:
         """Test that plan.md file is created in the feature spec directory.
 
-        The /speckit.plan command should create a plan.md file within
+        The /projspec.plan command should create a plan.md file within
         the specs/<feature-id>/ directory in the feature worktree.
 
         Args:
@@ -64,7 +64,7 @@ class TestSpeckitPlan:
         worktree_path = git_verifier.get_worktree_path(pattern=r"worktrees/\d+-.*")
         assert worktree_path is not None, (
             "Could not find feature worktree matching pattern 'worktrees/\\d+-.*'. "
-            "The /speckit.specify command should have created a numbered worktree."
+            "The /projspec.specify command should have created a numbered worktree."
         )
 
         # Find the plan.md file in the worktree's specs directory
@@ -75,7 +75,7 @@ class TestSpeckitPlan:
         assert plan_file is not None, (
             f"plan.md not found in worktree at {worktree_path}. "
             "Expected a file matching pattern 'specs/<number>-<name>/plan.md'. "
-            "The /speckit.plan command should create this file."
+            "The /projspec.plan command should create this file."
         )
 
     def test_03_plan_has_technical_context(
@@ -83,7 +83,7 @@ class TestSpeckitPlan:
     ) -> None:
         """Test that plan.md contains a Technical Context section.
 
-        The /speckit.plan command should generate a plan.md file that
+        The /projspec.plan command should generate a plan.md file that
         includes a Technical Context section describing the technologies,
         dependencies, and architecture relevant to the implementation.
 
@@ -119,7 +119,7 @@ class TestSpeckitPlan:
     ) -> None:
         """Test that plan.md contains a Project Structure section.
 
-        The /speckit.plan command should generate a plan.md file that
+        The /projspec.plan command should generate a plan.md file that
         includes a Project Structure section describing the directory
         layout and file organization for the implementation.
 
