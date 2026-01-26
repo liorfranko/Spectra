@@ -29,3 +29,7 @@
 .specify/learning/.current-session-dir
 .specify/learning/.current-session-id
 worktrees/
+
+# E2E test output (logs and test projects)
+tests/e2e/output/logs/
+tests/e2e/output/test-projects/
