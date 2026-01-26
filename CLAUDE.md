@@ -13,7 +13,7 @@ Auto-generated from all feature plans. Last updated: 2026-01-26
 ## Project Structure
 
 ```text
-speckit/
+projspec/
 specs/
 ```
 
