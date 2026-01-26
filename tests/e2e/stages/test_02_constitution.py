@@ -54,4 +54,7 @@ class TestSpeckitConstitution:
         Args:
             file_verifier: FileVerifier fixture for checking file existence.
         """
-        file_verifier.assert_exists(".specify/memory/constitution.md")
+        file_verifier.assert_exists(
+            ".specify/memory/constitution.md",
+            "constitution file"
+        )
