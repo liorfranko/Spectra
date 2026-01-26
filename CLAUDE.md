@@ -4,18 +4,21 @@ Auto-generated from all feature plans. Last updated: 2026-01-26
 
 ## Active Technologies
 
-- Python 3.11+ (CLI), Bash 4.0+ (scripts), Markdown (templates/commands) + yper, rich, pydantic, platformdirs (matching spec-kit's CLI stack) (002-projspec-claude-code)
+- Python 3.11+ (CLI), Bash 4.0+ (scripts), Markdown (templates/commands) + typer, rich, pydantic, platformdirs (matching spec-kit's CLI stack) (002-projspec-claude-code)
 
 ## Project Structure
 
 ```text
+scripts/
+specs/
 src/
+templates/
 tests/
 ```
 
 ## Commands
 
-cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] pytest [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] ruff check .
+# No commands defined yet
 
 ## Code Style
 
@@ -23,7 +26,7 @@ Python 3.11+ (CLI), Bash 4.0+ (scripts), Markdown (templates/commands): Follow s
 
 ## Recent Changes
 
-- 002-projspec-claude-code: Added Python 3.11+ (CLI), Bash 4.0+ (scripts), Markdown (templates/commands) + yper, rich, pydantic, platformdirs (matching spec-kit's CLI stack)
+- 002-projspec-claude-code: Added Python 3.11+ (CLI), Bash 4.0+ (scripts), Markdown (templates/commands) + typer, rich, pydantic, platformdirs (matching spec-kit's CLI stack)
 
 <!-- MANUAL ADDITIONS START -->
 <!-- MANUAL ADDITIONS END -->
