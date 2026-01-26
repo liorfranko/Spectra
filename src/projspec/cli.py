@@ -95,6 +95,11 @@ def _run_init() -> None:
 
     projspec_dir = cwd / ".projspec"
 
+    # Check if already initialized
+    if projspec_dir.exists():
+        print("ProjSpec is already initialized in this directory.")
+        return
+
     # Create directories
     phases_dir = projspec_dir / "phases"
     phases_dir.mkdir(parents=True, exist_ok=True)
