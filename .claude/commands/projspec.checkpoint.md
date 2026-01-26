@@ -119,9 +119,9 @@ Confirm the checkpoint was created:
 ## Usage Examples
 
 ```text
-/speckit.checkpoint auth implementation complete
-/speckit.checkpoint before refactoring
-/speckit.checkpoint end of day
+/projspec.checkpoint auth implementation complete
+/projspec.checkpoint before refactoring
+/projspec.checkpoint end of day
 ```
 
 ## Notes
