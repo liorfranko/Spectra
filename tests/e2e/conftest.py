@@ -24,12 +24,12 @@ Available Markers:
     Marks a test as belonging to stage N (where N is 1-6). Stages represent
     sequential workflow phases that depend on each other:
 
-        @pytest.mark.stage(1)  # Initialization stage
-        @pytest.mark.stage(2)  # Specification stage
-        @pytest.mark.stage(3)  # Planning stage
-        @pytest.mark.stage(4)  # Task generation stage
-        @pytest.mark.stage(5)  # Implementation stage
-        @pytest.mark.stage(6)  # Verification stage
+        @pytest.mark.stage(1)  # Init stage
+        @pytest.mark.stage(2)  # Constitution stage
+        @pytest.mark.stage(3)  # Specify stage
+        @pytest.mark.stage(4)  # Plan stage
+        @pytest.mark.stage(5)  # Tasks stage
+        @pytest.mark.stage(6)  # Implement stage
 
     Stage Dependency:
         If stage N fails, all stages > N are automatically skipped.
@@ -693,11 +693,11 @@ def test_project(request: pytest.FixtureRequest) -> E2EProject:
         in test stages.
 
     Example:
-        >>> def test_example(test_project):
+        >>> def test_example(test_project, claude_runner):
         ...     # Project path is ready to use
         ...     assert test_project.project_path.exists()
-        ...     # Run Claude commands in project directory
-        ...     runner.run(cwd=test_project.project_path)
+        ...     # ClaudeRunner is already configured with project path
+        ...     result = claude_runner.run(prompt="Hello", stage=1, log_name="test")
     """
     # Detect tests root directory (tests/e2e/conftest.py -> tests/)
     tests_root = Path(__file__).parent.parent

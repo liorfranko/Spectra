@@ -325,7 +325,7 @@ class ClaudeRunner:
             exit_code = -1
 
         except subprocess.SubprocessError as e:
-            stderr = str(e)
+            stderr = f"{type(e).__name__}: {e}"
             exit_code = -1
 
         finally:
@@ -344,9 +344,12 @@ class ClaudeRunner:
                     f.write(f"\n=== PROMPT ===\n{prompt}\n")
                     f.write(f"\n=== STDOUT ===\n{stdout}\n")
                     f.write(f"\n=== STDERR ===\n{stderr}\n")
-            except OSError:
-                # Silently ignore log write failures
-                pass
+            except OSError as log_error:
+                # Warn about log write failure so users know logs are missing
+                sys.stderr.write(
+                    f"WARNING: Failed to write log file '{log_file}': {log_error}\n"
+                    f"Claude output will not be persisted for debugging.\n"
+                )
 
         # Determine success
         success = exit_code == 0 and not timed_out

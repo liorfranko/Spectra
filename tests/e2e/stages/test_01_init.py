@@ -21,8 +21,6 @@ class TestSpeckitInit:
     - Creation of required directories
     - Generation of configuration files
     - Proper file permissions and content
-
-    Test methods will be added in subsequent tasks (T025-T028).
     """
 
     def test_01_init_runs_successfully(self, claude_runner: ClaudeRunner) -> None:

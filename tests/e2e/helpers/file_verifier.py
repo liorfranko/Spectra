@@ -21,7 +21,7 @@ class FileVerifier:
     Example:
         >>> verifier = FileVerifier(Path("/project"))
         >>> verifier.assert_exists("README.md", "Project README")
-        >>> verifier.assert_contains("config.py", r"DEBUG\\s*=", "Debug setting")
+        >>> verifier.assert_contains("config.py", r"DEBUG\s*=", "Debug setting")
     """
 
     def __init__(self, base_path: Path) -> None:
@@ -98,11 +98,14 @@ class FileVerifier:
                 f"'{full_path}', but it is a file."
             )
 
-    def assert_contains(self, path: str, pattern: str, description: str) -> None:
+    def assert_contains(
+        self, path: str | Path, pattern: str, description: str
+    ) -> None:
         """Assert that a file contains content matching the given regex pattern.
 
         Args:
-            path: Relative path to the file.
+            path: Path to the file. Can be a relative string path (resolved
+                against base_path) or an absolute Path object.
             pattern: Regular expression pattern to search for.
             description: Human-readable description for error messages.
 
@@ -117,7 +120,10 @@ class FileVerifier:
             ...     "API key configuration"
             ... )
         """
-        full_path = self._resolve_path(path)
+        if isinstance(path, Path):
+            full_path = path
+        else:
+            full_path = self._resolve_path(path)
 
         if not full_path.exists():
             raise AssertionError(

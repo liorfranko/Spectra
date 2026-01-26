@@ -120,10 +120,16 @@ class GitVerifier:
 
         Returns:
             Path to the first matching worktree, or None if no match found.
+
+        Raises:
+            RuntimeError: If git worktree list command fails.
         """
         result = self._run_git_command(["worktree", "list", "--porcelain"])
         if result.returncode != 0:
-            return None
+            raise RuntimeError(
+                f"git worktree list failed (exit code {result.returncode}): "
+                f"{result.stderr.strip()}"
+            )
 
         worktrees = self._parse_worktrees(result.stdout)
         for worktree_path in worktrees:
@@ -257,26 +263,41 @@ class GitVerifier:
         """Return the total number of commits in the repository.
 
         Returns:
-            Total commit count, or 0 if unable to count commits.
+            Total commit count.
+
+        Raises:
+            RuntimeError: If git rev-list command fails.
+            ValueError: If the command output cannot be parsed as an integer.
         """
         result = self._run_git_command(["rev-list", "--count", "HEAD"])
         if result.returncode != 0:
-            return 0
+            raise RuntimeError(
+                f"git rev-list --count HEAD failed (exit code {result.returncode}): "
+                f"{result.stderr.strip()}"
+            )
 
         try:
             return int(result.stdout.strip())
-        except ValueError:
-            return 0
+        except ValueError as e:
+            raise ValueError(
+                f"Failed to parse commit count from git output: '{result.stdout.strip()}'"
+            ) from e
 
     def count_worktrees(self) -> int:
         """Return the number of worktrees in the repository.
 
         Returns:
-            Number of worktrees, or 0 if unable to list worktrees.
+            Number of worktrees.
+
+        Raises:
+            RuntimeError: If git worktree list command fails.
         """
         result = self._run_git_command(["worktree", "list", "--porcelain"])
         if result.returncode != 0:
-            return 0
+            raise RuntimeError(
+                f"git worktree list failed (exit code {result.returncode}): "
+                f"{result.stderr.strip()}"
+            )
 
         worktrees = self._parse_worktrees(result.stdout)
         return len(worktrees)
