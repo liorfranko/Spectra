@@ -48,3 +48,31 @@ class TestSpeckitImplement:
             f"Stderr: {result.stderr}\n"
             f"Stdout (last 500 chars): {result.stdout[-500:] if result.stdout else 'empty'}"
         )
+
+    def test_implement_produces_code(
+        self, git_verifier: GitVerifier
+    ) -> None:
+        """Test that /speckit.implement produces implementation artifacts.
+
+        The /speckit.implement command should create new commits with
+        implementation code. This test verifies that commits were made
+        during the implementation process.
+
+        Args:
+            git_verifier: Fixture providing a configured GitVerifier instance.
+        """
+        # Get the worktree path for the feature
+        worktree_path = git_verifier.get_worktree_path(pattern=r"worktrees/\d+-.*")
+        assert worktree_path is not None, (
+            "Could not find feature worktree. "
+            "This test depends on earlier stage tests passing."
+        )
+
+        # Verify that implementation commits exist
+        # The implement command should have created at least one commit
+        # with implementation code (beyond the initial spec commits)
+        git_verifier.assert_min_commits(
+            count=1,
+            message_pattern=r"\[T\d+\]",  # Task commit pattern
+            path=worktree_path,
+        )
