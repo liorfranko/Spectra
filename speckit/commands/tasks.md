@@ -119,13 +119,123 @@ This mapping structure enables:
 - Phase organization based on story priorities
 - Validation that all stories have corresponding tasks
 
-### Step 3: Map Entities from data-model.md
+### Step 3: Map Entities from data-model.md to User Stories
 
-<!-- T033: Implement entity mapping -->
-- If data-model.md exists, parse entity definitions
-- Extract entity names, attributes, and relationships
-- Map entities to the components that will implement them
-- Identify entity creation order based on relationships
+This step creates a mapping between data model entities and the user stories that depend on them. This mapping is essential for identifying foundational entities that must be implemented early and for ensuring proper task ordering.
+
+**3.1: Read entities from data-model.md (if exists)**
+
+Check if `data-model.md` exists in the AVAILABLE_DOCS from Step 1. If the file does not exist, skip to Step 4 with an empty entity mapping.
+
+If `data-model.md` exists, parse the entity definitions section. Entities are typically defined with the following structure:
+- Entity name (heading level 3 or 4)
+- Attributes/fields list
+- Relationships to other entities
+- Validation rules or constraints
+
+**3.2: For each entity, identify required information**
+
+For each entity found in data-model.md, extract and record:
+
+| Information | Description | Example |
+|-------------|-------------|---------|
+| Entity Name | The name of the data entity | `User`, `Project`, `Task` |
+| Attributes | List of fields/properties | `id`, `name`, `createdAt` |
+| Relationships | References to other entities | `belongsTo: User`, `hasMany: Tasks` |
+| Required Tasks | Standard implementation tasks needed | See below |
+
+For each entity, the following tasks are typically required:
+
+```
+entityTasks = {
+  modelDefinition: "Define {Entity} model/schema",
+  validation: "Implement {Entity} validation rules",
+  persistence: "Create {Entity} storage/repository layer",
+  serialization: "Add {Entity} serialization/deserialization"
+}
+```
+
+**3.3: Create entity-to-story mapping**
+
+Cross-reference entities with the user stories extracted in Step 2. For each entity, identify which user stories interact with it by:
+
+1. Scanning story descriptions for entity name mentions
+2. Checking acceptance criteria for entity-related operations (create, read, update, delete)
+3. Analyzing related requirements that reference the entity
+
+Build the mapping structure:
+```
+entityToStoryMap = {
+  "EntityName": {
+    name: "EntityName",
+    attributes: [...],
+    relationships: [...],
+    usedByStories: ["US-001", "US-003", ...],  // Story IDs that use this entity
+    dependsOnEntities: [...],                   // Other entities this one references
+    requiredTasks: [...]                        // Tasks needed to implement this entity
+  },
+  ...
+}
+```
+
+Also update the storyToTasksMap from Step 2.4 to include entity references:
+```
+storyToTasksMap["US-001"].entities = ["EntityName1", "EntityName2", ...]
+```
+
+**3.4: Identify foundation entities (used by multiple stories)**
+
+Analyze the entityToStoryMap to identify entities that are foundational to the system:
+
+```
+foundationEntities = entities where:
+  - usedByStories.length >= 2, OR
+  - entity is referenced by other entities (is a dependency), OR
+  - entity represents core domain concepts (User, Config, etc.)
+```
+
+For each entity, calculate a "foundation score":
+```
+foundationScore = (usedByStories.count * 2) + (referencedByEntities.count * 3)
+```
+
+Entities with a foundation score >= 4 should be considered foundational.
+
+**3.5: Flag entities that need to be in Foundational phase**
+
+Mark entities for inclusion in the Foundational phase (Phase 1) based on:
+
+1. **Dependency Analysis**: Entities that other entities depend on must be implemented first
+2. **Cross-Story Usage**: Entities used by multiple P1 stories are foundational
+3. **Core Domain Status**: Entities representing fundamental domain concepts
+
+Create a prioritized list for foundational implementation:
+```
+foundationalEntities = [
+  {
+    entity: "EntityName",
+    reason: "Used by 3 user stories" | "Required by Entity X, Y" | "Core domain entity",
+    phase: 1,  // Foundational phase
+    implementationOrder: 1  // Order within the phase
+  },
+  ...
+]
+```
+
+Non-foundational entities are assigned to later phases based on which user story first requires them:
+```
+storyPhaseEntities = [
+  {
+    entity: "EntityName",
+    reason: "First used by US-003",
+    phase: 3,  // Phase number matching the user story
+    implementationOrder: 1  // Implemented before story-specific logic
+  },
+  ...
+]
+```
+
+Store both lists for use in Step 4 (Foundational phase generation) and Step 5 (User story phase generation).
 
 ### Step 4: Generate Setup and Foundational Phases
 
