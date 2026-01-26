@@ -13,7 +13,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-Goal: Perform a comprehensive pull request review using multiple specialized agents from the pr-review-toolkit, each analyzing different aspects of code quality. This command should be run after `/speckit.implement` is complete and before creating a pull request.
+Goal: Perform a comprehensive pull request review using multiple specialized agents from the pr-review-toolkit, each analyzing different aspects of code quality. This command should be run after `/projspec.implement` is complete and before creating a pull request.
 
 ## Available Review Agents
 
@@ -55,23 +55,23 @@ Support these usage patterns:
 **Full review (default)**:
 
 ```text
-/speckit.review-pr
-/speckit.review-pr all
+/projspec.review-pr
+/projspec.review-pr all
 ```
 
 **Targeted review**:
 
 ```text
-/speckit.review-pr tests errors
-/speckit.review-pr code simplify
-/speckit.review-pr tests
+/projspec.review-pr tests errors
+/projspec.review-pr code simplify
+/projspec.review-pr tests
 ```
 
 **Parallel execution**:
 
 ```text
-/speckit.review-pr all parallel
-/speckit.review-pr tests code parallel
+/projspec.review-pr all parallel
+/projspec.review-pr tests code parallel
 ```
 
 Parse the arguments to determine:
@@ -425,28 +425,28 @@ Task tool:
 
 ```bash
 # Full review before PR creation
-/speckit.review-pr
+/projspec.review-pr
 
 # Quick review of tests and error handling
-/speckit.review-pr tests errors
+/projspec.review-pr tests errors
 
 # Comprehensive parallel review
-/speckit.review-pr all parallel
+/projspec.review-pr all parallel
 
 # Review just code quality and simplification
-/speckit.review-pr code simplify
+/projspec.review-pr code simplify
 
 # Review everything sequentially (most thorough)
-/speckit.review-pr all
+/projspec.review-pr all
 ```
 
 ## Integration Points
 
 This command works best:
 
-- **After** `/speckit.implement` completes
+- **After** `/projspec.implement` completes
 - **Before** creating a pull request
-- **In combination with** `/speckit.validate` for full artifact validation
+- **In combination with** `/projspec.validate` for full artifact validation
 - **Iteratively** after fixing issues and re-running review
 
 ## Notes
