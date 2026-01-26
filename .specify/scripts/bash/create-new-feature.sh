@@ -15,27 +15,27 @@ while [ $i -le $# ]; do
             ;;
         --short-name)
             if [ $((i + 1)) -gt $# ]; then
-                echo 'Error: --short-name requires a value' >&2
+                echo '[specify] Error: --short-name requires a value' >&2
                 exit 1
             fi
             i=$((i + 1))
             next_arg="${!i}"
             # Check if the next argument is another option (starts with --)
             if [[ "$next_arg" == --* ]]; then
-                echo 'Error: --short-name requires a value' >&2
+                echo '[specify] Error: --short-name requires a value' >&2
                 exit 1
             fi
             SHORT_NAME="$next_arg"
             ;;
         --number)
             if [ $((i + 1)) -gt $# ]; then
-                echo 'Error: --number requires a value' >&2
+                echo '[specify] Error: --number requires a value' >&2
                 exit 1
             fi
             i=$((i + 1))
             next_arg="${!i}"
             if [[ "$next_arg" == --* ]]; then
-                echo 'Error: --number requires a value' >&2
+                echo '[specify] Error: --number requires a value' >&2
                 exit 1
             fi
             BRANCH_NUMBER="$next_arg"
@@ -166,7 +166,7 @@ if git rev-parse --show-toplevel >/dev/null 2>&1; then
 else
     REPO_ROOT="$(find_repo_root "$SCRIPT_DIR")"
     if [ -z "$REPO_ROOT" ]; then
-        echo "Error: Could not determine repository root. Please run this script from within the repository." >&2
+        echo "[specify] Error: Could not determine repository root. Please run this script from within the repository." >&2
         exit 1
     fi
     HAS_GIT=false

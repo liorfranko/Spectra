@@ -134,9 +134,9 @@ check_worktree_context() {
     local worktree_path=$(get_worktree_for_branch "$feature_branch")
 
     if [[ -n "$worktree_path" ]]; then
-        echo "Warning: Branch '$feature_branch' is checked out in a worktree" >&2
-        echo "Worktree location: $worktree_path" >&2
-        echo "Navigate there with: cd $worktree_path" >&2
+        echo "[specify] Warning: Branch '$feature_branch' is checked out in a worktree" >&2
+        echo "[specify] Worktree location: $worktree_path" >&2
+        echo "[specify] Navigate there with: cd $worktree_path" >&2
         return 1
     fi
 
@@ -154,8 +154,8 @@ check_feature_branch() {
     fi
 
     if [[ ! "$branch" =~ ^[0-9]{3}- ]]; then
-        echo "ERROR: Not on a feature branch. Current branch: $branch" >&2
-        echo "Feature branches should be named like: 001-feature-name" >&2
+        echo "[specify] Error: Not on a feature branch. Current branch: $branch" >&2
+        echo "[specify] Feature branches should be named like: 001-feature-name" >&2
         return 1
     fi
 
@@ -199,8 +199,8 @@ find_feature_dir_by_prefix() {
         echo "$specs_dir/${matches[0]}"
     else
         # Multiple matches - this shouldn't happen with proper naming convention
-        echo "ERROR: Multiple spec directories found with prefix '$prefix': ${matches[*]}" >&2
-        echo "Please ensure only one spec directory exists per numeric prefix." >&2
+        echo "[specify] Error: Multiple spec directories found with prefix '$prefix': ${matches[*]}" >&2
+        echo "[specify] Please ensure only one spec directory exists per numeric prefix." >&2
         echo "$specs_dir/$branch_name"  # Return something to avoid breaking the script
     fi
 }
