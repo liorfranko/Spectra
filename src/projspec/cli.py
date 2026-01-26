@@ -232,6 +232,7 @@ def _run_status() -> None:
 
     if not specs:
         console.print("[yellow]No active specs found.[/yellow]")
+        console.print("Run '/projspec.new <name>' to create a new spec.")
         return
 
     # Display specs in a formatted table
