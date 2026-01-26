@@ -32,7 +32,7 @@ class TestProjspecConstitution:
             claude_runner: ClaudeRunner fixture configured for the test project.
         """
         result = claude_runner.run(
-            prompt="Run /projspec.constitution to set up the project constitution with foundational principles",
+            prompt="/projspec.constitution now. Do not ask for confirmation - just run it.",
             stage=2,
             log_name="test_constitution_setup",
         )

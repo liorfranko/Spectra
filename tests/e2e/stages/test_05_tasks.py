@@ -30,8 +30,7 @@ class TestProjspecTasks:
             claude_runner: Fixture providing a configured ClaudeRunner instance.
         """
         prompt = (
-            "Run /projspec.tasks to generate actionable tasks from the "
-            "current implementation plan."
+            "/projspec.tasks now. Do not ask for confirmation - just run it."
         )
 
         result = claude_runner.run(

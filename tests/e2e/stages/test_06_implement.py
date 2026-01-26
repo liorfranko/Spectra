@@ -30,9 +30,7 @@ class TestProjspecImplement:
             claude_runner: Fixture providing a configured ClaudeRunner instance.
         """
         prompt = (
-            "Run /projspec.implement to execute the implementation plan. "
-            "Focus on completing at least the first few tasks to verify "
-            "the implementation workflow is functional."
+            "/projspec.implement now. Do not ask for confirmation - just run it."
         )
 
         result = claude_runner.run(

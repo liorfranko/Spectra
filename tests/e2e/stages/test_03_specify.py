@@ -29,9 +29,7 @@ class TestProjspecSpecify:
             claude_runner: Fixture providing a configured ClaudeRunner instance.
         """
         prompt = (
-            "Run /projspec.specify with the following feature description: "
-            "'Add a simple todo list feature that allows users to create, "
-            "read, update, and delete todo items with a title and completion status.'"
+            "/projspec.specify A minimal command-line todo application written in Python that allows users to manage their tasks efficiently."
         )
 
         result = claude_runner.run(
