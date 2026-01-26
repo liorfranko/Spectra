@@ -12,6 +12,7 @@ from importlib import resources
 from pathlib import Path
 
 from rich.console import Console
+from rich.table import Table
 
 from projspec.defaults import DEFAULT_CONFIG, DEFAULT_WORKFLOW
 from projspec.state import load_active_specs
@@ -130,6 +131,53 @@ def _run_init() -> None:
     console.print(f"  Created .projspec/phases/ ({len(PHASE_TEMPLATES)} templates)")
 
 
+def _get_phase_color(phase: str) -> str:
+    """Return the Rich color for a given phase.
+
+    Args:
+        phase: The phase name (new, spec, plan, tasks, implement, review).
+
+    Returns:
+        Rich color name based on phase category:
+        - yellow: early phases (new, spec, plan)
+        - cyan: active development (tasks, implement)
+        - green: near completion (review)
+    """
+    if phase in ("new", "spec", "plan"):
+        return "yellow"
+    elif phase in ("tasks", "implement"):
+        return "cyan"
+    elif phase == "review":
+        return "green"
+    return "white"
+
+
+def _print_spec_status(specs: list) -> None:
+    """Display specs in a formatted Rich table.
+
+    Creates a table with columns for ID, Name, Phase (with color coding),
+    and Branch. The phase column is color-coded based on the workflow stage.
+
+    Args:
+        specs: List of SpecState objects to display.
+    """
+    table = Table(title=f"Active Specs ({len(specs)})")
+
+    table.add_column("ID", style="bold")
+    table.add_column("Name")
+    table.add_column("Phase")
+    table.add_column("Branch", style="dim")
+
+    for spec in specs:
+        # Handle both enum and string phase values
+        phase_value = spec.phase.value if hasattr(spec.phase, "value") else spec.phase
+        phase_color = _get_phase_color(phase_value)
+        phase_styled = f"[{phase_color}]{phase_value}[/{phase_color}]"
+        table.add_row(spec.spec_id, spec.name, phase_styled, spec.branch)
+
+    console.print(table)
+
+
 def _run_status() -> None:
     """Display status of all active specs.
 
@@ -154,10 +202,8 @@ def _run_status() -> None:
         console.print("[yellow]No active specs found.[/yellow]")
         return
 
-    # Display basic information about each spec
-    console.print(f"[bold]Active Specs ({len(specs)}):[/bold]")
-    for spec in specs:
-        console.print(f"  {spec.spec_id}: {spec.name} [{spec.phase}]")
+    # Display specs in a formatted table
+    _print_spec_status(specs)
 
 
 def main() -> None:
