@@ -48,6 +48,9 @@ def _is_git_repo(path: Path) -> bool:
 # Phase template filenames bundled with the package
 PHASE_TEMPLATES = ["spec.md", "plan.md", "tasks.md", "implement.md", "review.md"]
 
+# Command template filenames bundled with the package
+COMMAND_TEMPLATES = ["projspec.init.md", "projspec.status.md", "projspec.new.md"]
+
 
 def create_parser() -> argparse.ArgumentParser:
     """Create and configure the argument parser with subcommands."""
@@ -92,6 +95,25 @@ def _copy_default_phases(target_dir: Path) -> None:
         (target_dir / template_name).write_text(content, encoding="utf-8")
 
 
+def _copy_default_commands(target_dir: Path) -> None:
+    """Copy bundled command templates to the target directory.
+
+    Uses importlib.resources to read command template files from the package's
+    assets/commands/ directory and writes them to the specified target directory.
+
+    Args:
+        target_dir: The directory where command templates should be copied to.
+                   Typically .claude/commands/ in the project root.
+    """
+    # Access the bundled assets package (Python 3.9+)
+    assets_commands = resources.files("projspec.assets.commands")
+
+    for template_name in COMMAND_TEMPLATES:
+        template_file = assets_commands.joinpath(template_name)
+        content = template_file.read_text(encoding="utf-8")
+        (target_dir / template_name).write_text(content, encoding="utf-8")
+
+
 def _run_init() -> None:
     """Initialize a new .projspec/ structure in the current directory."""
     cwd = Path.cwd()
@@ -118,8 +140,15 @@ def _run_init() -> None:
     (projspec_dir / "specs" / "completed").mkdir(parents=True, exist_ok=True)
     (cwd / "worktrees").mkdir(exist_ok=True)
 
+    # Create .claude/commands/ directory for Claude Code commands
+    commands_dir = cwd / ".claude" / "commands"
+    commands_dir.mkdir(parents=True, exist_ok=True)
+
     # Copy bundled phase templates
     _copy_default_phases(phases_dir)
+
+    # Copy bundled command templates
+    _copy_default_commands(commands_dir)
 
     # Write config files
     (projspec_dir / "config.yaml").write_text(DEFAULT_CONFIG)
@@ -130,6 +159,7 @@ def _run_init() -> None:
     console.print("  Created .projspec/config.yaml")
     console.print("  Created .projspec/workflow.yaml")
     console.print(f"  Created .projspec/phases/ ({len(PHASE_TEMPLATES)} templates)")
+    console.print(f"  Created .claude/commands/ ({len(COMMAND_TEMPLATES)} commands)")
 
 
 def _calculate_progress(tasks: list[TaskState]) -> str:
