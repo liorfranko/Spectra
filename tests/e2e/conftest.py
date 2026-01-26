@@ -8,6 +8,8 @@ using Claude Code subprocess execution.
 from dataclasses import dataclass
 from enum import Enum
 
+import pytest
+
 
 class StageStatus(Enum):
     """Enum representing test stage execution status.
@@ -231,3 +233,53 @@ class E2EConfig:
             return True
         start, end = self.stage_filter
         return start <= stage <= end
+
+
+def pytest_addoption(parser: pytest.Parser) -> None:
+    """Register E2E test CLI options with pytest.
+
+    This hook adds custom command-line options for controlling E2E test
+    execution, including stage filtering, debug output, and timeout
+    configuration.
+
+    Args:
+        parser: The pytest argument parser to add options to.
+
+    Options:
+        --stage: Filter which stages to run. Accepts "N" for a single stage
+            or "N-M" for a range (e.g., "3" or "2-4"). Stages are 1-6.
+        --e2e-debug: Enable real-time Claude output streaming for debugging.
+            When enabled, subprocess output is not captured.
+        --timeout-all: Override all stage timeouts to the specified number
+            of seconds. Useful for slow environments or debugging.
+    """
+    parser.addoption(
+        "--stage",
+        action="store",
+        default=None,
+        help=(
+            "Filter which stages to run. Use 'N' for a single stage "
+            "or 'N-M' for a range (e.g., --stage 3 or --stage 2-4). "
+            "Valid stages are 1-6."
+        ),
+    )
+    parser.addoption(
+        "--e2e-debug",
+        action="store_true",
+        default=False,
+        help=(
+            "Enable real-time Claude output streaming for debugging. "
+            "When enabled, subprocess output is displayed in real-time "
+            "instead of being captured."
+        ),
+    )
+    parser.addoption(
+        "--timeout-all",
+        action="store",
+        type=int,
+        default=None,
+        help=(
+            "Override all stage timeouts to the specified number of seconds. "
+            "Useful for slow environments or when debugging with breakpoints."
+        ),
+    )
