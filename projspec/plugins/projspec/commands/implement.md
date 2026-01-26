@@ -20,7 +20,7 @@ Run prerequisite check:
 ${CLAUDE_PLUGIN_ROOT}/scripts/check-prerequisites.sh --require-tasks
 ```
 
-If prerequisites are not met, run `/speckit.tasks` first to generate the task file.
+If prerequisites are not met, run `/projspec.tasks` first to generate the task file.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ The script returns a JSON object with the following fields:
 - `GH_CLI_AVAILABLE` - Boolean indicating if GitHub CLI is installed
 - `TASKS_CONTENT` - The full content of tasks.md (when `--include-tasks` is used)
 
-If the script exits with error (missing tasks.md), display an error message instructing the user to run `/speckit.tasks` first, then stop execution.
+If the script exits with error (missing tasks.md), display an error message instructing the user to run `/projspec.tasks` first, then stop execution.
 
 **1.3: Parse tasks.md to extract task information**
 
@@ -468,7 +468,7 @@ e4f5g6h [T039] Add implement command logic: prerequisites check
 
 Your implementation is ready for review. Suggested next action:
 
-→ Run `/speckit.review-pr` to create a comprehensive pull request with review
+→ Run `/projspec.review-pr` to create a comprehensive pull request with review
 
 Alternatively:
 - Run `git log --oneline` to review all commits
@@ -483,7 +483,7 @@ If implementation is interrupted before all tasks complete:
 ```markdown
 ## Implementation Paused
 
-Progress has been saved. You can resume by running `/speckit.implement` again.
+Progress has been saved. You can resume by running `/projspec.implement` again.
 
 ### Current Status
 
@@ -499,7 +499,7 @@ Progress has been saved. You can resume by running `/speckit.implement` again.
 
 ### To Resume
 
-Run `/speckit.implement` to continue from where you left off.
+Run `/projspec.implement` to continue from where you left off.
 The command will detect completed tasks and continue with remaining work.
 ```
 
@@ -587,7 +587,7 @@ When tasks remain blocked after refresh:
       - Tasks that depend on skipped work may fail
 
    3. **Abort** - Stop implementation and review the task breakdown
-      - Run `/speckit.tasks` to regenerate with different dependencies
+      - Run `/projspec.tasks` to regenerate with different dependencies
 
    Please respond with: wait, force, or abort
    ```
@@ -605,7 +605,7 @@ When tasks remain blocked after refresh:
 
    You can:
    - Complete this task manually
-   - Run `/speckit.implement` again after the blocker is resolved
+   - Run `/projspec.implement` again after the blocker is resolved
    - Ask me to help implement just this specific task
    ```
 
@@ -700,7 +700,7 @@ Circular dependencies occur when tasks mutually block each other.
    2. **Merge tasks** - Combine the circular tasks into one
       The merged task will implement all functionality together
 
-   3. **Regenerate tasks** - Run `/speckit.tasks` to create a new task breakdown
+   3. **Regenerate tasks** - Run `/projspec.tasks` to create a new task breakdown
       Consider restructuring the implementation approach
 
    Please provide your choice and any specific instructions.
@@ -739,7 +739,7 @@ Circular dependencies occur when tasks mutually block each other.
    - Continue with remaining tasks
 
    **If regenerating**:
-   - Display instructions to run `/speckit.tasks`
+   - Display instructions to run `/projspec.tasks`
    - Stop execution
 
 **4.4: Update execution queue after unblocking**
@@ -840,7 +840,7 @@ The command is idempotent and can be run multiple times:
 ## Usage
 
 ```
-/speckit.implement
+/projspec.implement
 ```
 
 ## Notes
@@ -848,4 +848,4 @@ The command is idempotent and can be run multiple times:
 - Tasks are executed in dependency order
 - Failed tasks do not block unrelated tasks
 - Progress is persisted so implementation can resume after interruption
-- Use `/speckit.tasks` to regenerate or modify the task list
+- Use `/projspec.tasks` to regenerate or modify the task list
