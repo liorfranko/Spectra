@@ -35,8 +35,6 @@ Run /speckit.{command} first to {action}.
 | `/speckit.analyze` | spec.md, plan.md, or tasks.md | "Error: No design artifacts found. Create spec.md, plan.md, or tasks.md first." |
 | `/speckit.review-pr` | Committed changes | "Error: No commits found on current branch. Commit changes before running review." |
 | `/speckit.constitution` | None (creates if missing) | N/A - Creates new constitution if none exists |
-| `/speckit.checkpoint` | Feature directory context | "Error: Not in a feature directory. Navigate to a feature directory under specs/." |
-| `/speckit.learn` | Learning directory | "No learning data found." (informational, not error) |
 
 ### Error Message Components
 
@@ -61,8 +59,6 @@ Each error message includes:
 | analyze | Yes (prerequisites) | VERIFIED |
 | review-pr | Yes (Step 1) | VERIFIED |
 | constitution | N/A (self-creating) | VERIFIED |
-| checkpoint | Yes (workflow) | VERIFIED |
-| learn | Yes (Step 1) | VERIFIED |
 
 ---
 
@@ -87,8 +83,6 @@ Each command should suggest the next logical command in the workflow.
 | `/speckit.analyze` | Fix identified issues | After analysis |
 | `/speckit.review-pr` | Create PR or fix issues | Based on review verdict |
 | `/speckit.constitution` | `/speckit.specify` | After constitution setup |
-| `/speckit.checkpoint` | Resume from checkpoint | Session management |
-| `/speckit.learn` | Apply patterns | Pattern management |
 
 ### Handoff Message Format
 
@@ -119,8 +113,6 @@ Each command should suggest the next logical command in the workflow.
 | analyze | Yes | Fix issues | VERIFIED |
 | review-pr | Yes | Create PR or fix | VERIFIED |
 | constitution | Yes | specify | VERIFIED |
-| checkpoint | Yes | Resume instructions | VERIFIED |
-| learn | Yes | apply, export | VERIFIED |
 
 ---
 
@@ -152,8 +144,6 @@ argument-hint: hint about expected arguments
 | analyze.md | "Perform a non-destructive cross-artifact consistency and quality analysis..." | true | None | CONSISTENT |
 | constitution.md | "Create or update project constitution with foundational principles..." | true | principle or 'interactive' | CONSISTENT |
 | validate.md | "Validate current feature artifacts against checklists and quality criteria" | true | artifact to validate | CONSISTENT |
-| checkpoint.md | "Create an explicit session checkpoint to save current state..." | true | checkpoint name or description | CONSISTENT |
-| learn.md | "Review and manage auto-learned patterns and insights..." | true | action (list, review, apply, clear) | CONSISTENT |
 | review-pr.md | "Run comprehensive code review using specialized agents..." | true | review type | CONSISTENT |
 
 ### Agent Frontmatter Format
@@ -191,17 +181,17 @@ model: sonnet
 
 ### T085: Error Messages
 - **Status:** VERIFIED
-- **Commands Reviewed:** 13/13
+- **Commands Reviewed:** 11/11
 - **Pattern Consistency:** All commands use consistent error message format
 
 ### T086: Handoff Suggestions
 - **Status:** VERIFIED
-- **Commands Reviewed:** 13/13
+- **Commands Reviewed:** 11/11
 - **All commands have:** Next Steps section with appropriate handoff suggestions
 
 ### T087: YAML Frontmatter
 - **Status:** VERIFIED
-- **Commands Reviewed:** 13/13
+- **Commands Reviewed:** 11/11
 - **Agents Reviewed:** 6/6
 - **Format Consistency:** All use standardized frontmatter format
 

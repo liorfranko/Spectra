@@ -298,8 +298,6 @@ claude --plugin-dir /path/to/speckit
   - [ ] /speckit.analyze
   - [ ] /speckit.review-pr
   - [ ] /speckit.constitution
-  - [ ] /speckit.checkpoint
-  - [ ] /speckit.learn
 
 ##### 3. First Command Execution
 

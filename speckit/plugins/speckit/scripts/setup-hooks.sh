@@ -23,7 +23,7 @@ usage() {
 Usage: $(basename "$0") [OPTIONS]
 
 Initialize SpecKit hooks in the current project.
-Creates .specify/ directory with hooks, memory, and learning infrastructure.
+Creates .specify/ directory with hooks and memory infrastructure.
 
 OPTIONS:
     --json          Output in JSON format
@@ -34,8 +34,6 @@ OPTIONS:
 WHAT GETS CREATED:
     .specify/hooks/           Hook scripts directory
     .specify/memory/          Persistent memory storage
-    .specify/learning/        Learning observations and instincts
-    .specify/sessions/        Session logs and checkpoints
     .specify/templates/       Template files for specs/plans
 
 EXAMPLES:
@@ -119,14 +117,8 @@ create_directories() {
 
     log_verbose "Creating directory structure..."
 
-    mkdir -p "$specify_dir/hooks/auto-learn"
-    mkdir -p "$specify_dir/hooks/memory-persistence"
-    mkdir -p "$specify_dir/hooks/strategic-compact"
+    mkdir -p "$specify_dir/hooks"
     mkdir -p "$specify_dir/memory"
-    mkdir -p "$specify_dir/learning/observations"
-    mkdir -p "$specify_dir/learning/instincts"
-    mkdir -p "$specify_dir/learning/pending-analysis"
-    mkdir -p "$specify_dir/sessions/checkpoints"
     mkdir -p "$specify_dir/templates"
     mkdir -p "$specify_dir/scripts/bash"
 }
@@ -153,61 +145,6 @@ copy_hook_templates() {
             fi
         done
     fi
-
-    # Copy hook scripts from .specify reference if available
-    local ref_hooks="$plugin_root/../.specify/hooks"
-    if [[ -d "$ref_hooks" ]]; then
-        # Copy auto-learn hooks
-        if [[ -d "$ref_hooks/auto-learn" ]]; then
-            local copied=0
-            for hook_script in "$ref_hooks/auto-learn/"*.sh; do
-                [[ -f "$hook_script" ]] || continue
-                if cp "$hook_script" "$specify_dir/hooks/auto-learn/" 2>/dev/null; then
-                    chmod +x "$specify_dir/hooks/auto-learn/$(basename "$hook_script")" 2>/dev/null
-                    ((copied++))
-                fi
-            done
-            if [[ $copied -gt 0 ]]; then
-                log_verbose "Copied $copied auto-learn hook(s)"
-            else
-                log_verbose "No auto-learn hooks found to copy"
-            fi
-        fi
-
-        # Copy memory-persistence hooks
-        if [[ -d "$ref_hooks/memory-persistence" ]]; then
-            local copied=0
-            for hook_script in "$ref_hooks/memory-persistence/"*.sh; do
-                [[ -f "$hook_script" ]] || continue
-                if cp "$hook_script" "$specify_dir/hooks/memory-persistence/" 2>/dev/null; then
-                    chmod +x "$specify_dir/hooks/memory-persistence/$(basename "$hook_script")" 2>/dev/null
-                    ((copied++))
-                fi
-            done
-            if [[ $copied -gt 0 ]]; then
-                log_verbose "Copied $copied memory-persistence hook(s)"
-            else
-                log_verbose "No memory-persistence hooks found to copy"
-            fi
-        fi
-
-        # Copy strategic-compact hooks
-        if [[ -d "$ref_hooks/strategic-compact" ]]; then
-            local copied=0
-            for hook_script in "$ref_hooks/strategic-compact/"*.sh; do
-                [[ -f "$hook_script" ]] || continue
-                if cp "$hook_script" "$specify_dir/hooks/strategic-compact/" 2>/dev/null; then
-                    chmod +x "$specify_dir/hooks/strategic-compact/$(basename "$hook_script")" 2>/dev/null
-                    ((copied++))
-                fi
-            done
-            if [[ $copied -gt 0 ]]; then
-                log_verbose "Copied $copied strategic-compact hook(s)"
-            else
-                log_verbose "No strategic-compact hooks found to copy"
-            fi
-        fi
-    fi
 }
 
 # Copy script utilities
@@ -220,20 +157,6 @@ copy_scripts() {
     if [[ -f "${SCRIPT_DIR}/common.sh" ]]; then
         cp "${SCRIPT_DIR}/common.sh" "$specify_dir/scripts/bash/"
         log_verbose "Copied common.sh"
-    fi
-
-    # Copy analyze-pending.sh
-    if [[ -f "${SCRIPT_DIR}/analyze-pending.sh" ]]; then
-        cp "${SCRIPT_DIR}/analyze-pending.sh" "$specify_dir/scripts/bash/"
-        chmod +x "$specify_dir/scripts/bash/analyze-pending.sh"
-        log_verbose "Copied analyze-pending.sh"
-    fi
-
-    # Copy evaluate-session.sh
-    if [[ -f "${SCRIPT_DIR}/evaluate-session.sh" ]]; then
-        cp "${SCRIPT_DIR}/evaluate-session.sh" "$specify_dir/scripts/bash/"
-        chmod +x "$specify_dir/scripts/bash/evaluate-session.sh"
-        log_verbose "Copied evaluate-session.sh"
     fi
 }
 
@@ -322,9 +245,7 @@ output_json() {
   "paths": {
     "specify_dir": "$specify_dir",
     "hooks_dir": "$specify_dir/hooks",
-    "memory_dir": "$specify_dir/memory",
-    "learning_dir": "$specify_dir/learning",
-    "sessions_dir": "$specify_dir/sessions"
+    "memory_dir": "$specify_dir/memory"
   }
 }
 EOF
@@ -375,16 +296,12 @@ main() {
         log_info "Installed components:"
         log_info "  - Hooks: $specify_dir/hooks/"
         log_info "  - Memory: $specify_dir/memory/"
-        log_info "  - Learning: $specify_dir/learning/"
-        log_info "  - Sessions: $specify_dir/sessions/"
         log_info "  - Templates: $specify_dir/templates/"
         echo ""
         log_info "Next steps:"
         log_info "  1. Review and customize $specify_dir/memory/context.md"
         log_info "  2. Review and customize $specify_dir/memory/constitution.md"
         log_info "  3. Start a new Claude Code session to activate hooks"
-        log_info "  4. Use /speckit.learn to extract patterns"
-        log_info "  5. Use /speckit.checkpoint to save state"
     else
         output_json "success" "Hooks installed successfully" "$specify_dir"
     fi

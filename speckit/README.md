@@ -120,13 +120,6 @@ speckit includes 13 commands for the complete development workflow.
 |---------|-------------|-----------|
 | `/speckit.constitution` | Create or update project constitution with foundational principles | `interactive`, `add "principle"`, `update`, or empty |
 
-### Session Management Commands
-
-| Command | Description | Arguments |
-|---------|-------------|-----------|
-| `/speckit.checkpoint` | Create an explicit session checkpoint for later reference | Checkpoint name or description |
-| `/speckit.learn` | Review and manage auto-learned patterns from sessions | `list`, `review`, `apply`, `clear`, `export` |
-
 ---
 
 ## Command Details & Examples
@@ -322,50 +315,6 @@ Create or update the project constitution with foundational principles.
 ```
 
 **Output:** Creates/updates `.specify/memory/constitution.md` with principles, constraints, quality gates, and governance rules.
-
----
-
-### /speckit.checkpoint
-
-Create an explicit session checkpoint for later reference.
-
-```bash
-# Auto-generate checkpoint name
-/speckit.checkpoint
-
-# Named checkpoint
-/speckit.checkpoint spec-complete
-
-# With description
-/speckit.checkpoint "Before major refactoring of auth module"
-```
-
-**Output:** Creates checkpoint document in `checkpoints/` directory with full state capture and resume instructions.
-
----
-
-### /speckit.learn
-
-Review and manage auto-learned patterns from development sessions.
-
-```bash
-# List all patterns
-/speckit.learn
-
-# Interactive review
-/speckit.learn review
-
-# Apply validated patterns
-/speckit.learn apply
-
-# Clear old patterns
-/speckit.learn clear
-
-# Export for sharing
-/speckit.learn export
-```
-
-**Pattern types:** Instincts, Skills, Anti-patterns, Observations
 
 ---
 
