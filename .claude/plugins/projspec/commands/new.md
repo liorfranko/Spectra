@@ -62,7 +62,23 @@ Error: Branch '{BRANCH_NAME}' already exists. Use a different spec name or delet
 
 If the command exits with non-zero status, the branch doesn't exist and you can proceed.
 
-### Step 5: Create Git Branch
+### Step 5: Validate Worktree Directory Doesn't Exist
+
+Before creating the worktree, verify the directory doesn't already exist:
+
+```bash
+test -d {WORKTREE_PATH}
+```
+
+If the command exits with status 0 (directory exists), output this error and stop:
+
+```
+Error: Worktree directory '{WORKTREE_PATH}' already exists. Remove it first or use a different spec name.
+```
+
+If the command exits with non-zero status, the directory doesn't exist and you can proceed.
+
+### Step 6: Create Git Branch
 
 Create a new branch from the current HEAD:
 
@@ -70,7 +86,7 @@ Create a new branch from the current HEAD:
 git branch {BRANCH_NAME}
 ```
 
-### Step 6: Create Git Worktree
+### Step 7: Create Git Worktree
 
 Create an isolated worktree for this spec:
 
@@ -78,7 +94,7 @@ Create an isolated worktree for this spec:
 git worktree add {WORKTREE_PATH} {BRANCH_NAME}
 ```
 
-### Step 7: Create Spec Directory
+### Step 8: Create Spec Directory
 
 Create the spec's state directory in the main repository:
 
@@ -86,7 +102,7 @@ Create the spec's state directory in the main repository:
 mkdir -p {SPEC_DIR}
 ```
 
-### Step 8: Create state.yaml
+### Step 9: Create state.yaml
 
 Create the initial state file at `{SPEC_DIR}/state.yaml` with this content:
 
@@ -103,7 +119,7 @@ worktree_path: {WORKTREE_PATH}
 tasks: []
 ```
 
-### Step 9: Create brief.md in Worktree
+### Step 10: Create brief.md in Worktree
 
 Create a placeholder brief file at `{WORKTREE_PATH}/specs/{SPEC_ID}/brief.md`:
 
@@ -136,7 +152,7 @@ Describe the feature or change you want to implement.
 Any additional context or constraints.
 ```
 
-### Step 10: Output Success Message
+### Step 11: Output Success Message
 
 Report success to the user with next steps:
 
