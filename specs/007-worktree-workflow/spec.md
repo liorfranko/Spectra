@@ -104,7 +104,7 @@ After a feature is merged, a developer wants to clean up the associated worktree
 
 - **Worktree**: An isolated working directory containing a checkout of a feature branch, located at `worktrees/<feature-name>/`
 - **Main Repository**: The primary git repository containing configuration (`.specify/`) and shared scripts
-- **Feature Specs**: Specification files located at `worktree/specs/<feature-name>/`, committed to the feature branch
+- **Feature Specs**: Specification files located at `worktrees/<NNN-feature-name>/specs/<NNN-feature-name>/`, committed to the feature branch
 - **Feature Context**: The combination of worktree path, branch name, and spec directory that defines where a feature's work happens
 
 ## Success Criteria *(mandatory)*
