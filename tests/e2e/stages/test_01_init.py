@@ -20,8 +20,10 @@ class TestProjspecInit:
     the projspec plugin and that the plugin structure is properly
     configured, including:
     - Plugin configuration in .claude/ directory
-    - Template files in .specify/templates/
     - Plugin commands are available
+
+    Note: The .projspec/ directory and templates are created by the
+    constitution command and are tested in Stage 2.
     """
 
     def test_01_plugin_discovered(self, claude_runner: ClaudeRunner) -> None:
@@ -48,56 +50,7 @@ class TestProjspecInit:
             f"STDERR:\n{result.stderr}"
         )
 
-    def test_02_specify_dir_exists(self, file_verifier: FileVerifier) -> None:
-        """Test that .specify/ directory exists for plugin storage.
-
-        This test verifies that the .specify/ directory exists in the
-        project root. This directory is the primary storage location
-        for projspec plugin state and artifacts.
-
-        Args:
-            file_verifier: FileVerifier fixture configured for the test project.
-        """
-        file_verifier.assert_dir_exists(
-            ".specify/",
-            "projspec plugin configuration directory"
-        )
-
-    def test_03_templates_exist(self, file_verifier: FileVerifier) -> None:
-        """Test that .specify/templates/ directory contains required template files.
-
-        This test verifies that the templates directory exists and contains
-        the core template files needed for specification, planning, task
-        generation, and checklists.
-
-        Args:
-            file_verifier: FileVerifier fixture configured for the test project.
-        """
-        # Verify templates directory exists
-        file_verifier.assert_dir_exists(
-            ".specify/templates/",
-            "projspec templates directory"
-        )
-
-        # Verify core template files exist
-        file_verifier.assert_exists(
-            ".specify/templates/spec-template.md",
-            "specification template"
-        )
-        file_verifier.assert_exists(
-            ".specify/templates/plan-template.md",
-            "implementation plan template"
-        )
-        file_verifier.assert_exists(
-            ".specify/templates/tasks-template.md",
-            "task generation template"
-        )
-        file_verifier.assert_exists(
-            ".specify/templates/checklist-template.md",
-            "checklist template"
-        )
-
-    def test_04_claude_plugin_configured(self, file_verifier: FileVerifier) -> None:
+    def test_02_claude_plugin_configured(self, file_verifier: FileVerifier) -> None:
         """Test that .claude/ directory contains plugin configuration.
 
         This test verifies that the .claude/ directory exists in the

@@ -45,16 +45,65 @@ class TestProjspecConstitution:
             f"STDERR:\n{result.stderr}"
         )
 
-    def test_02_constitution_file_created(self, file_verifier: FileVerifier) -> None:
+    def test_02_projspec_dir_exists(self, file_verifier: FileVerifier) -> None:
+        """Test that .projspec/ directory exists after constitution setup.
+
+        This test verifies that the .projspec/ directory is created by the
+        constitution command. This directory is the primary storage location
+        for projspec plugin state and artifacts.
+
+        Args:
+            file_verifier: FileVerifier fixture configured for the test project.
+        """
+        file_verifier.assert_dir_exists(
+            ".projspec/",
+            "projspec plugin configuration directory"
+        )
+
+    def test_03_templates_exist(self, file_verifier: FileVerifier) -> None:
+        """Test that .projspec/templates/ directory contains required template files.
+
+        This test verifies that the templates directory exists and contains
+        the core template files needed for specification, planning, task
+        generation, and checklists.
+
+        Args:
+            file_verifier: FileVerifier fixture configured for the test project.
+        """
+        # Verify templates directory exists
+        file_verifier.assert_dir_exists(
+            ".projspec/templates/",
+            "projspec templates directory"
+        )
+
+        # Verify core template files exist
+        file_verifier.assert_exists(
+            ".projspec/templates/spec-template.md",
+            "specification template"
+        )
+        file_verifier.assert_exists(
+            ".projspec/templates/plan-template.md",
+            "implementation plan template"
+        )
+        file_verifier.assert_exists(
+            ".projspec/templates/tasks-template.md",
+            "task generation template"
+        )
+        file_verifier.assert_exists(
+            ".projspec/templates/checklist-template.md",
+            "checklist template"
+        )
+
+    def test_04_constitution_file_created(self, file_verifier: FileVerifier) -> None:
         """Test that constitution.md file is created in the correct location.
 
         This test verifies that running the /projspec.constitution command
-        creates the constitution.md file in the .specify/memory directory.
+        creates the constitution.md file in the .projspec/memory directory.
 
         Args:
             file_verifier: FileVerifier fixture for checking file existence.
         """
         file_verifier.assert_exists(
-            ".specify/memory/constitution.md",
+            ".projspec/memory/constitution.md",
             "constitution file"
         )
