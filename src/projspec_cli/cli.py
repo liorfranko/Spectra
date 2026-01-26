@@ -10,6 +10,7 @@ This module defines the primary CLI interface using Typer, including:
 
 from __future__ import annotations
 
+import json
 import platform
 import subprocess
 import sys
@@ -32,6 +33,7 @@ from projspec_cli.services.status import (
     get_status_summary,
 )
 from projspec_cli.utils.git import has_git, is_git_repo
+from projspec_cli.utils.paths import get_project_root, get_specify_dir, get_specs_dir
 
 # Rich console for formatted output
 console = Console()
@@ -47,37 +49,130 @@ app = typer.Typer(
 )
 
 
+def _get_git_version() -> str | None:
+    """Get the git version string, or None if git is not available."""
+    try:
+        result = subprocess.run(
+            ["git", "--version"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            # Parse "git version X.Y.Z" or "git version X.Y.Z (platform)"
+            version_str = result.stdout.strip()
+            # Extract version number
+            parts = version_str.split()
+            if len(parts) >= 3:
+                return parts[2]  # Return just the version number
+            return version_str
+    except (FileNotFoundError, OSError):
+        pass
+    return None
+
+
+def _get_gh_version() -> str | None:
+    """Get the GitHub CLI version string, or None if gh is not available."""
+    try:
+        result = subprocess.run(
+            ["gh", "--version"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            # Parse "gh version X.Y.Z (date)"
+            first_line = result.stdout.strip().split("\n")[0]
+            parts = first_line.split()
+            if len(parts) >= 3:
+                return parts[2]  # Return just the version number
+            return first_line
+    except (FileNotFoundError, OSError):
+        pass
+    return None
+
+
 @app.command()
-def version() -> None:
-    """Display version information including Python and platform details."""
+def version(
+    json_output: Annotated[
+        bool,
+        typer.Option(
+            "--json",
+            help="Output version information in JSON format",
+        ),
+    ] = False,
+) -> None:
+    """Display version information including Python, Git, and platform details.
+
+    Examples:
+        projspec version           # Show version info with formatting
+        projspec version --json    # Output as JSON for scripting
+    """
     python_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
     platform_info = f"{platform.system()} {platform.release()}"
+    git_version = _get_git_version()
+    gh_version = _get_gh_version()
 
-    console.print(
-        Panel(
-            f"[bold blue]ProjSpec[/bold blue] version [green]{__version__}[/green]\n"
-            f"Python [cyan]{python_version}[/cyan]\n"
-            f"Platform [dim]{platform_info}[/dim]",
-            title="Version Info",
-            border_style="blue",
+    if json_output:
+        version_data = {
+            "projspec": __version__,
+            "python": python_version,
+            "platform": platform_info,
+            "git": git_version,
+            "gh": gh_version,
+        }
+        console.print(json.dumps(version_data, indent=2))
+    else:
+        git_line = (
+            f"Git [cyan]{git_version}[/cyan]"
+            if git_version
+            else "Git [dim]not installed[/dim]"
         )
-    )
+        gh_line = (
+            f"GitHub CLI [cyan]{gh_version}[/cyan]"
+            if gh_version
+            else "GitHub CLI [dim]not installed[/dim]"
+        )
+
+        console.print(
+            Panel(
+                f"[bold blue]ProjSpec[/bold blue] version [green]{__version__}[/green]\n"
+                f"Python [cyan]{python_version}[/cyan]\n"
+                f"{git_line}\n"
+                f"{gh_line}\n"
+                f"Platform [dim]{platform_info}[/dim]",
+                title="Version Info",
+                border_style="blue",
+            )
+        )
 
 
 @app.command()
-def check() -> None:
-    """Verify installed tools and prerequisites for ProjSpec.
+def check(
+    json_output: Annotated[
+        bool,
+        typer.Option(
+            "--json",
+            help="Output check results in JSON format",
+        ),
+    ] = False,
+) -> None:
+    """Verify installed tools, prerequisites, and project structure for ProjSpec.
 
     Checks for:
+    - Python version compatibility (>= 3.11)
     - Git installation and version
-    - Python version compatibility
+    - GitHub CLI (gh) availability (optional)
     - Whether current directory is a git repository
-    """
-    table = Table(title="Prerequisites Check", show_header=True, header_style="bold")
-    table.add_column("Check", style="cyan", no_wrap=True)
-    table.add_column("Status", justify="center")
-    table.add_column("Details", style="dim")
+    - Git worktree support
+    - ProjSpec project structure (.specify/, specs/, templates/)
 
+    Examples:
+        projspec check           # Run all checks with formatting
+        projspec check --json    # Output as JSON for scripting
+    """
+    cwd = Path.cwd()
+    checks: list[dict] = []
     all_passed = True
 
     # Check Python version
@@ -85,68 +180,69 @@ def check() -> None:
     python_ok = python_version >= (3, 11)
     python_version_str = f"{python_version.major}.{python_version.minor}.{python_version.micro}"
 
-    if python_ok:
-        table.add_row(
-            "Python version",
-            "[green]PASS[/green]",
-            f"v{python_version_str} (>= 3.11 required)",
-        )
-    else:
+    checks.append({
+        "name": "Python version",
+        "status": "pass" if python_ok else "fail",
+        "details": f"v{python_version_str} (>= 3.11 required)",
+        "required": True,
+    })
+    if not python_ok:
         all_passed = False
-        table.add_row(
-            "Python version",
-            "[red]FAIL[/red]",
-            f"v{python_version_str} (>= 3.11 required)",
-        )
 
     # Check Git availability and version
     git_available = has_git()
-    git_version_str = "Not installed"
+    git_version_str = _get_git_version()
 
-    if git_available:
-        try:
-            result = subprocess.run(
-                ["git", "--version"],
-                capture_output=True,
-                text=True,
-                check=False,
-            )
-            if result.returncode == 0:
-                # Parse "git version X.Y.Z"
-                git_version_str = result.stdout.strip().replace("git version ", "v")
-        except (FileNotFoundError, OSError):
-            pass
-
-        table.add_row(
-            "Git installed",
-            "[green]PASS[/green]",
-            git_version_str,
-        )
+    if git_available and git_version_str:
+        checks.append({
+            "name": "Git installed",
+            "status": "pass",
+            "details": f"v{git_version_str}",
+            "required": True,
+        })
     else:
         all_passed = False
-        table.add_row(
-            "Git installed",
-            "[red]FAIL[/red]",
-            "Git is required for ProjSpec",
-        )
+        checks.append({
+            "name": "Git installed",
+            "status": "fail",
+            "details": "Git is required for ProjSpec",
+            "required": True,
+        })
+
+    # Check GitHub CLI availability
+    gh_version = _get_gh_version()
+    if gh_version:
+        checks.append({
+            "name": "GitHub CLI (gh)",
+            "status": "pass",
+            "details": f"v{gh_version}",
+            "required": False,
+        })
+    else:
+        checks.append({
+            "name": "GitHub CLI (gh)",
+            "status": "info",
+            "details": "Not installed (optional, needed for GitHub integration)",
+            "required": False,
+        })
 
     # Check if current directory is a git repository
-    cwd = Path.cwd()
     in_repo = is_git_repo(cwd)
 
     if in_repo:
-        table.add_row(
-            "Git repository",
-            "[green]PASS[/green]",
-            f"In repository at {cwd}",
-        )
+        checks.append({
+            "name": "Git repository",
+            "status": "pass",
+            "details": f"In repository at {cwd}",
+            "required": True,
+        })
     else:
-        # This is not a hard failure, just informational
-        table.add_row(
-            "Git repository",
-            "[yellow]INFO[/yellow]",
-            "Not in a git repository (optional for some commands)",
-        )
+        checks.append({
+            "name": "Git repository",
+            "status": "info",
+            "details": "Not in a git repository (optional for some commands)",
+            "required": False,
+        })
 
     # Check for worktree support (git >= 2.5.0)
     worktree_supported = False
@@ -164,26 +260,129 @@ def check() -> None:
             pass
 
         if worktree_supported:
-            table.add_row(
-                "Git worktree support",
-                "[green]PASS[/green]",
-                "Worktree commands available",
-            )
+            checks.append({
+                "name": "Git worktree support",
+                "status": "pass",
+                "details": "Worktree commands available",
+                "required": False,
+            })
         else:
-            table.add_row(
-                "Git worktree support",
-                "[yellow]WARN[/yellow]",
-                "Git worktree not available (git >= 2.5.0 required)",
-            )
+            checks.append({
+                "name": "Git worktree support",
+                "status": "warn",
+                "details": "Git worktree not available (git >= 2.5.0 required)",
+                "required": False,
+            })
+
+    # Check project structure
+    project_root = get_project_root(cwd)
+
+    if project_root:
+        checks.append({
+            "name": "ProjSpec project",
+            "status": "pass",
+            "details": f"Project root at {project_root}",
+            "required": False,
+        })
+
+        # Check .specify/ directory
+        specify_dir = get_specify_dir(cwd)
+        if specify_dir and specify_dir.exists():
+            checks.append({
+                "name": ".specify/ directory",
+                "status": "pass",
+                "details": str(specify_dir),
+                "required": False,
+            })
+        else:
+            checks.append({
+                "name": ".specify/ directory",
+                "status": "warn",
+                "details": "Not found - run 'projspec init' to create",
+                "required": False,
+            })
+
+        # Check specs/ directory
+        specs_dir = get_specs_dir(cwd)
+        if specs_dir and specs_dir.exists():
+            checks.append({
+                "name": "specs/ directory",
+                "status": "pass",
+                "details": str(specs_dir),
+                "required": False,
+            })
+        else:
+            checks.append({
+                "name": "specs/ directory",
+                "status": "warn",
+                "details": "Not found - run 'projspec init' to create",
+                "required": False,
+            })
+
+        # Check templates/ directory
+        templates_dir = project_root / "templates"
+        if templates_dir.exists():
+            checks.append({
+                "name": "templates/ directory",
+                "status": "pass",
+                "details": str(templates_dir),
+                "required": False,
+            })
+        else:
+            checks.append({
+                "name": "templates/ directory",
+                "status": "info",
+                "details": "Not found (optional)",
+                "required": False,
+            })
+    else:
+        checks.append({
+            "name": "ProjSpec project",
+            "status": "info",
+            "details": "Not in a ProjSpec project - run 'projspec init' to initialize",
+            "required": False,
+        })
+
+    # JSON output
+    if json_output:
+        output = {
+            "success": all_passed,
+            "checks": checks,
+        }
+        console.print(json.dumps(output, indent=2))
+        if not all_passed:
+            raise typer.Exit(code=1)
+        return
+
+    # Rich table output
+    table = Table(title="Prerequisites Check", show_header=True, header_style="bold")
+    table.add_column("Check", style="cyan", no_wrap=True)
+    table.add_column("Status", justify="center")
+    table.add_column("Details", style="dim")
+
+    status_styles = {
+        "pass": "[green]PASS[/green]",
+        "fail": "[red]FAIL[/red]",
+        "warn": "[yellow]WARN[/yellow]",
+        "info": "[blue]INFO[/blue]",
+    }
+
+    for check_item in checks:
+        status_display = status_styles.get(check_item["status"], check_item["status"])
+        table.add_row(
+            check_item["name"],
+            status_display,
+            check_item["details"],
+        )
 
     console.print()
     console.print(table)
     console.print()
 
     if all_passed:
-        console.print("[bold green]All prerequisites satisfied.[/bold green]")
+        console.print("[bold green]All required prerequisites satisfied.[/bold green]")
     else:
-        console.print("[bold red]Some prerequisites are missing.[/bold red]")
+        console.print("[bold red]Some required prerequisites are missing.[/bold red]")
         raise typer.Exit(code=1)
 
 
