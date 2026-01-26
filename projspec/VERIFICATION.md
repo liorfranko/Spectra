@@ -143,7 +143,6 @@ argument-hint: hint about expected arguments
 | checklist.md | "Generate a custom checklist for the current feature..." | true | checklist type | CONSISTENT |
 | analyze.md | "Perform a non-destructive cross-artifact consistency and quality analysis..." | true | None | CONSISTENT |
 | constitution.md | "Create or update project constitution with foundational principles..." | true | principle or 'interactive' | CONSISTENT |
-| validate.md | "Validate current feature artifacts against checklists and quality criteria" | true | artifact to validate | CONSISTENT |
 | review-pr.md | "Run comprehensive code review using specialized agents..." | true | review type | CONSISTENT |
 
 ### Agent Frontmatter Format

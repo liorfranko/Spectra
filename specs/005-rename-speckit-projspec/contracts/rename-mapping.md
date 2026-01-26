@@ -60,7 +60,6 @@ speckit/plugins/speckit/    →  projspec/plugins/projspec/
 .claude/commands/speckit.tasks.md         →  .claude/commands/projspec.tasks.md
 .claude/commands/speckit.taskstoissues.md →  .claude/commands/projspec.taskstoissues.md
 .claude/commands/speckit.checkpoint.md    →  .claude/commands/projspec.checkpoint.md
-.claude/commands/speckit.validate.md      →  .claude/commands/projspec.validate.md
 ```
 
 ## Exclusions

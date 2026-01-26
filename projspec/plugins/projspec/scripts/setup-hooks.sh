@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # projspec/scripts/setup-hooks.sh - Initialize hooks in user's project
-# Copies hook templates to .specify/ directory and creates necessary configuration
+# Copies hook templates to .projspec/ directory and creates necessary configuration
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -23,7 +23,7 @@ usage() {
 Usage: $(basename "$0") [OPTIONS]
 
 Initialize projspec hooks in the current project.
-Creates .specify/ directory with hooks and memory infrastructure.
+Creates .projspec/ directory with hooks and memory infrastructure.
 
 OPTIONS:
     --json          Output in JSON format
@@ -32,9 +32,9 @@ OPTIONS:
     -h, --help      Show this help message
 
 WHAT GETS CREATED:
-    .specify/hooks/           Hook scripts directory
-    .specify/memory/          Persistent memory storage
-    .specify/templates/       Template files for specs/plans
+    .projspec/hooks/           Hook scripts directory
+    .projspec/memory/          Persistent memory storage
+    .projspec/templates/       Template files for specs/plans
 
 EXAMPLES:
     $(basename "$0")              # Install hooks

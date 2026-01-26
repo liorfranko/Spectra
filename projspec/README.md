@@ -314,7 +314,7 @@ Create or update the project constitution with foundational principles.
 /projspec.constitution update
 ```
 
-**Output:** Creates/updates `.specify/memory/constitution.md` with principles, constraints, quality gates, and governance rules.
+**Output:** Creates/updates `.projspec/memory/constitution.md` with principles, constraints, quality gates, and governance rules.
 
 ---
 

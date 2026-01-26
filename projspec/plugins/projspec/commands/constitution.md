@@ -36,8 +36,8 @@ Check for an existing constitution in the following locations (in priority order
 
 ```bash
 # Check project-specific location first
-if [ -f ".specify/memory/constitution.md" ]; then
-    CONSTITUTION_PATH=".specify/memory/constitution.md"
+if [ -f ".projspec/memory/constitution.md" ]; then
+    CONSTITUTION_PATH=".projspec/memory/constitution.md"
     CONSTITUTION_EXISTS=true
 elif [ -f ".claude/memory/constitution.md" ]; then
     CONSTITUTION_PATH=".claude/memory/constitution.md"
@@ -376,11 +376,11 @@ In case of conflict between principles:
 
 Determine the output location:
 ```bash
-# Create .specify/memory directory if it doesn't exist
-mkdir -p ".specify/memory"
+# Create .projspec/memory directory if it doesn't exist
+mkdir -p ".projspec/memory"
 
 # Write constitution
-CONSTITUTION_PATH=".specify/memory/constitution.md"
+CONSTITUTION_PATH=".projspec/memory/constitution.md"
 ```
 
 Write the compiled constitution to the file.
@@ -513,7 +513,7 @@ Upon completion, this command produces:
 
 | File | Description |
 |------|-------------|
-| `.specify/memory/constitution.md` | Project constitution document |
+| `.projspec/memory/constitution.md` | Project constitution document |
 
 ### Console Output
 

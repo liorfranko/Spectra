@@ -79,7 +79,6 @@ speckit/
 ├── speckit.tasks.md
 ├── speckit.taskstoissues.md
 ├── speckit.checkpoint.md
-└── speckit.validate.md
 ```
 
 **Target Structure (After):**
@@ -114,7 +113,6 @@ projspec/
 ├── projspec.tasks.md
 ├── projspec.taskstoissues.md
 ├── projspec.checkpoint.md
-└── projspec.validate.md
 ```
 
 **Structure Decision**: Plugin directory rename from `speckit/` to `projspec/` with nested plugin rename from `plugins/speckit/` to `plugins/projspec/`. All `.claude/commands/` files renamed with `projspec.` prefix.
