@@ -381,3 +381,29 @@ def pytest_collection_modifyitems(
                 filtered_items.append(item)
         # Modify items in place
         items[:] = filtered_items
+
+
+def pytest_runtest_setup(item: pytest.Item) -> None:
+    """Skip tests in stages that depend on failed earlier stages.
+
+    This hook runs before each test and checks if the test's stage should
+    be skipped based on prior stage failures. If an earlier stage has failed,
+    all subsequent stages are automatically skipped.
+
+    Args:
+        item: The pytest test item about to be executed.
+
+    Raises:
+        pytest.skip.Exception: If the test should be skipped due to
+            a prior stage failure.
+    """
+    stage = _get_stage_from_item(item)
+    if stage is None:
+        # No stage marker, don't apply stage-based skipping
+        return
+
+    tracker = StageTracker.get_instance()
+    if tracker.should_skip(stage):
+        pytest.skip(
+            f"Stage {stage} skipped due to stage {tracker.first_failure} failure"
+        )
