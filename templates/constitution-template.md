@@ -61,6 +61,9 @@
 **Examples**:
 - {EXAMPLE_OF_APPLYING_THIS_PRINCIPLE}
 
+**Anti-patterns**:
+- {WHAT_VIOLATES_THIS_PRINCIPLE}
+
 ---
 
 ## Technical Standards
