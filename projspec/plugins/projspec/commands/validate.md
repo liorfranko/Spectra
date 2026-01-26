@@ -212,7 +212,7 @@ Count `[NEEDS CLARIFICATION]` markers:
 - {Section}: {marker description}
 {End for}
 
-Run `/speckit.clarify` to resolve open questions.
+Run `/projspec.clarify` to resolve open questions.
 {End if}
 ```
 
@@ -271,7 +271,7 @@ Parse the plan document to extract:
 
 {Else:}
 **Warning:** Constitution Check section not found in plan.md
-Run `/speckit.plan` to generate constitution compliance check.
+Run `/projspec.plan` to generate constitution compliance check.
 {End if}
 ```
 
@@ -502,28 +502,28 @@ Validation failed. Please address the following issues:
 Validation complete. Recommended next actions:
 
 {If validating spec:}
-- Run `/speckit.plan` to generate implementation plan
+- Run `/projspec.plan` to generate implementation plan
 {End if}
 
 {If validating plan:}
-- Run `/speckit.tasks` to generate task list
+- Run `/projspec.tasks` to generate task list
 {End if}
 
 {If validating tasks:}
-- Run `/speckit.implement` to start implementation
+- Run `/projspec.implement` to start implementation
 {End if}
 
 {Else:}
 Address the issues above, then re-run:
 ```
-/speckit.validate {$ARGUMENTS}
+/projspec.validate {$ARGUMENTS}
 ```
 
 For specific artifact validation:
 ```
-/speckit.validate spec    # Validate specification only
-/speckit.validate plan    # Validate plan only
-/speckit.validate tasks   # Validate tasks only
+/projspec.validate spec    # Validate specification only
+/projspec.validate plan    # Validate plan only
+/projspec.validate tasks   # Validate tasks only
 ```
 {End if}
 ```
@@ -553,7 +553,7 @@ Upon completion, this command produces:
 ## Usage
 
 ```
-/speckit.validate [artifact]
+/projspec.validate [artifact]
 ```
 
 ### Arguments
@@ -570,16 +570,16 @@ Upon completion, this command produces:
 
 ```bash
 # Validate all available artifacts
-/speckit.validate
+/projspec.validate
 
 # Validate only the specification
-/speckit.validate spec
+/projspec.validate spec
 
 # Validate plan and related documents
-/speckit.validate plan
+/projspec.validate plan
 
 # Validate task format and dependencies
-/speckit.validate tasks
+/projspec.validate tasks
 ```
 
 ## Notes
@@ -588,4 +588,4 @@ Upon completion, this command produces:
 - Validation checks are based on the templates and constitution
 - Some checks produce warnings rather than failures
 - Run this command before proceeding to the next workflow step
-- Use `/speckit.analyze` for cross-artifact consistency analysis
+- Use `/projspec.analyze` for cross-artifact consistency analysis
