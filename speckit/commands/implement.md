@@ -503,13 +503,339 @@ Run `/speckit.implement` to continue from where you left off.
 The command will detect completed tasks and continue with remaining work.
 ```
 
-### Step 4: Handle Blocked Tasks
+### Step 4: Handle Blocked Tasks and Dependency Resolution
 
-<!-- T042: Implement blocked task resolution -->
-- Detect newly unblocked tasks as dependencies complete
-- Re-evaluate blocked tasks after each completion
-- Report permanently blocked tasks (circular dependencies)
-- Suggest manual intervention for stuck tasks
+This step handles situations where tasks cannot proceed due to dependencies.
+
+**4.1: When no ready tasks available but pending tasks exist**
+
+When the execution queue is empty but blocked tasks remain:
+
+1. **List blocked tasks and their blockers**:
+   ```markdown
+   ## Blocked Tasks Analysis
+
+   No tasks are currently ready for execution. The following tasks are blocked:
+
+   | Task | Waiting For | Blocker Status |
+   |------|-------------|----------------|
+   | T015 | T014 | pending |
+   | T016 | T014, T015 | pending, pending |
+   | T017 | T016 | pending |
+   ```
+
+2. **Check if any blockers are completed (refresh status)**:
+
+   Re-read tasks.md to get the latest status:
+   ```bash
+   ${CLAUDE_PLUGIN_ROOT}/scripts/check-prerequisites.sh --require-tasks --json --include-tasks
+   ```
+
+   Parse the updated `TASKS_CONTENT` and rebuild the execution queue:
+   ```
+   for each blocked task:
+     blockerIds = dependencies[task.id].blockedBy
+     for each blockerId in blockerIds:
+       blocker = tasks.find(t => t.id == blockerId)
+       if blocker.status == "completed":
+         # Blocker has been completed since last check
+         remove blockerId from task's blockedBy list
+
+     if all blockers are now completed:
+       move task from blockedTasks to readyTasks
+   ```
+
+3. **If tasks were unblocked, return to Step 2 for execution**
+
+**4.2: For truly blocked tasks**
+
+When tasks remain blocked after refresh:
+
+1. **Show dependency chain**:
+   ```markdown
+   ## Dependency Chain Analysis
+
+   The following dependency chains are preventing progress:
+
+   ### Chain 1: T017 → T016 → T015 → T014
+
+   - T014: "Set up database connection" (pending)
+     └─ blocks: T015
+   - T015: "Create user model" (pending)
+     └─ waiting for: T014
+     └─ blocks: T016
+   - T016: "Add authentication service" (pending)
+     └─ waiting for: T014, T015
+     └─ blocks: T017
+   - T017: "Implement login endpoint" (pending)
+     └─ waiting for: T016
+
+   **Root blocker**: T014 - "Set up database connection"
+   ```
+
+2. **Ask user for action**:
+   ```markdown
+   ## Action Required
+
+   How would you like to proceed?
+
+   1. **Wait** - The root blocker T014 may need manual completion or external resources
+      - I'll provide guidance on completing T014 manually
+
+   2. **Force Unblock** - Skip the blocker and proceed with dependent tasks
+      - WARNING: This may cause issues if the blocker was truly required
+      - Tasks that depend on skipped work may fail
+
+   3. **Abort** - Stop implementation and review the task breakdown
+      - Run `/speckit.tasks` to regenerate with different dependencies
+
+   Please respond with: wait, force, or abort
+   ```
+
+3. **Handle user response**:
+
+   **If "wait"**:
+   ```markdown
+   ## Guidance for Completing T014
+
+   **Task**: {blocker description}
+   **File**: {blocker file path}
+
+   This task needs to be completed before the blocked tasks can proceed.
+
+   You can:
+   - Complete this task manually
+   - Run `/speckit.implement` again after the blocker is resolved
+   - Ask me to help implement just this specific task
+   ```
+
+   **If "force"**:
+   ```markdown
+   ## Force Unblocking
+
+   Removing dependency on T014 for the following tasks:
+   - T015: Now ready for execution
+   - T016: Still waiting for T015
+
+   WARNING: Skipped task T014 is NOT marked as completed.
+   The dependent tasks may reference functionality that doesn't exist.
+
+   Proceeding with T015...
+   ```
+
+   Then:
+   - Remove the blocker from all blocked tasks' `blockedBy` lists
+   - Rebuild the execution queue
+   - Return to Step 2
+
+   **If "abort"**:
+   - Display the partial completion summary (Step 3.5)
+   - Stop execution
+
+**4.3: Handle circular dependencies**
+
+Circular dependencies occur when tasks mutually block each other.
+
+1. **Detect cycles**:
+
+   Before execution, run cycle detection on the dependency graph:
+   ```
+   function detectCycles(dependencies):
+     visited = {}
+     recursionStack = {}
+     cycles = []
+
+     function dfs(taskId, path):
+       visited[taskId] = true
+       recursionStack[taskId] = true
+       path.push(taskId)
+
+       for each blockerId in dependencies[taskId].blockedBy:
+         if recursionStack[blockerId]:
+           # Found cycle - extract it from path
+           cycleStart = path.indexOf(blockerId)
+           cycle = path.slice(cycleStart)
+           cycle.push(blockerId)  # Complete the cycle
+           cycles.push(cycle)
+         else if !visited[blockerId]:
+           dfs(blockerId, path)
+
+       path.pop()
+       recursionStack[taskId] = false
+
+     for each taskId in dependencies:
+       if !visited[taskId]:
+         dfs(taskId, [])
+
+     return cycles
+   ```
+
+2. **Report the cycle**:
+   ```markdown
+   ## Circular Dependency Detected!
+
+   A circular dependency exists in the task graph, preventing execution:
+
+   ### Cycle Found
+
+   T012 → T013 → T014 → T012
+
+   **Details:**
+   - T012: "Create validation utilities" depends on T014
+   - T013: "Add input sanitization" depends on T012
+   - T014: "Build form handler" depends on T013
+
+   This creates an impossible execution order where each task requires another to complete first.
+   ```
+
+3. **Ask for user intervention**:
+   ```markdown
+   ## Resolution Required
+
+   To resolve this circular dependency, you can:
+
+   1. **Break the cycle** - Tell me which dependency to remove
+      Example: "Remove dependency of T012 on T014"
+
+   2. **Merge tasks** - Combine the circular tasks into one
+      The merged task will implement all functionality together
+
+   3. **Regenerate tasks** - Run `/speckit.tasks` to create a new task breakdown
+      Consider restructuring the implementation approach
+
+   Please provide your choice and any specific instructions.
+   ```
+
+4. **Handle user response**:
+
+   **If breaking a dependency**:
+   - Parse the user's instruction to identify which dependency to remove
+   - Update the dependency graph: `dependencies[taskId].blockedBy.remove(blockerId)`
+   - Update the reverse mapping: `dependencies[blockerId].blocks.remove(taskId)`
+   - Re-run cycle detection to ensure the cycle is broken
+   - If more cycles exist, repeat the process
+   - Rebuild execution queue and return to Step 2
+
+   **If merging tasks**:
+   ```markdown
+   ## Merging Circular Tasks
+
+   Creating combined task from: T012, T013, T014
+
+   **Merged Task**: T012-MERGED
+   **Description**: Create validation utilities, add input sanitization, and build form handler
+   **Files**:
+   - path/to/validators.ts
+   - path/to/sanitizers.ts
+   - path/to/form-handler.ts
+
+   Spawning agent for merged task...
+   ```
+
+   - Combine all task descriptions and file paths
+   - Spawn a single agent with the combined context
+   - On completion, mark all original tasks as completed
+   - Remove the cycle from the graph
+   - Continue with remaining tasks
+
+   **If regenerating**:
+   - Display instructions to run `/speckit.tasks`
+   - Stop execution
+
+**4.4: Update execution queue after unblocking**
+
+After any unblocking action (task completion, force unblock, or cycle resolution):
+
+1. **Rebuild the execution queue**:
+   ```
+   function updateExecutionQueue(tasks, dependencies, completedTasks):
+     readyTasks = []
+     blockedTasks = []
+
+     for each task in tasks.filter(t => t.status == "pending"):
+       # Get current blockers (excluding completed and force-skipped)
+       activeBlockers = dependencies[task.id].blockedBy
+         .filter(b => !completedTasks.includes(b))
+         .filter(b => !forceSkippedTasks.includes(b))
+
+       if activeBlockers.length == 0:
+         readyTasks.push(task)
+       else:
+         blockedTasks.push({
+           task: task,
+           waitingFor: activeBlockers
+         })
+
+     # Sort ready tasks by phase and ID
+     readyTasks.sort((a, b) => {
+       if (a.phase != b.phase) return a.phase - b.phase
+       return a.id.localeCompare(b.id)
+     })
+
+     return { readyTasks, blockedTasks }
+   ```
+
+2. **Report newly unblocked tasks**:
+   ```markdown
+   ## Tasks Unblocked
+
+   The following tasks are now ready for execution:
+
+   | Task | Description | Was Waiting For |
+   |------|-------------|-----------------|
+   | T015 | Create user model | T014 (completed) |
+   | T016 | Add auth service | T014 (completed), T015 (now ready) |
+
+   Continuing with T015...
+   ```
+
+3. **Continue execution**:
+   - If readyTasks is not empty, return to Step 2.1
+   - If readyTasks is empty but blockedTasks exist, return to Step 4.1
+   - If no pending tasks remain, proceed to Step 3.4 for final summary
+
+## Output
+
+When the implement command completes, it produces the following outputs:
+
+### Files Modified
+
+| File | Modification |
+|------|--------------|
+| `tasks.md` | Task checkboxes updated from `[ ]` to `[x]` as tasks complete |
+| Implementation files | Files created or modified as specified in each task |
+
+### Git Artifacts
+
+| Artifact | Description |
+|----------|-------------|
+| Commits | One commit per task with format `[TaskID] Description` |
+| Push | All commits pushed to remote repository |
+
+### Console Output
+
+| Output | When Displayed |
+|--------|----------------|
+| Initial status | At command start - shows ready/blocked task counts |
+| Progress updates | After each task - shows completion percentage and progress bar |
+| Blocked task analysis | When no ready tasks available |
+| Final summary | On completion or abort - shows total metrics and git log |
+
+### Exit States
+
+| State | Description |
+|-------|-------------|
+| Complete | All tasks executed successfully |
+| Partial | Some tasks completed, user aborted or session ended |
+| Blocked | Cannot proceed due to unresolvable dependencies |
+| Error | Critical failure requiring manual intervention |
+
+### Resume Capability
+
+The command is idempotent and can be run multiple times:
+- Completed tasks (marked `[x]`) are skipped
+- Execution continues from the first pending ready task
+- Progress is preserved between sessions
 
 ## Usage
 
