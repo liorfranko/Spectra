@@ -169,7 +169,7 @@ git worktree remove worktrees/008-user-auth
 git worktree remove --force worktrees/008-user-auth
 ```
 
-The specs remain in `specs/008-user-auth/` for reference.
+After the PR is merged, specs are in main repo's `specs/008-user-auth/` for reference.
 
 ---
 

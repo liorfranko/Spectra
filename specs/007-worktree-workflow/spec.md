@@ -63,15 +63,15 @@ A developer wants to switch between different features or return to the main rep
 
 ### User Story 4 - Clean Up Completed Feature Worktrees (Priority: P3)
 
-After a feature is merged, a developer wants to clean up the associated worktree. The system provides guidance or automation for removing worktrees while preserving specs (if needed) and branches.
+After a feature is merged, a developer wants to clean up the associated worktree. The system provides guidance for removing worktrees after specs have been merged to main via PR.
 
 **Why this priority**: Cleanup prevents disk clutter but is a post-feature operation that doesn't block development.
 
-**Independent Test**: Can be tested by creating a worktree, then removing it with `git worktree remove`, and verifying specs remain in the shared directory.
+**Independent Test**: Can be tested by merging a feature PR, then removing the worktree with `git worktree remove`, and verifying specs are accessible in main repo's `specs/` directory.
 
 **Acceptance Scenarios**:
 
-1. **Given** a completed feature worktree exists, **When** the developer removes it with `git worktree remove worktrees/<feature>`, **Then** the worktree directory is deleted but specs remain in `specs/<feature>/`.
+1. **Given** a feature PR has been merged, **When** the developer removes the worktree with `git worktree remove worktrees/<feature>`, **Then** the worktree directory is deleted and specs are accessible in main repo's `specs/<feature>/` (via the merged PR).
 
 2. **Given** a worktree is removed, **When** the developer checks `git worktree list`, **Then** the removed worktree no longer appears.
 
