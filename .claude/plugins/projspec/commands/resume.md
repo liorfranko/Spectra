@@ -7,6 +7,14 @@ arguments: []
 
 This command detects the current state of specs and helps resume work where you left off. It identifies active specs, checks for in-progress tasks, and suggests the appropriate next action based on the current phase.
 
+## Quick Reference
+
+```
+/projspec.resume
+```
+
+Detects your current progress and suggests the next action based on the active spec's phase.
+
 ## Use Cases
 
 - Returning to work after a break
@@ -510,3 +518,9 @@ This will review the implementation against the specification.
 - In-progress tasks are highlighted for immediate continuation
 - Worktree detection helps identify the current working context
 - Progress tracking shows completion status for implement phase
+
+## See Also
+
+- `/projspec.status` - View status of all active specs
+- `/projspec.implement` - Continue implementing tasks
+- `/projspec.next` - Manually advance to the next phase

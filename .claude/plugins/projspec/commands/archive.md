@@ -16,6 +16,19 @@ arguments:
 
 This command completes the spec lifecycle by merging the spec branch to main, moving metadata to the completed directory, and cleaning up the worktree and branch. It includes comprehensive validation and user confirmation at each critical step.
 
+## Quick Reference
+
+```
+/projspec.archive [spec_id] [--force] [--keep-branch]
+```
+
+**Arguments:**
+- `spec_id` (optional) - Spec ID to archive; auto-detected if in worktree
+- `--force` (optional) - Skip phase validation
+- `--keep-branch` (optional) - Keep the branch after archiving
+
+Merges the spec branch to main, moves metadata to completed/, and cleans up the worktree.
+
 ## Use Cases
 
 - Completing a spec after successful review
@@ -665,3 +678,9 @@ The spec remains active at: .projspec/specs/active/a1b2c3d4
 - The worktree is removed even if --keep-branch is set
 - All git operations use --no-ff to preserve merge history
 - Consider running /projspec.review before archive to ensure completeness
+
+## See Also
+
+- `/projspec.review` - Review implementation before archiving (previous step)
+- `/projspec.status` - View all specs including archived ones
+- `/projspec.new` - Start a new spec after archiving

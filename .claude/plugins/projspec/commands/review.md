@@ -7,6 +7,14 @@ arguments: []
 
 This command reviews the completed implementation against the specification document. It compares what was requested (spec.md) with what was built (task summaries), validates success criteria, and generates a review report.
 
+## Quick Reference
+
+```
+/projspec.review
+```
+
+Compares implementation against spec.md, verifies acceptance criteria, and generates a review report.
+
 ## Use Cases
 
 - Assessing implementation completeness after all tasks are done
@@ -621,3 +629,9 @@ For unaddressed requirements:
 - Manual testing items should be highlighted for user verification
 - Out-of-scope items from spec.md should be acknowledged, not flagged as gaps
 - The review provides recommendations but doesn't block archive
+
+## See Also
+
+- `/projspec.implement` - Continue implementing tasks (previous step)
+- `/projspec.archive` - Archive the spec after successful review (next step)
+- `/projspec.status` - View all specs and their review status

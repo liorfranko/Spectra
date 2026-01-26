@@ -13,6 +13,18 @@ arguments:
 
 This command allows manual advancement of a spec to the next workflow phase. It validates that required artifacts exist for the current phase before advancing, updates the state.yaml, and suggests the appropriate command to run after advancement.
 
+## Quick Reference
+
+```
+/projspec.next [spec_id] [--force]
+```
+
+**Arguments:**
+- `spec_id` (optional) - Spec ID to advance; auto-detected if in worktree
+- `--force` (optional) - Skip validation checks
+
+Advances the spec to the next phase: `new -> spec -> plan -> tasks -> implement -> review`
+
 ## Use Cases
 
 - Advancing a spec when you've created artifacts outside the normal workflow
@@ -453,3 +465,9 @@ Next Steps:
 - The --force flag should be used sparingly, as it may cause workflow issues
 - For normal workflow, prefer using the phase-specific commands (/projspec.spec, /projspec.plan, etc.)
 - This command is useful for recovery and manual intervention scenarios
+
+## See Also
+
+- `/projspec.resume` - Detect current state and get guidance
+- `/projspec.status` - View all specs and their phases
+- `/projspec.spec`, `/projspec.plan`, `/projspec.tasks` - Standard phase commands
