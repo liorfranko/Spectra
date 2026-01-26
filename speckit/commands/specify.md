@@ -187,8 +187,116 @@ ${FEATURE_DIR}/spec.md
 - Keep requirements atomic (one requirement = one thing)
 - Ensure traceability (scenarios map to requirements, requirements map to success criteria)
 
-<!-- T019: Add clarification questions step -->
-<!-- Identify ambiguities and prompt for clarification -->
+### Step 5: Identify Clarification Needs
+
+After generating the initial specification, review it for ambiguous or underspecified areas that require user input.
+
+#### 5.1: Scan for Ambiguities
+
+Review the generated specification for these common ambiguity patterns:
+
+**Vague Scope:**
+- Features described without clear boundaries
+- Missing user role definitions
+- Unclear interaction between entities
+
+**Missing Details:**
+- Quantities without specified limits (e.g., "multiple items" - how many?)
+- Timeframes without duration (e.g., "quickly" - how fast?)
+- Conditions without thresholds (e.g., "large file" - what size?)
+
+**Implicit Requirements:**
+- Authentication/authorization not explicitly stated
+- Error handling behavior not specified
+- Edge cases not addressed in the original description
+
+**Technical Gaps:**
+- Data persistence needs unclear
+- Integration points not defined
+- Performance expectations unstated
+
+#### 5.2: Prioritize and Limit Clarifications
+
+**Maximum 3 Clarification Items:**
+If more than 3 ambiguities are found, prioritize using these criteria (in order):
+1. **Blockers**: Ambiguities that prevent implementation from starting
+2. **Scope-defining**: Ambiguities that significantly affect feature scope
+3. **Risk-bearing**: Ambiguities that could lead to rework if assumed incorrectly
+
+Defer lower-priority ambiguities to the `/speckit.clarify` command for later resolution.
+
+#### 5.3: Mark Clarification Items
+
+For each prioritized ambiguity (up to 3), add a `[NEEDS CLARIFICATION]` marker in the appropriate section of the spec:
+
+**Marker Format:**
+```markdown
+[NEEDS CLARIFICATION: Brief description of what's unclear]
+```
+
+**Placement Rules:**
+- Place the marker immediately after the ambiguous content
+- If the ambiguity affects an entire section, place it at the section header
+- Do not place markers in the Open Questions section (those go there as full questions)
+
+#### 5.4: Create Structured Questions
+
+For each `[NEEDS CLARIFICATION]` marker, add a corresponding entry to the **Open Questions** section of the spec. Each question must include:
+
+**Required Fields:**
+| Field | Description |
+|-------|-------------|
+| Question ID | Sequential ID: Q-001, Q-002, Q-003 |
+| Question | Clear, specific question that can be answered definitively |
+| Why Needed | Brief explanation of why this information affects the implementation |
+| Suggested Default | A reasonable default to use if the user doesn't provide clarification |
+| Status | Set to `Open` |
+| Impact | Which spec sections/IDs are affected (e.g., "FR-002, US-001") |
+
+**Question Format in Open Questions Section:**
+```markdown
+### Q-001: [Concise question title]
+- **Question**: [Full question text - specific and answerable]
+- **Why Needed**: [Impact on implementation if not clarified]
+- **Suggested Default**: [Reasonable default value or behavior]
+- **Status**: Open
+- **Impacts**: [List of affected spec item IDs]
+```
+
+#### 5.5: Update Spec File
+
+After identifying clarification needs:
+
+1. **Add markers to spec content**: Insert `[NEEDS CLARIFICATION]` markers at ambiguous points
+2. **Populate Open Questions section**: Replace placeholder questions with structured clarification questions
+3. **Write updated spec**: Save the modified specification to `${FEATURE_DIR}/spec.md`
+
+**Example Clarification Entry:**
+```markdown
+### Q-001: Maximum file size limit
+- **Question**: What is the maximum file size allowed for uploads?
+- **Why Needed**: Affects storage architecture and upload timeout configuration
+- **Suggested Default**: 10MB (standard web upload limit)
+- **Status**: Open
+- **Impacts**: FR-003, EC-002
+```
+
+#### 5.6: Report Clarification Status
+
+After processing clarifications, prepare a summary for the user:
+
+**If clarifications are needed (1-3 items):**
+- List each question with its ID and brief description
+- Indicate the suggested defaults that will be used if not clarified
+- Inform user they can run `/speckit.clarify` to address these questions
+
+**If no clarifications are needed:**
+- Note that the specification is complete and ready for planning
+- Proceed to finalization
+
+**If more than 3 ambiguities were found:**
+- Report the 3 prioritized questions
+- Mention that additional clarifications can be addressed with `/speckit.clarify`
 
 <!-- T020: Add finalization step -->
 <!-- Finalize spec and report results -->
