@@ -7,7 +7,7 @@ constitution files with foundational principles and constraints.
 
 import pytest
 
-from ..helpers import ClaudeRunner
+from ..helpers import ClaudeRunner, FileVerifier
 
 
 @pytest.mark.e2e
@@ -44,3 +44,14 @@ class TestSpeckitConstitution:
             f"STDOUT:\n{result.stdout}\n"
             f"STDERR:\n{result.stderr}"
         )
+
+    def test_constitution_file_created(self, file_verifier: FileVerifier) -> None:
+        """Test that constitution.md file is created in the correct location.
+
+        This test verifies that running the /speckit.constitution command
+        creates the constitution.md file in the .specify/memory directory.
+
+        Args:
+            file_verifier: FileVerifier fixture for checking file existence.
+        """
+        file_verifier.assert_exists(".specify/memory/constitution.md")
