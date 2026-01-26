@@ -114,9 +114,9 @@ json_output() {
             echo -n ","
         fi
 
-        # Escape special JSON characters in key and value
-        key=$(echo -n "$key" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\n/\\n/g')
-        value=$(echo -n "$value" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\n/\\n/g')
+        # Escape JSON special characters: backslash, quotes, tabs, newlines, carriage returns
+        key=$(printf '%s' "$key" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g' | tr '\n' ' ')
+        value=$(printf '%s' "$value" | sed 's/\\/\\\\/g; s/"/\\"/g; s/\t/\\t/g; s/\r/\\r/g' | tr '\n' ' ')
 
         echo -n "\"${key}\":\"${value}\""
     done
@@ -176,6 +176,42 @@ require_command() {
     fi
 }
 
+# Check if a command exists, return true/false without exiting
+# Usage: if has_command "bc"; then ... fi
+has_command() {
+    local cmd="$1"
+    command -v "$cmd" &>/dev/null
+}
+
+# Safe arithmetic with bc, falls back to integer arithmetic if bc not available
+# Usage: result=$(safe_calc "1.5 + 2.3" "4")  # fallback value if bc unavailable
+safe_calc() {
+    local expression="$1"
+    local fallback="${2:-0}"
+
+    if has_command "bc"; then
+        echo "$expression" | bc -l 2>/dev/null || echo "$fallback"
+    else
+        warn "bc not available, using fallback value for: $expression"
+        echo "$fallback"
+    fi
+}
+
+# Safe floating-point comparison, returns 0 (true) or 1 (false)
+# Usage: if safe_compare "1.5 > 1.0"; then ... fi
+safe_compare() {
+    local expression="$1"
+
+    if has_command "bc"; then
+        local result
+        result=$(echo "$expression" | bc -l 2>/dev/null || echo "0")
+        [[ "$result" == "1" ]]
+    else
+        warn "bc not available, comparison failed for: $expression"
+        return 1
+    fi
+}
+
 # Check if a file exists, error if not
 # Usage: require_file "/path/to/file" "Configuration file not found"
 require_file() {
@@ -195,17 +231,18 @@ slugify() {
     local max_words="${2:-4}"
 
     # Convert to lowercase, replace non-alphanumeric with hyphens, collapse multiple hyphens
+    # Use printf for safer handling of special characters
     local slug
-    slug=$(echo "$text" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/-\+/-/g' | sed 's/^-//;s/-$//')
+    slug=$(printf '%s' "$text" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/-/g' | sed 's/-\+/-/g' | sed 's/^-//;s/-$//')
 
     # Limit to max_words (count by hyphens)
     local word_count
-    word_count=$(echo "$slug" | tr '-' '\n' | wc -l | tr -d ' ')
+    word_count=$(printf '%s' "$slug" | tr '-' '\n' | wc -l | tr -d ' ')
 
     if (( word_count > max_words )); then
-        slug=$(echo "$slug" | cut -d'-' -f1-"${max_words}")
+        slug=$(printf '%s' "$slug" | cut -d'-' -f1-"${max_words}")
     fi
 
     # Ensure at least 2 words worth of content (or return as-is if single word)
-    echo "$slug"
+    printf '%s\n' "$slug"
 }

@@ -85,12 +85,58 @@ log_warn() { echo "[analyze] WARNING: $1" >&2; }
 log_error() { echo "[analyze] ERROR: $1" >&2; }
 
 # =============================================================================
+# Dependency Check
+# =============================================================================
+
+# Check if bc is available (needed for floating-point arithmetic)
+BC_AVAILABLE=false
+if command -v bc &>/dev/null; then
+    BC_AVAILABLE=true
+fi
+
+# Safe calculation using bc with fallback
+safe_bc_calc() {
+    local expression="$1"
+    local fallback="${2:-0}"
+
+    if [[ "$BC_AVAILABLE" == "true" ]]; then
+        echo "$expression" | bc -l 2>/dev/null || echo "$fallback"
+    else
+        log_warn "bc not available, using fallback for: $expression"
+        echo "$fallback"
+    fi
+}
+
+# Safe comparison using bc
+safe_bc_compare() {
+    local expression="$1"
+
+    if [[ "$BC_AVAILABLE" == "true" ]]; then
+        local result
+        result=$(echo "$expression" | bc -l 2>/dev/null || echo "0")
+        [[ "$result" == "1" ]]
+    else
+        return 1
+    fi
+}
+
+# =============================================================================
 # Instinct Management
 # =============================================================================
 
+# Generate random hex string (with fallback for systems without /dev/urandom)
+generate_random_hex() {
+    if [[ -r /dev/urandom ]]; then
+        head -c 4 /dev/urandom | od -An -tx1 | tr -d ' \n'
+    else
+        # Fallback for systems without /dev/urandom
+        printf '%08x' $((RANDOM * RANDOM))
+    fi
+}
+
 # Generate unique instinct ID
 generate_instinct_id() {
-    echo "instinct-$(date +%s)-$(head -c 4 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+    echo "instinct-$(date +%s)-$(generate_random_hex)"
 }
 
 # Find existing instinct by pattern match
@@ -132,9 +178,9 @@ reinforce_instinct() {
 
     # Increase confidence by 0.1, cap at CONFIDENCE_MAX
     local new_conf
-    new_conf=$(echo "$current_conf + 0.1" | bc -l 2>/dev/null || echo "$current_conf")
+    new_conf=$(safe_bc_calc "$current_conf + 0.1" "$current_conf")
     new_conf=$(printf "%.2f" "$new_conf")
-    if (( $(echo "$new_conf > $CONFIDENCE_MAX" | bc -l 2>/dev/null || echo 0) )); then
+    if safe_bc_compare "$new_conf > $CONFIDENCE_MAX"; then
         new_conf=$CONFIDENCE_MAX
     fi
 
@@ -143,22 +189,34 @@ reinforce_instinct() {
     current_count=$(grep -o '"reinforcement_count"[[:space:]]*:[[:space:]]*[0-9]*' "$instinct_file" | sed 's/.*:[[:space:]]*//' || echo "0")
     local new_count=$((current_count + 1))
 
-    # Update the instinct file
+    # Update the instinct file atomically
     local temp_file="${instinct_file}.tmp"
 
     # Update confidence
     sed "s/\"confidence\"[[:space:]]*:[[:space:]]*[0-9.]*/\"confidence\": $new_conf/" "$instinct_file" > "$temp_file"
-    mv "$temp_file" "$instinct_file"
+    if ! mv "$temp_file" "$instinct_file"; then
+        log_error "Failed to update instinct confidence: $instinct_file"
+        rm -f "$temp_file"
+        return 1
+    fi
 
     # Update reinforcement count
     sed "s/\"reinforcement_count\"[[:space:]]*:[[:space:]]*[0-9]*/\"reinforcement_count\": $new_count/" "$instinct_file" > "$temp_file"
-    mv "$temp_file" "$instinct_file"
+    if ! mv "$temp_file" "$instinct_file"; then
+        log_error "Failed to update instinct count: $instinct_file"
+        rm -f "$temp_file"
+        return 1
+    fi
 
     # Update last_reinforced timestamp
     local timestamp
     timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)
     sed "s/\"last_reinforced\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/\"last_reinforced\": \"$timestamp\"/" "$instinct_file" > "$temp_file"
-    mv "$temp_file" "$instinct_file"
+    if ! mv "$temp_file" "$instinct_file"; then
+        log_error "Failed to update instinct timestamp: $instinct_file"
+        rm -f "$temp_file"
+        return 1
+    fi
 
     log_info "Reinforced instinct: $(basename "$instinct_file") -> confidence $new_conf (x$new_count)"
 }
@@ -311,11 +369,18 @@ apply_decay() {
         return
     fi
 
+    # Check if bc is available for decay calculations
+    if [[ "$BC_AVAILABLE" != "true" ]]; then
+        log_warn "bc not available, skipping confidence decay (requires floating-point math)"
+        return
+    fi
+
     local now_epoch
     now_epoch=$(date +%s)
     local week_seconds=$((7 * 24 * 60 * 60))
     local decayed=0
     local archived=0
+    local skipped=0
 
     while IFS= read -r instinct_file; do
         [[ -z "$instinct_file" ]] && continue
@@ -331,9 +396,16 @@ apply_decay() {
         # Convert to epoch (macOS compatible)
         local last_epoch
         if [[ "$(uname)" == "Darwin" ]]; then
-            last_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$last_reinforced" +%s 2>/dev/null || echo "0")
+            last_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$last_reinforced" +%s 2>/dev/null)
         else
-            last_epoch=$(date -d "$last_reinforced" +%s 2>/dev/null || echo "0")
+            last_epoch=$(date -d "$last_reinforced" +%s 2>/dev/null)
+        fi
+
+        # Check if date parsing failed
+        if [[ -z "$last_epoch" || "$last_epoch" == "0" ]]; then
+            log_warn "Failed to parse timestamp '$last_reinforced' in $(basename "$instinct_file"), skipping"
+            ((skipped++))
+            continue
         fi
 
         local age_seconds=$((now_epoch - last_epoch))
@@ -344,30 +416,41 @@ apply_decay() {
             current_conf=$(grep -o '"confidence"[[:space:]]*:[[:space:]]*[0-9.]*' "$instinct_file" | sed 's/.*:[[:space:]]*//' || echo "0")
 
             local decay_amount
-            decay_amount=$(echo "$weeks_stale * $DECAY_PER_WEEK" | bc -l 2>/dev/null || echo "0")
+            decay_amount=$(safe_bc_calc "$weeks_stale * $DECAY_PER_WEEK" "0")
             local new_conf
-            new_conf=$(echo "$current_conf - $decay_amount" | bc -l 2>/dev/null || echo "$current_conf")
+            new_conf=$(safe_bc_calc "$current_conf - $decay_amount" "$current_conf")
             new_conf=$(printf "%.2f" "$new_conf")
 
             # Archive if confidence drops below threshold
-            if (( $(echo "$new_conf < 0.1" | bc -l 2>/dev/null || echo 0) )); then
+            if safe_bc_compare "$new_conf < 0.1"; then
                 # Move to archived status
                 local temp_file="${instinct_file}.tmp"
                 sed 's/"status"[[:space:]]*:[[:space:]]*"active"/"status": "archived"/' "$instinct_file" > "$temp_file"
-                mv "$temp_file" "$instinct_file"
-                ((archived++))
-                log_info "Archived stale instinct: $(basename "$instinct_file")"
-            elif (( $(echo "$new_conf < $current_conf" | bc -l 2>/dev/null || echo 0) )); then
+                if mv "$temp_file" "$instinct_file"; then
+                    ((archived++))
+                    log_info "Archived stale instinct: $(basename "$instinct_file")"
+                else
+                    log_error "Failed to archive instinct: $instinct_file"
+                    rm -f "$temp_file"
+                fi
+            elif safe_bc_compare "$new_conf < $current_conf"; then
                 # Apply decay
                 local temp_file="${instinct_file}.tmp"
                 sed "s/\"confidence\"[[:space:]]*:[[:space:]]*[0-9.]*/\"confidence\": $new_conf/" "$instinct_file" > "$temp_file"
-                mv "$temp_file" "$instinct_file"
-                ((decayed++))
+                if mv "$temp_file" "$instinct_file"; then
+                    ((decayed++))
+                else
+                    log_error "Failed to apply decay to instinct: $instinct_file"
+                    rm -f "$temp_file"
+                fi
             fi
         fi
     done < <(find "$INSTINCTS_DIR" -name "instinct-*.json" -type f 2>/dev/null)
 
     log_info "Decay applied: $decayed instinct(s) decayed, $archived archived"
+    if [[ "$skipped" -gt 0 ]]; then
+        log_warn "$skipped instinct(s) skipped due to timestamp parsing errors"
+    fi
 }
 
 # =============================================================================
@@ -397,7 +480,7 @@ promote_instincts() {
             continue
         fi
 
-        if (( $(echo "$confidence >= $PROMOTION_THRESHOLD" | bc -l 2>/dev/null || echo 0) )); then
+        if safe_bc_compare "$confidence >= $PROMOTION_THRESHOLD"; then
             local instinct_id
             instinct_id=$(grep -o '"id"[[:space:]]*:[[:space:]]*"[^"]*"' "$instinct_file" | sed 's/.*"\([^"]*\)"$/\1/' || echo "unknown")
 
@@ -445,10 +528,14 @@ EOF
             # Mark instinct as promoted
             local temp_file="${instinct_file}.tmp"
             sed 's/"status"[[:space:]]*:[[:space:]]*"active"/"status": "promoted"/' "$instinct_file" > "$temp_file"
-            mv "$temp_file" "$instinct_file"
-
-            ((promoted++))
-            log_info "Promoted to skill: $skill_file"
+            if mv "$temp_file" "$instinct_file"; then
+                ((promoted++))
+                log_info "Promoted to skill: $skill_file"
+            else
+                log_error "Failed to mark instinct as promoted: $instinct_file"
+                rm -f "$temp_file"
+                # Still created the skill file, so count as partial success
+            fi
         fi
     done < <(find "$INSTINCTS_DIR" -name "instinct-*.json" -type f 2>/dev/null)
 

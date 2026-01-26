@@ -48,6 +48,16 @@ get_today() {
     date +%Y-%m-%d
 }
 
+# Generate a random hex string for session IDs
+generate_random_hex() {
+    if [[ -r /dev/urandom ]]; then
+        head -c 4 /dev/urandom | od -An -tx1 | tr -d ' \n'
+    else
+        # Fallback for systems without /dev/urandom
+        printf '%08x' $((RANDOM * RANDOM))
+    fi
+}
+
 # Extract or generate session_id from JSON input
 get_session_id() {
     local session_id
@@ -56,7 +66,7 @@ get_session_id() {
         echo "$session_id"
     else
         # Fallback: generate ID from timestamp + random
-        echo "$(date +%Y%m%d%H%M%S)-$(head -c 4 /dev/urandom | od -An -tx1 | tr -d ' \n')"
+        echo "$(date +%Y%m%d%H%M%S)-$(generate_random_hex)"
     fi
 }
 

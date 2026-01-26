@@ -99,8 +99,9 @@ create_feature() {
     local short_name
     short_name=$(slugify "$DESCRIPTION")
 
-    if [[ -z "$short_name" ]]; then
-        error "Could not generate a valid short name from description: $DESCRIPTION"
+    # Validate slug is not empty and contains at least one alphanumeric character
+    if [[ -z "$short_name" || "$short_name" =~ ^-*$ ]]; then
+        error "Could not generate a valid short name from description: '$DESCRIPTION' (must contain alphanumeric characters)"
     fi
 
     # Get next feature number
@@ -128,12 +129,13 @@ create_feature() {
     # Create git branch or worktree
     if [[ "$NO_WORKTREE" == "true" ]]; then
         # Create branch in current repo
-        git branch "$branch_name" >/dev/null 2>&1 || {
-            error "Failed to create branch: $branch_name"
-        }
-        git checkout "$branch_name" >/dev/null 2>&1 || {
-            error "Failed to checkout branch: $branch_name"
-        }
+        local git_output
+        if ! git_output=$(git branch "$branch_name" 2>&1); then
+            error "Failed to create branch '$branch_name': $git_output"
+        fi
+        if ! git_output=$(git checkout "$branch_name" 2>&1); then
+            error "Failed to checkout branch '$branch_name': $git_output"
+        fi
     else
         # Create worktree
         local worktrees_dir
@@ -148,9 +150,10 @@ create_feature() {
             error "Worktree directory already exists: $worktree_path"
         fi
 
-        git worktree add "$worktree_path" -b "$branch_name" >/dev/null 2>&1 || {
-            error "Failed to create worktree at: $worktree_path"
-        }
+        local git_output
+        if ! git_output=$(git worktree add "$worktree_path" -b "$branch_name" 2>&1); then
+            error "Failed to create worktree at '$worktree_path': $git_output"
+        fi
 
         # Update paths for worktree context
         specs_dir="${worktree_path}/specs"

@@ -145,8 +145,11 @@ copy_hook_templates() {
         # Copy spec/plan/tasks templates
         for template in spec-template.md plan-template.md tasks-template.md checklist-template.md; do
             if [[ -f "$templates_dir/$template" ]]; then
-                cp "$templates_dir/$template" "$specify_dir/templates/" 2>/dev/null || true
-                log_verbose "Copied $template"
+                if cp "$templates_dir/$template" "$specify_dir/templates/" 2>/dev/null; then
+                    log_verbose "Copied $template"
+                else
+                    log_verbose "Skipped $template (copy failed or already exists)"
+                fi
             fi
         done
     fi
@@ -156,23 +159,53 @@ copy_hook_templates() {
     if [[ -d "$ref_hooks" ]]; then
         # Copy auto-learn hooks
         if [[ -d "$ref_hooks/auto-learn" ]]; then
-            cp "$ref_hooks/auto-learn/"*.sh "$specify_dir/hooks/auto-learn/" 2>/dev/null || true
-            chmod +x "$specify_dir/hooks/auto-learn/"*.sh 2>/dev/null || true
-            log_verbose "Copied auto-learn hooks"
+            local copied=0
+            for hook_script in "$ref_hooks/auto-learn/"*.sh; do
+                [[ -f "$hook_script" ]] || continue
+                if cp "$hook_script" "$specify_dir/hooks/auto-learn/" 2>/dev/null; then
+                    chmod +x "$specify_dir/hooks/auto-learn/$(basename "$hook_script")" 2>/dev/null
+                    ((copied++))
+                fi
+            done
+            if [[ $copied -gt 0 ]]; then
+                log_verbose "Copied $copied auto-learn hook(s)"
+            else
+                log_verbose "No auto-learn hooks found to copy"
+            fi
         fi
 
         # Copy memory-persistence hooks
         if [[ -d "$ref_hooks/memory-persistence" ]]; then
-            cp "$ref_hooks/memory-persistence/"*.sh "$specify_dir/hooks/memory-persistence/" 2>/dev/null || true
-            chmod +x "$specify_dir/hooks/memory-persistence/"*.sh 2>/dev/null || true
-            log_verbose "Copied memory-persistence hooks"
+            local copied=0
+            for hook_script in "$ref_hooks/memory-persistence/"*.sh; do
+                [[ -f "$hook_script" ]] || continue
+                if cp "$hook_script" "$specify_dir/hooks/memory-persistence/" 2>/dev/null; then
+                    chmod +x "$specify_dir/hooks/memory-persistence/$(basename "$hook_script")" 2>/dev/null
+                    ((copied++))
+                fi
+            done
+            if [[ $copied -gt 0 ]]; then
+                log_verbose "Copied $copied memory-persistence hook(s)"
+            else
+                log_verbose "No memory-persistence hooks found to copy"
+            fi
         fi
 
         # Copy strategic-compact hooks
         if [[ -d "$ref_hooks/strategic-compact" ]]; then
-            cp "$ref_hooks/strategic-compact/"*.sh "$specify_dir/hooks/strategic-compact/" 2>/dev/null || true
-            chmod +x "$specify_dir/hooks/strategic-compact/"*.sh 2>/dev/null || true
-            log_verbose "Copied strategic-compact hooks"
+            local copied=0
+            for hook_script in "$ref_hooks/strategic-compact/"*.sh; do
+                [[ -f "$hook_script" ]] || continue
+                if cp "$hook_script" "$specify_dir/hooks/strategic-compact/" 2>/dev/null; then
+                    chmod +x "$specify_dir/hooks/strategic-compact/$(basename "$hook_script")" 2>/dev/null
+                    ((copied++))
+                fi
+            done
+            if [[ $copied -gt 0 ]]; then
+                log_verbose "Copied $copied strategic-compact hook(s)"
+            else
+                log_verbose "No strategic-compact hooks found to copy"
+            fi
         fi
     fi
 }
