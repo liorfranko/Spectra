@@ -26,10 +26,10 @@
 
 **Purpose**: Create Python package structure and configure development environment
 
-- [ ] T001 Create pyproject.toml with uv configuration, dependencies (pydantic, pyyaml, rich, pytest) in pyproject.toml
-- [ ] T002 [P] Create package structure with src/projspec/__init__.py containing version metadata
-- [ ] T003 [P] Create .gitignore with Python, IDE, and worktree patterns in .gitignore
-- [ ] T004 [P] Create README.md with project description and usage in README.md
+- [X] T001 Create pyproject.toml with uv configuration, dependencies (pydantic, pyyaml, rich, pytest) in pyproject.toml
+- [X] T002 [P] Create package structure with src/projspec/__init__.py containing version metadata
+- [X] T003 [P] Create .gitignore with Python, IDE, and worktree patterns in .gitignore
+- [X] T004 [P] Create README.md with project description and usage in README.md
 
 ---
 
@@ -39,14 +39,14 @@
 
 **CRITICAL**: No user story work can begin until this phase is complete
 
-- [ ] T005 Create TaskState Pydantic model with id, name, description, status, depends_on, context_files, summary fields in src/projspec/models.py
-- [ ] T006 Create SpecState Pydantic model with spec_id, name, phase, created_at, branch, worktree_path, tasks fields in src/projspec/models.py
-- [ ] T007 Create Config Pydantic model with version, project, worktrees, context fields in src/projspec/models.py
-- [ ] T008 Create Workflow Pydantic model with workflow.name and workflow.phases fields in src/projspec/models.py
-- [ ] T009 Implement load_active_specs function to read all specs from active directory in src/projspec/state.py
-- [ ] T010 Implement get_current_spec function to find most recently modified spec in src/projspec/state.py
-- [ ] T011 [P] Create default config.yaml template content as Python constant in src/projspec/defaults.py
-- [ ] T012 [P] Create default workflow.yaml template content as Python constant in src/projspec/defaults.py
+- [X] T005 Create TaskState Pydantic model with id, name, description, status, depends_on, context_files, summary fields in src/projspec/models.py
+- [X] T006 Create SpecState Pydantic model with spec_id, name, phase, created_at, branch, worktree_path, tasks fields in src/projspec/models.py
+- [X] T007 Create Config Pydantic model with version, project, worktrees, context fields in src/projspec/models.py
+- [X] T008 Create Workflow Pydantic model with workflow.name and workflow.phases fields in src/projspec/models.py
+- [X] T009 Implement load_active_specs function to read all specs from active directory in src/projspec/state.py
+- [X] T010 Implement get_current_spec function to find most recently modified spec in src/projspec/state.py
+- [X] T011 [P] Create default config.yaml template content as Python constant in src/projspec/defaults.py
+- [X] T012 [P] Create default workflow.yaml template content as Python constant in src/projspec/defaults.py
 
 **Checkpoint**: Foundation ready - Pydantic models and state utilities complete
 
@@ -60,18 +60,18 @@
 
 ### Implementation for User Story 1
 
-- [ ] T013 [US1] Create CLI entry point with argparse subcommand structure in src/projspec/cli.py
-- [ ] T014 [US1] Implement init subcommand that creates .projspec/ directory structure in src/projspec/cli.py
-- [ ] T015 [US1] Create default phase templates as bundled assets in src/projspec/assets/phases/spec.md
-- [ ] T016 [P] [US1] Create plan phase template in src/projspec/assets/phases/plan.md
-- [ ] T017 [P] [US1] Create tasks phase template in src/projspec/assets/phases/tasks.md
-- [ ] T018 [P] [US1] Create implement phase template in src/projspec/assets/phases/implement.md
-- [ ] T019 [P] [US1] Create review phase template in src/projspec/assets/phases/review.md
-- [ ] T020 [US1] Implement _copy_default_phases function to copy bundled templates in src/projspec/cli.py
-- [ ] T021 [US1] Add git repository detection (check for .git directory) in src/projspec/cli.py
-- [ ] T022 [US1] Add already-initialized detection with user-friendly message in src/projspec/cli.py
-- [ ] T023 [US1] Add Rich console output for success/error messages in src/projspec/cli.py
-- [ ] T024 [US1] Add console script entry point 'projspec' in pyproject.toml
+- [X] T013 [US1] Create CLI entry point with argparse subcommand structure in src/projspec/cli.py
+- [X] T014 [US1] Implement init subcommand that creates .projspec/ directory structure in src/projspec/cli.py
+- [X] T015 [US1] Create default phase templates as bundled assets in src/projspec/assets/phases/spec.md
+- [X] T016 [P] [US1] Create plan phase template in src/projspec/assets/phases/plan.md
+- [X] T017 [P] [US1] Create tasks phase template in src/projspec/assets/phases/tasks.md
+- [X] T018 [P] [US1] Create implement phase template in src/projspec/assets/phases/implement.md
+- [X] T019 [P] [US1] Create review phase template in src/projspec/assets/phases/review.md
+- [X] T020 [US1] Implement _copy_default_phases function to copy bundled templates in src/projspec/cli.py
+- [X] T021 [US1] Add git repository detection (check for .git directory) in src/projspec/cli.py
+- [X] T022 [US1] Add already-initialized detection with user-friendly message in src/projspec/cli.py
+- [X] T023 [US1] Add Rich console output for success/error messages in src/projspec/cli.py
+- [X] T024 [US1] Add console script entry point 'projspec' in pyproject.toml
 
 **Checkpoint**: User Story 1 complete - `projspec init` creates full .projspec/ structure
 
@@ -87,10 +87,10 @@
 
 ### Implementation for User Story 9
 
-- [ ] T025 [US9] Implement status subcommand that reads active specs in src/projspec/cli.py
-- [ ] T026 [US9] Implement _print_spec_status helper with Rich table formatting in src/projspec/cli.py
-- [ ] T027 [US9] Add task progress calculation (completed/total, in_progress count) in src/projspec/cli.py
-- [ ] T028 [US9] Handle empty specs case with "No active specs" message in src/projspec/cli.py
+- [X] T025 [US9] Implement status subcommand that reads active specs in src/projspec/cli.py
+- [X] T026 [US9] Implement _print_spec_status helper with Rich table formatting in src/projspec/cli.py
+- [X] T027 [US9] Add task progress calculation (completed/total, in_progress count) in src/projspec/cli.py
+- [X] T028 [US9] Handle empty specs case with "No active specs" message in src/projspec/cli.py
 
 **Checkpoint**: Python CLI complete - both init and status commands working
 
@@ -104,13 +104,13 @@
 
 ### Implementation for User Story 2
 
-- [ ] T029 [US2] Create Claude Code plugin manifest in .claude/plugins/projspec/plugin.json
-- [ ] T030 [US2] Create /projspec.new command with ID generation, worktree creation, state.yaml initialization in .claude/plugins/projspec/commands/new.md
-- [ ] T031 [US2] Add branch existence check and error handling in .claude/plugins/projspec/commands/new.md
-- [ ] T032 [US2] Add worktree directory existence check in .claude/plugins/projspec/commands/new.md
-- [ ] T033 [US2] Add spec name validation (kebab-case, no special chars) in .claude/plugins/projspec/commands/new.md
-- [ ] T034 [P] [US2] Create /projspec.init command wrapper that calls Python CLI in .claude/plugins/projspec/commands/init.md
-- [ ] T035 [P] [US2] Create /projspec.status command wrapper that calls Python CLI in .claude/plugins/projspec/commands/status.md
+- [X] T029 [US2] Create Claude Code plugin manifest in .claude/plugins/projspec/plugin.json
+- [X] T030 [US2] Create /projspec.new command with ID generation, worktree creation, state.yaml initialization in .claude/plugins/projspec/commands/new.md
+- [X] T031 [US2] Add branch existence check and error handling in .claude/plugins/projspec/commands/new.md
+- [X] T032 [US2] Add worktree directory existence check in .claude/plugins/projspec/commands/new.md
+- [X] T033 [US2] Add spec name validation (kebab-case, no special chars) in .claude/plugins/projspec/commands/new.md
+- [X] T034 [P] [US2] Create /projspec.init command wrapper that calls Python CLI in .claude/plugins/projspec/commands/init.md
+- [X] T035 [P] [US2] Create /projspec.status command wrapper that calls Python CLI in .claude/plugins/projspec/commands/status.md
 
 **Checkpoint**: User Story 2 complete - can create new specs with isolated worktrees
 
@@ -124,10 +124,10 @@
 
 ### Implementation for User Story 3
 
-- [ ] T036 [US3] Create /projspec.spec command that reads brief.md and guides spec creation in .claude/plugins/projspec/commands/spec.md
-- [ ] T037 [US3] Add structured sections (Problem Statement, User Stories, Technical Requirements, Success Criteria, Out of Scope) in .claude/plugins/projspec/commands/spec.md
-- [ ] T038 [US3] Add state.yaml phase update from "new" to "spec" in .claude/plugins/projspec/commands/spec.md
-- [ ] T039 [US3] Add clarifying questions workflow for ambiguous requirements in .claude/plugins/projspec/commands/spec.md
+- [X] T036 [US3] Create /projspec.spec command that reads brief.md and guides spec creation in src/projspec/assets/commands/projspec.spec.md
+- [X] T037 [US3] Add structured sections (Problem Statement, User Stories, Technical Requirements, Success Criteria, Out of Scope) in src/projspec/assets/commands/projspec.spec.md
+- [X] T038 [US3] Add state.yaml phase update from "new" to "spec" in src/projspec/assets/commands/projspec.spec.md
+- [X] T039 [US3] Add clarifying questions workflow for ambiguous requirements in src/projspec/assets/commands/projspec.spec.md
 
 **Checkpoint**: User Story 3 complete - can define specifications with guided workflow
 
@@ -141,9 +141,9 @@
 
 ### Implementation for User Story 4
 
-- [ ] T040 [US4] Create /projspec.plan command that reads spec.md and creates plan.md in .claude/plugins/projspec/commands/plan.md
-- [ ] T041 [US4] Add phase validation (must be in "spec" phase with spec.md present) in .claude/plugins/projspec/commands/plan.md
-- [ ] T042 [US4] Add state.yaml phase update from "spec" to "plan" in .claude/plugins/projspec/commands/plan.md
+- [X] T040 [US4] Create /projspec.plan command that reads spec.md and creates plan.md in src/projspec/assets/commands/projspec.plan.md
+- [X] T041 [US4] Add phase validation (must be in "spec" phase with spec.md present) in src/projspec/assets/commands/projspec.plan.md
+- [X] T042 [US4] Add state.yaml phase update from "spec" to "plan" in src/projspec/assets/commands/projspec.plan.md
 
 **Checkpoint**: User Story 4 complete - can create implementation plans from specifications
 
@@ -157,12 +157,12 @@
 
 ### Implementation for User Story 5
 
-- [ ] T043 [US5] Create /projspec.tasks command that reads plan.md and generates tasks in .claude/plugins/projspec/commands/tasks.md
-- [ ] T044 [US5] Add task ID generation (task-001, task-002, etc.) in .claude/plugins/projspec/commands/tasks.md
-- [ ] T045 [US5] Add dependency detection and depends_on field population in .claude/plugins/projspec/commands/tasks.md
-- [ ] T046 [US5] Add context_files field population based on task scope in .claude/plugins/projspec/commands/tasks.md
-- [ ] T047 [US5] Add state.yaml update with tasks array and phase change to "tasks" in .claude/plugins/projspec/commands/tasks.md
-- [ ] T048 [US5] Add existing task list detection with regenerate/modify option in .claude/plugins/projspec/commands/tasks.md
+- [X] T043 [US5] Create /projspec.tasks command that reads plan.md and generates tasks in src/projspec/assets/commands/projspec.tasks.md
+- [X] T044 [US5] Add task ID generation (task-001, task-002, etc.) in src/projspec/assets/commands/projspec.tasks.md
+- [X] T045 [US5] Add dependency detection and depends_on field population in src/projspec/assets/commands/projspec.tasks.md
+- [X] T046 [US5] Add context_files field population based on task scope in src/projspec/assets/commands/projspec.tasks.md
+- [X] T047 [US5] Add state.yaml update with tasks array and phase change to "tasks" in src/projspec/assets/commands/projspec.tasks.md
+- [X] T048 [US5] Add existing task list detection with regenerate/modify option in src/projspec/assets/commands/projspec.tasks.md
 
 **Checkpoint**: User Story 5 complete - can generate actionable task lists from plans
 
@@ -176,15 +176,15 @@
 
 ### Implementation for User Story 6
 
-- [ ] T049 [US6] Create /projspec.implement command with task dependency resolution in .claude/plugins/projspec/commands/implement.md
-- [ ] T050 [US6] Add next-ready-task finder (pending status, all depends_on completed) in .claude/plugins/projspec/commands/implement.md
-- [ ] T051 [US6] Add context injection (load spec.md, plan.md, completed task summaries) in .claude/plugins/projspec/commands/implement.md
-- [ ] T052 [US6] Add task status update to "in_progress" when starting in .claude/plugins/projspec/commands/implement.md
-- [ ] T053 [US6] Add 3-5 bullet summary generation on task completion in .claude/plugins/projspec/commands/implement.md
-- [ ] T054 [US6] Add task status update to "completed" with summary storage in .claude/plugins/projspec/commands/implement.md
-- [ ] T055 [US6] Add "all tasks complete" detection with review suggestion in .claude/plugins/projspec/commands/implement.md
-- [ ] T056 [US6] Add blocked task display showing which dependencies are incomplete in .claude/plugins/projspec/commands/implement.md
-- [ ] T057 [US6] Add phase update from "tasks" to "implement" on first task start in .claude/plugins/projspec/commands/implement.md
+- [X] T049 [US6] Create /projspec.implement command with task dependency resolution in src/projspec/assets/commands/projspec.implement.md
+- [X] T050 [US6] Add next-ready-task finder (pending status, all depends_on completed) in src/projspec/assets/commands/projspec.implement.md
+- [X] T051 [US6] Add context injection (load spec.md, plan.md, completed task summaries) in src/projspec/assets/commands/projspec.implement.md
+- [X] T052 [US6] Add task status update to "in_progress" when starting in src/projspec/assets/commands/projspec.implement.md
+- [X] T053 [US6] Add 3-5 bullet summary generation on task completion in src/projspec/assets/commands/projspec.implement.md
+- [X] T054 [US6] Add task status update to "completed" with summary storage in src/projspec/assets/commands/projspec.implement.md
+- [X] T055 [US6] Add "all tasks complete" detection with review suggestion in src/projspec/assets/commands/projspec.implement.md
+- [X] T056 [US6] Add blocked task display showing which dependencies are incomplete in src/projspec/assets/commands/projspec.implement.md
+- [X] T057 [US6] Add phase update from "tasks" to "implement" on first task start in src/projspec/assets/commands/projspec.implement.md
 
 **Checkpoint**: User Story 6 complete - can implement tasks with full context and progress tracking
 
@@ -198,11 +198,11 @@
 
 ### Implementation for User Story 10
 
-- [ ] T058 [US10] Create /projspec.resume command that detects current state in .claude/plugins/projspec/commands/resume.md
-- [ ] T059 [US10] Add in-progress task detection and continuation in .claude/plugins/projspec/commands/resume.md
-- [ ] T060 [US10] Add incomplete phase detection and continuation in .claude/plugins/projspec/commands/resume.md
-- [ ] T061 [US10] Add multiple active specs handling with user prompt in .claude/plugins/projspec/commands/resume.md
-- [ ] T062 [P] [US10] Create /projspec.next command for manual phase advancement in .claude/plugins/projspec/commands/next.md
+- [X] T058 [US10] Create /projspec.resume command that detects current state in .claude/plugins/projspec/commands/resume.md
+- [X] T059 [US10] Add in-progress task detection and continuation in .claude/plugins/projspec/commands/resume.md
+- [X] T060 [US10] Add incomplete phase detection and continuation in .claude/plugins/projspec/commands/resume.md
+- [X] T061 [US10] Add multiple active specs handling with user prompt in .claude/plugins/projspec/commands/resume.md
+- [X] T062 [P] [US10] Create /projspec.next command for manual phase advancement in .claude/plugins/projspec/commands/next.md
 
 **Checkpoint**: User Story 10 complete - can resume work from any interrupted state
 
@@ -216,10 +216,10 @@
 
 ### Implementation for User Story 7
 
-- [ ] T063 [US7] Create /projspec.review command that compares spec vs implementation in .claude/plugins/projspec/commands/review.md
-- [ ] T064 [US7] Add requirement verification checklist from spec.md in .claude/plugins/projspec/commands/review.md
-- [ ] T065 [US7] Add incomplete task warning with confirmation prompt in .claude/plugins/projspec/commands/review.md
-- [ ] T066 [US7] Add state.yaml phase update to "review" in .claude/plugins/projspec/commands/review.md
+- [X] T063 [US7] Create /projspec.review command that compares spec vs implementation in .claude/plugins/projspec/commands/review.md
+- [X] T064 [US7] Add requirement verification checklist from spec.md in .claude/plugins/projspec/commands/review.md
+- [X] T065 [US7] Add incomplete task warning with confirmation prompt in .claude/plugins/projspec/commands/review.md
+- [X] T066 [US7] Add state.yaml phase update to "review" in .claude/plugins/projspec/commands/review.md
 
 **Checkpoint**: User Story 7 complete - can review implementations against specifications
 
@@ -233,11 +233,11 @@
 
 ### Implementation for User Story 8
 
-- [ ] T067 [US8] Create /projspec.archive command with user confirmation in .claude/plugins/projspec/commands/archive.md
-- [ ] T068 [US8] Add git merge to main branch with conflict detection in .claude/plugins/projspec/commands/archive.md
-- [ ] T069 [US8] Add spec metadata move from active/ to completed/ in .claude/plugins/projspec/commands/archive.md
-- [ ] T070 [US8] Add worktree removal with uncommitted changes detection in .claude/plugins/projspec/commands/archive.md
-- [ ] T071 [US8] Add branch deletion (optional, with user confirmation) in .claude/plugins/projspec/commands/archive.md
+- [X] T067 [US8] Create /projspec.archive command with user confirmation in .claude/plugins/projspec/commands/archive.md
+- [X] T068 [US8] Add git merge to main branch with conflict detection in .claude/plugins/projspec/commands/archive.md
+- [X] T069 [US8] Add spec metadata move from active/ to completed/ in .claude/plugins/projspec/commands/archive.md
+- [X] T070 [US8] Add worktree removal with uncommitted changes detection in .claude/plugins/projspec/commands/archive.md
+- [X] T071 [US8] Add branch deletion (optional, with user confirmation) in .claude/plugins/projspec/commands/archive.md
 
 **Checkpoint**: User Story 8 complete - can complete full workflow lifecycle
 
@@ -247,11 +247,11 @@
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T072 [P] Add error handling for YAML parsing failures in src/projspec/state.py
-- [ ] T073 [P] Add atomic file writes for state.yaml updates in src/projspec/state.py
-- [ ] T074 [P] Add input validation for spec names in .claude/plugins/projspec/commands/new.md
-- [ ] T075 Verify quickstart.md scenarios work end-to-end
-- [ ] T076 [P] Add help text and usage examples to all commands
+- [X] T072 [P] Add error handling for YAML parsing failures in src/projspec/state.py
+- [X] T073 [P] Add atomic file writes for state.yaml updates in src/projspec/state.py
+- [X] T074 [P] Add input validation for spec names in .claude/plugins/projspec/commands/new.md
+- [X] T075 Verify quickstart.md scenarios work end-to-end
+- [X] T076 [P] Add help text and usage examples to all commands
 
 ---
 

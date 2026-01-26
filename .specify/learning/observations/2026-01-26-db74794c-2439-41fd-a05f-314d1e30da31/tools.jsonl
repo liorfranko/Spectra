@@ -1,0 +1,10 @@
+{"event_id":"pre-90361478000","phase":"pre","timestamp":"2026-01-26T12:48:10.3NZ","tool":"Bash","input":"pyenv versions"}
+{"event_id":"post-97903145000","pre_event_id":"pre-90361478000","phase":"post","timestamp":"2026-01-26T12:48:17.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-97992110000","phase":"pre","timestamp":"2026-01-26T12:48:17.3NZ","tool":"Bash","input":"python --version 2>&1 || echo \"}
+{"event_id":"post-98499474000","pre_event_id":"pre-97992110000","phase":"post","timestamp":"2026-01-26T12:48:18.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-04712738000","phase":"pre","timestamp":"2026-01-26T12:48:24.3NZ","tool":"Bash","input":"pyenv local 3.10.13"}
+{"event_id":"post-06935460000","pre_event_id":"pre-04712738000","phase":"post","timestamp":"2026-01-26T12:48:26.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-10085568000","phase":"pre","timestamp":"2026-01-26T12:48:30.3NZ","tool":"Bash","input":"python --version && uv pip install -e ."}
+{"event_id":"pre-18275688000","phase":"pre","timestamp":"2026-01-26T12:48:38.3NZ","tool":"Bash","input":"uv venv && source .venv/bin/activate && uv pip install -e ."}
+{"event_id":"pre-27404329000","phase":"pre","timestamp":"2026-01-26T12:48:47.3NZ","tool":"Bash","input":"ls -la /Users/liorfr/Development/projspec"}
+{"event_id":"post-27659959000","pre_event_id":"pre-27404329000","phase":"post","timestamp":"2026-01-26T12:48:47.3NZ","tool":"Bash","success":true}

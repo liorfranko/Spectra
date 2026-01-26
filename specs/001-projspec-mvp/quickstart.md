@@ -112,6 +112,15 @@ After initialization:
 
 ```
 your-project/
+├── .claude/
+│   └── commands/          # Claude Code slash commands
+│       ├── projspec.init.md
+│       ├── projspec.status.md
+│       ├── projspec.new.md
+│       ├── projspec.spec.md
+│       ├── projspec.plan.md
+│       ├── projspec.tasks.md
+│       └── projspec.implement.md
 ├── .projspec/
 │   ├── config.yaml        # Global configuration
 │   ├── workflow.yaml      # Phase sequence
@@ -129,22 +138,39 @@ your-project/
 
 ## Commands
 
+### CLI Commands
+
 | Command | Description |
 |---------|-------------|
 | `projspec init` | Initialize ProjSpec in project |
 | `projspec status` | Show active specs and progress |
+
+### Claude Code Commands (via `projspec init`)
+
+| Command | Description |
+|---------|-------------|
+| `/projspec.init` | Initialize ProjSpec (calls CLI) |
+| `/projspec.status` | Show active specs (calls CLI) |
 | `/projspec.new <name>` | Create new spec with worktree |
 | `/projspec.spec` | Define specification |
 | `/projspec.plan` | Create implementation plan |
 | `/projspec.tasks` | Generate task list |
 | `/projspec.implement` | Implement next task |
-| `/projspec.review` | Review implementation |
+
+### Claude Code Commands (via plugin)
+
+These commands are available when using the projspec plugin:
+
+| Command | Description |
+|---------|-------------|
+| `/projspec.review` | Review implementation against spec |
 | `/projspec.resume` | Continue from last state |
 | `/projspec.archive` | Merge and cleanup |
 
 ## Tips
 
-- **Resume work**: Use `/projspec.resume` to continue where you left off
+- **Resume work**: Use `/projspec.resume` (plugin) to continue where you left off
 - **Check status**: Run `projspec status` to see all active specs
 - **Skip tasks**: During implementation, you can skip tasks with confirmation
 - **Custom phases**: Add phase templates to `.projspec/phases/custom/`
+- **Plugin vs init**: Core workflow commands are installed via `projspec init`; additional commands (`/projspec.review`, `/projspec.resume`, `/projspec.archive`) come from the projspec plugin

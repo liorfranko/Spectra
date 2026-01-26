@@ -1,0 +1,10 @@
+{"event_id":"pre-10759636000","phase":"pre","timestamp":"2026-01-26T12:50:10.3NZ","tool":"Bash","input":"ls -la /Users/liorfr/Development/projspec"}
+{"event_id":"pre-10792093000","phase":"pre","timestamp":"2026-01-26T12:50:10.3NZ","tool":"Glob","input":"**/*.py"}
+{"event_id":"post-11563730000","pre_event_id":"pre-10792093000","phase":"post","timestamp":"2026-01-26T12:50:11.3NZ","tool":"Glob","success":true}
+{"event_id":"post-13794485000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T12:50:13.3NZ","tool":"Bash","success":true}
+{"event_id":"pre-20457777000","phase":"pre","timestamp":"2026-01-26T12:50:20.3NZ","tool":"Bash","input":"ls -la /Users/liorfr/Development/projspec/worktrees/001-projspec-mvp/"}
+{"event_id":"pre-20474059000","phase":"pre","timestamp":"2026-01-26T12:50:20.3NZ","tool":"Glob","input":"**/pyproject.toml"}
+{"event_id":"post-20679321000","pre_event_id":"pre-20474059000","phase":"post","timestamp":"2026-01-26T12:50:20.3NZ","tool":"Bash","success":true}
+{"event_id":"post-21133313000","pre_event_id":"","phase":"post","timestamp":"2026-01-26T12:50:21.3NZ","tool":"Glob","success":true}
+{"event_id":"pre-25145202000","phase":"pre","timestamp":"2026-01-26T12:50:25.3NZ","tool":"Read","input":"/Users/liorfr/Development/projspec/worktrees/001-projspec-mvp/pyproject.toml"}
+{"event_id":"post-25340146000","pre_event_id":"pre-25145202000","phase":"post","timestamp":"2026-01-26T12:50:25.3NZ","tool":"Read","success":true}
