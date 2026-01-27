@@ -29,6 +29,14 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
 3. **Store the MODE variable** for use in task execution steps below.
 
+4. **Display mode indicator**:
+   - If `MODE = "agent"` AND `--agent` flag was explicitly provided:
+     - Display: "Executing tasks in agent mode (isolated context per task)"
+   - If `MODE = "agent"` AND no flag was provided (default):
+     - Display: "Executing tasks in agent mode (isolated context per task) (default)"
+   - If `MODE = "direct"`:
+     - Display: "Executing tasks in direct mode (sequential, no agents)"
+
 ## Outline
 
 1. Run `{SCRIPT}` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
