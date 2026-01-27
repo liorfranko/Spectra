@@ -15,7 +15,7 @@
         "name": "liorfr",
         "email": "lior@example.com"
       },
-      "source": "./plugins/projspec",
+      "source": "./projspec/plugins/projspec",
       "category": "development"
     }
   ]
