@@ -366,6 +366,9 @@ Parse the `$ARGUMENTS` to determine execution mode:
    - Each commit is a checkpoint
 
 9. **Progress Tracking and Error Handling**:
+
+   **This section applies to BOTH agent mode and direct mode. Error handling behavior is consistent regardless of execution mode.**
+
    - Report progress after each spawned agent completes
    - Display: "✓ [TaskID] Description - Committed and pushed"
    - Halt execution if any non-parallel task fails
@@ -375,9 +378,12 @@ Parse the `$ARGUMENTS` to determine execution mode:
      - Commit successful tasks
      - Provide clear error messages for failed tasks
    - If task fails:
-     - Show agent error output
+     - Show error output (from agent in agent mode, or from current context in direct mode)
      - Suggest fixes or next steps
-     - Ask user whether to retry, skip, or abort
+     - Ask user whether to retry, skip, or abort:
+       - **Retry**: In agent mode, spawn the same agent again. In direct mode, re-read the task details from tasks.md, reload context from plan.md/spec.md, and re-attempt the implementation in the current conversation.
+       - **Skip**: Mark task as skipped and continue to next task (not recommended).
+       - **Abort**: Stop implementation entirely and allow user to review the issue.
    - **IMPORTANT**: Update tasks.md checkbox [X] only after successful commit + push
 
 10. **Completion Validation**:
@@ -416,14 +422,16 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
 ## Error Recovery
 
+**This section applies to BOTH agent mode and direct mode.**
+
 **Flag Conflict Error**: If you see "Cannot use both --agent and --direct flags", remove one of the flags and re-run the command.
 
 If a task fails:
 
-1. Review the agent's error output
+1. Review the error output (from spawned agent in agent mode, or from current context in direct mode)
 2. Determine if it's a transient error (network, etc.) or code error
 3. Options:
-   - **Retry**: Spawn the same agent again with same prompt
-   - **Fix & Retry**: Fix the issue manually, commit, then continue
+   - **Retry**: In agent mode, spawn the same agent again with the same prompt. In direct mode, re-read the task details from tasks.md, reload context from plan.md/spec.md, and re-attempt the implementation in the current conversation.
+   - **Fix & Retry**: Fix the issue manually, commit, then continue with the next task
    - **Skip**: Mark task as skipped and move to next (not recommended)
    - **Abort**: Stop implementation, review task breakdown
