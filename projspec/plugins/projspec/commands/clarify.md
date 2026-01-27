@@ -7,6 +7,10 @@ user-invocable: true
 
 Identify underspecified areas in the current feature specification by scanning for existing clarification markers, analyzing the spec for additional ambiguities, presenting up to 5 targeted clarification questions with suggested answers, and integrating user responses back into the spec.md document.
 
+## Clarification Approach
+
+When you need user input that isn't already provided in context or arguments, use the AskUserQuestion tool with 2-4 selectable options instead of plain text questions. Put the recommended option first.
+
 ## Prerequisites
 
 This command requires a `spec.md` file to exist in the current feature directory.

@@ -8,6 +8,10 @@ argument-hint: review type (full, quick, security, performance)
 
 Perform a comprehensive pull request review using specialized agents to ensure code quality before PR creation. This command analyzes changes, runs multiple review perspectives, and provides actionable feedback.
 
+## Clarification Approach
+
+When you need user input that isn't already provided in context or arguments, use the AskUserQuestion tool with 2-4 selectable options instead of plain text questions. Put the recommended option first.
+
 ## Arguments
 
 The `$ARGUMENTS` variable contains the review type:

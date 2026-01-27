@@ -7,6 +7,10 @@ user-invocable: true
 
 Converts tasks defined in `tasks.md` into GitHub issues with appropriate labels and dependency references.
 
+## Clarification Approach
+
+When you need user input that isn't already provided in context or arguments, use the AskUserQuestion tool with 2-4 selectable options instead of plain text questions. Put the recommended option first.
+
 ## Prerequisites
 
 Before running this command, ensure the following requirements are met:

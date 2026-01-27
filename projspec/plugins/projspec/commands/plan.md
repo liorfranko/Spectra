@@ -7,6 +7,10 @@ user-invocable: true
 
 Execute the implementation planning workflow to generate design artifacts from a feature specification. This command transforms a validated spec.md into actionable technical documentation including research findings, data models, and implementation guidance.
 
+## Clarification Approach
+
+When you need user input that isn't already provided in context or arguments, use the AskUserQuestion tool with 2-4 selectable options instead of plain text questions. Put the recommended option first.
+
 ## Prerequisites
 
 This command requires a validated `spec.md` file to exist in the current feature directory.
