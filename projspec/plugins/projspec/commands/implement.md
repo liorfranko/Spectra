@@ -13,6 +13,22 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Mode Selection
+
+Parse the `$ARGUMENTS` to determine execution mode:
+
+1. **Check for conflicting flags**:
+   - If `$ARGUMENTS` contains BOTH `--agent` AND `--direct`:
+     - Display error: "Error: Cannot specify both --agent and --direct flags. Please choose one mode."
+     - **STOP execution immediately**
+
+2. **Determine execution mode**:
+   - If `$ARGUMENTS` contains `--direct`: Set `MODE = "direct"`
+   - If `$ARGUMENTS` contains `--agent`: Set `MODE = "agent"`
+   - If neither flag is present: Set `MODE = "agent"` (default for backward compatibility)
+
+3. **Store the MODE variable** for use in task execution steps below.
+
 ## Outline
 
 1. Run `{SCRIPT}` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
