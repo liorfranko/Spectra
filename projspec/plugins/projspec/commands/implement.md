@@ -37,6 +37,8 @@ Parse the `$ARGUMENTS` to determine execution mode:
    - If `MODE = "direct"`:
      - Display: "Executing tasks in direct mode (sequential, no agents)"
 
+**Backward Compatibility Note:** Running `/projspec.implement` without any flags maintains the same behavior as before this feature was added - tasks will be executed in agent mode with isolated context per task. This ensures existing scripts and workflows continue to work unchanged.
+
 ## Outline
 
 1. Run `{SCRIPT}` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
