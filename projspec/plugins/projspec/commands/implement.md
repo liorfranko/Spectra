@@ -132,6 +132,10 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
 6. **Task Execution Strategy - Isolated Context Per Task**:
 
+   <!-- BEGIN AGENT MODE SECTION (MODE == "agent") -->
+   **When MODE = "agent" (Agent Mode Execution):**
+
+   The following agent-based execution strategy applies when running in agent mode.
    Each task runs in a **fresh context** via spawned agents to ensure isolation and clean state.
 
    **CRITICAL - ONE TASK = ONE AGENT = ONE COMMIT**:
@@ -206,6 +210,8 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
        When complete, report what files were created/modified.
    ```
+
+   <!-- END AGENT MODE SECTION -->
 
 7. **Phase-by-Phase Execution**:
    - **Phase 1 - Setup**:
