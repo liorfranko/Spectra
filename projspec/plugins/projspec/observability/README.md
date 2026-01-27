@@ -168,6 +168,64 @@ observability:
 ---
 ```
 
+## Usage Examples
+
+### Starting and Stopping the System
+
+Use the lifecycle scripts in the `scripts/` directory:
+
+```bash
+# Start the observability system
+./scripts/start-observability.sh
+
+# Check system status
+./scripts/status-observability.sh
+
+# Stop the observability system
+./scripts/stop-observability.sh
+
+# Clean up old events (older than 7 days)
+./scripts/purge-events.sh
+
+# Clean up events older than 30 days
+./scripts/purge-events.sh --days=30
+```
+
+### Monitoring Multiple Projects
+
+Run observability for multiple projects simultaneously:
+
+```bash
+# Project A configuration (.projspec/projspec.local.md)
+---
+observability:
+  enabled: true
+  source_app: project-alpha
+---
+
+# Project B configuration (.projspec/projspec.local.md)
+---
+observability:
+  enabled: true
+  source_app: project-beta
+---
+```
+
+Filter by `source_app` in the dashboard to see events from specific projects.
+
+### Debugging with Chat Transcripts
+
+Enable full chat transcript capture for debugging:
+
+```yaml
+---
+observability:
+  enabled: true
+  include_chat: true
+  max_chat_size: 2097152  # 2MB for longer conversations
+---
+```
+
 ### Server Configuration
 
 These settings affect the observability server behavior:
