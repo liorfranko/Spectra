@@ -29,7 +29,45 @@ permissions:
   contents: write
 
 jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      has_plugin_changes: ${{ steps.check.outputs.has_changes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for plugin changes
+        id: check
+        run: |
+          # Get the latest release tag
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          if [ -z "$LATEST_TAG" ]; then
+            echo "No previous release tag found, will release"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Latest tag: $LATEST_TAG"
+
+          # Check for changes in the plugin directory since the last tag
+          CHANGED_FILES=$(git diff --name-only "$LATEST_TAG" HEAD -- projspec/plugins/projspec/)
+
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "Plugin changes detected:"
+            echo "$CHANGED_FILES"
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "No plugin changes since $LATEST_TAG"
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
   release:
+    needs: check-changes
+    if: ${{ github.event_name == 'workflow_dispatch' || needs.check-changes.outputs.has_plugin_changes == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
