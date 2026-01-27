@@ -240,10 +240,20 @@ Parse the `$ARGUMENTS` to determine execution mode:
    - Move to next task
 
    **For Parallel Tasks [P]**:
-   - In direct mode, parallel-marked tasks [P] are executed sequentially
-   - The [P] marker is ignored - tasks run one after another
-   - Each task still gets its own commit following the same workflow
-   - Note: For true parallel execution in direct mode, see future parallel execution support
+   - In direct mode, parallel-marked tasks [P] are executed sequentially (direct mode cannot parallelize)
+   - Track the count of [P] tasks encountered in each batch as you process them
+   - Execute each [P] task one after another using the same workflow as sequential tasks:
+     1. Read the task details (ID, description, file paths)
+     2. Load relevant context from plan.md, spec.md, data-model.md, constitution.md
+     3. Implement the task changes directly in the current context
+     4. Stage all changes: `git add -A`
+     5. Commit with task ID and description: `git commit -m "[TaskID] Task description"`
+     6. Push to remote: `git push`
+     7. Mark task as [X] in tasks.md file
+   - After completing all [P] tasks in a batch, display info message:
+     - `"Note: N parallel tasks ran sequentially in direct mode"` (where N is the count of [P] tasks in that batch)
+   - This informs users that parallelization was not applied and why
+   - Then proceed to the next batch or sequential task
 
    **Direct Execution Template**:
 
