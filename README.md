@@ -6,19 +6,71 @@ A Claude Code plugin for specification-driven development workflows.
 
 ProjSpec provides a structured approach to feature development by guiding you through specification, planning, task generation, and implementation phases. It ensures consistency and traceability throughout the development lifecycle.
 
-## Installation
+## Development Workflow
 
-Add the plugin to Claude Code:
+```mermaid
+flowchart TD
+    subgraph setup["Project Setup (Once)"]
+        constitution["/projspec.constitution<br/>Define principles"]
+    end
 
-```bash
-claude --plugin-dir /path/to/projspec/projspec
+    subgraph core["Core Development Flow"]
+        specify["/projspec.specify<br/>Create feature spec"]
+        clarify["/projspec.clarify<br/>(Optional)"]
+        plan["/projspec.plan<br/>Design implementation"]
+        tasks["/projspec.tasks<br/>Generate task list"]
+        implement["/projspec.implement<br/>Execute tasks"]
+    end
+
+    subgraph delivery["Delivery"]
+        issues["/projspec.issues<br/>Create GitHub issues"]
+        review["/projspec.review-pr<br/>Code review"]
+        pr["Pull Request"]
+    end
+
+    subgraph quality["Quality (Run Anytime)"]
+        analyze["/projspec.analyze"]
+        checklist["/projspec.checklist"]
+    end
+
+    constitution -.-> specify
+    specify --> plan
+    specify -.-> clarify
+    clarify -.-> plan
+    plan --> tasks
+    tasks --> implement
+    implement --> issues
+    issues --> review
+    review --> pr
+
+    tasks -.-> issues
+
+    analyze -.-> core
+    checklist -.-> core
+
+    style constitution fill:#e1f5fe
+    style specify fill:#fff3e0
+    style clarify fill:#fff8e1,stroke-dasharray: 5 5
+    style plan fill:#fff3e0
+    style tasks fill:#fff3e0
+    style implement fill:#fff3e0
+    style issues fill:#e8f5e9
+    style review fill:#e8f5e9
+    style pr fill:#c8e6c9
 ```
 
-Or add it to your shell profile for persistent use:
+## Installation
 
-```bash
-# Add to your .bashrc or .zshrc
-alias claude="claude --plugin-dir /path/to/projspec/projspec"
+Install directly in Claude Code:
+
+```
+/plugin install projspec@claude-plugin-directory
+```
+
+Or browse available plugins:
+
+```
+/plugin > Discover
 ```
 
 ## Quick Start

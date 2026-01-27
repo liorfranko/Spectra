@@ -13,17 +13,16 @@ ProjSpec provides a structured approach to feature development by guiding you th
 
 ## Installation
 
-For local development, add the plugin using the `--plugin-dir` flag:
+Install directly in Claude Code:
 
-```bash
-claude --plugin-dir /path/to/projspec
+```
+/plugin install projspec@claude-plugin-directory
 ```
 
-Or add it to your Claude Code configuration for persistent use:
+Or browse available plugins:
 
-```bash
-# Add to your shell profile (.bashrc, .zshrc, etc.)
-alias claude="claude --plugin-dir /path/to/projspec"
+```
+/plugin > Discover
 ```
 
 ## Quick Start
@@ -92,7 +91,7 @@ Uses specialized agents to ensure code quality before PR creation.
 
 ## Commands Reference
 
-ProjSpec includes 11 commands for the complete development workflow.
+ProjSpec includes 10 commands for the complete development workflow.
 
 ### Core Workflow Commands
 
@@ -109,7 +108,6 @@ ProjSpec includes 11 commands for the complete development workflow.
 
 | Command | Description | Arguments |
 |---------|-------------|-----------|
-| `/projspec.validate` | Validate current feature artifacts against checklists and quality criteria | `spec`, `plan`, `tasks`, `all`, or empty |
 | `/projspec.checklist` | Generate a custom checklist for the current feature based on requirements | Checklist type |
 | `/projspec.analyze` | Perform cross-artifact consistency and quality analysis | None |
 | `/projspec.review-pr` | Comprehensive PR review using specialized agents | `full`, `quick`, `security`, `performance`, `style` |
@@ -212,29 +210,6 @@ Convert tasks into actionable GitHub issues.
 **Prerequisites:** Requires `tasks.md` and GitHub CLI (`gh`) authenticated.
 
 **Output:** Creates GitHub issues with proper labels, descriptions, and dependency references.
-
----
-
-### /projspec.validate
-
-Validate current feature artifacts against quality criteria.
-
-```bash
-# Validate all artifacts
-/projspec.validate
-
-# Validate specific artifact
-/projspec.validate spec
-/projspec.validate plan
-/projspec.validate tasks
-```
-
-**Checks performed:**
-- Specification completeness and format
-- Implementation independence (no tech-specific terms in spec)
-- Requirement testability
-- Task dependency validity
-- Circular dependency detection
 
 ---
 
@@ -361,7 +336,6 @@ specify --> clarify --> plan --> tasks --> implement
 
 ```
 constitution  <-- Define project principles (run once at project start)
-validate      <-- Check artifact quality (run at any phase)
 analyze       <-- Cross-artifact consistency (run after tasks)
 checklist     <-- Generate custom checklists (run at any phase)
 ```
