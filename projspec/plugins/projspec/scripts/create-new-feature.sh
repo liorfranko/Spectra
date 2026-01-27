@@ -139,7 +139,7 @@ create_feature() {
     else
         # Create worktree
         local worktrees_dir
-        worktrees_dir=$(dirname "$repo_root")/worktrees
+        worktrees_dir="${repo_root}/worktrees"
 
         # Ensure worktrees directory exists
         mkdir -p "$worktrees_dir"
@@ -182,10 +182,10 @@ create_feature() {
         if [[ "$NO_WORKTREE" == "true" ]]; then
             echo "Switched to branch '$branch_name'"
         else
-            echo "Worktree created at: $(dirname "$repo_root")/worktrees/${feature_id}"
+            echo "Worktree created at: ${repo_root}/worktrees/${feature_id}"
             echo ""
             echo "To start working on this feature:"
-            echo "  cd $(dirname "$repo_root")/worktrees/${feature_id}"
+            echo "  cd ${repo_root}/worktrees/${feature_id}"
         fi
     fi
 }
