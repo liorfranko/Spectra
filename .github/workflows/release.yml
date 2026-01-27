@@ -117,7 +117,7 @@ jobs:
           git push origin "v${{ steps.new.outputs.version }}"
 
       - name: Create GitHub Release
-        if: ${{ inputs.create_github_release != false }}
+        if: ${{ github.event_name == 'push' || inputs.create_github_release != false }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.new.outputs.version }}
