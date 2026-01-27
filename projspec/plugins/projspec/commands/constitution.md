@@ -8,6 +8,10 @@ argument-hint: principle to add or 'interactive' for guided creation
 
 Interactively create or update the project constitution from user inputs. The constitution defines foundational principles and constraints that govern all development decisions, ensuring consistency across feature implementations.
 
+## Clarification Approach
+
+When you need user input that isn't already provided in context or arguments, use the AskUserQuestion tool with 2-4 selectable options instead of plain text questions. Put the recommended option first.
+
 ## Arguments
 
 The `$ARGUMENTS` variable contains optional input:

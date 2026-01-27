@@ -7,6 +7,10 @@ user-invocable: true
 
 Perform a non-destructive cross-artifact consistency and quality analysis across spec.md, plan.md, and tasks.md after task generation. This command identifies gaps, conflicts, and drift between artifacts without modifying any files.
 
+## Clarification Approach
+
+When you need user input that isn't already provided in context or arguments, use the AskUserQuestion tool with 2-4 selectable options instead of plain text questions. Put the recommended option first.
+
 ## Prerequisites
 
 This command requires that at least spec.md exists in the current feature directory. For comprehensive analysis, plan.md and tasks.md should also be present.

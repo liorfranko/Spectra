@@ -8,6 +8,10 @@ argument-hint: artifact to validate (spec, plan, tasks, all)
 
 Validate current feature artifacts against checklists, quality criteria, and constitution principles. This command performs automated checks and reports compliance status without modifying any files.
 
+## Clarification Approach
+
+When you need user input that isn't already provided in context or arguments, use the AskUserQuestion tool with 2-4 selectable options instead of plain text questions. Put the recommended option first.
+
 ## Arguments
 
 The `$ARGUMENTS` variable contains the artifact(s) to validate:

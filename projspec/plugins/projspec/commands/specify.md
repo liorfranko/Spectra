@@ -8,6 +8,10 @@ argument-hint: feature description
 
 Create or update a feature specification from a natural language feature description. This command transforms informal requirements into a structured spec.md document.
 
+## Clarification Approach
+
+When you need user input that isn't already provided in context or arguments, use the AskUserQuestion tool with 2-4 selectable options instead of plain text questions. Put the recommended option first.
+
 ## Arguments
 
 The `$ARGUMENTS` variable contains the feature description provided by the user. This should be a natural language description of the feature to be specified.

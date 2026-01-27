@@ -8,6 +8,10 @@ argument-hint: checklist type (requirements, implementation, review)
 
 Generate custom validation checklists tailored to the current feature based on user requirements, feature type, and project context. This command creates structured checklists that help ensure quality gates are met before proceeding to the next development phase.
 
+## Clarification Approach
+
+When you need user input that isn't already provided in context or arguments, use the AskUserQuestion tool with 2-4 selectable options instead of plain text questions. Put the recommended option first.
+
 ## Arguments
 
 The `$ARGUMENTS` variable contains the optional checklist type to generate. Valid types:
