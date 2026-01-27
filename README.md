@@ -88,8 +88,9 @@ Or browse available plugins:
 # 4. Generate tasks
 /projspec.tasks
 
-# 5. Implement
-/projspec.implement
+# 5. Implement (choose execution mode)
+/projspec.implement           # Agent mode (default) - isolated context per task
+/projspec.implement --direct  # Direct mode - faster, sequential execution
 
 # 6. Review before PR
 /projspec.review-pr

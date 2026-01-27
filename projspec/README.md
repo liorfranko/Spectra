@@ -72,10 +72,11 @@ Creates a dependency-ordered task list ready for implementation.
 Execute the implementation plan:
 
 ```
-/projspec.implement
+/projspec.implement           # Agent mode (default)
+/projspec.implement --direct  # Direct mode (faster, sequential)
 ```
 
-Processes and executes all tasks defined in tasks.md.
+Processes and executes all tasks defined in tasks.md. Use `--direct` for faster execution when task isolation is not needed.
 
 ### 6. Review Before PR
 
@@ -101,7 +102,7 @@ ProjSpec includes 10 commands for the complete development workflow.
 | `/projspec.clarify` | Identify underspecified areas and ask up to 5 targeted clarification questions | None |
 | `/projspec.plan` | Generate implementation plan with constitution compliance | None |
 | `/projspec.tasks` | Generate structured, dependency-ordered task list from plan | None |
-| `/projspec.implement` | Implement tasks from task list with guided workflow | Task ID or empty for next task |
+| `/projspec.implement` | Implement tasks from task list with guided workflow | `--agent`, `--direct`, or Task ID |
 | `/projspec.issues` | Convert tasks into GitHub issues (requires GitHub CLI) | None |
 
 ### Quality & Validation Commands
@@ -183,11 +184,20 @@ Generate a structured, dependency-ordered task list from the implementation plan
 
 ### /projspec.implement
 
-Execute the implementation plan by processing tasks.
+Execute the implementation plan by processing tasks. Supports two execution modes:
+
+| Mode | Flag | Description |
+|------|------|-------------|
+| **Agent** (default) | `--agent` | Spawns isolated agent per task with fresh context. Enables parallel execution of [P] tasks. |
+| **Direct** | `--direct` | Executes tasks sequentially in current context. Faster for simple task sets. |
 
 ```bash
-# Start from first pending task
+# Agent mode (default) - isolated context per task
 /projspec.implement
+/projspec.implement --agent
+
+# Direct mode - sequential, no agents
+/projspec.implement --direct
 
 # Implement specific task
 /projspec.implement T015
@@ -195,7 +205,21 @@ Execute the implementation plan by processing tasks.
 
 **Prerequisites:** Requires `tasks.md` to exist.
 
-**Behavior:** Processes tasks in dependency order, updates status markers, commits changes per task.
+**Behavior:**
+- Processes tasks in dependency order
+- Each task produces exactly one commit: `[T###] Description`
+- Updates task checkboxes after successful commit
+- Agent mode: Tasks marked with [P] run in parallel
+- Direct mode: Parallel markers are noted but tasks run sequentially
+
+**Mode Comparison:**
+
+| Aspect | Agent Mode | Direct Mode |
+|--------|------------|-------------|
+| Execution | Parallel possible | Sequential only |
+| Context | Fresh per task | Accumulated |
+| Speed | Slower (agent overhead) | Faster |
+| Use case | Complex tasks, parallelism | Simple, sequential tasks |
 
 ---
 

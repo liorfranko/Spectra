@@ -17,6 +17,32 @@ $ARGUMENTS
 
 You **MUST** consider the user input before proceeding (if not empty).
 
+## Mode Selection
+
+Parse the `$ARGUMENTS` to determine execution mode:
+
+1. **Check for conflicting flags**:
+   - If `$ARGUMENTS` contains BOTH `--agent` AND `--direct`:
+     - Display error: "Error: Cannot use both --agent and --direct flags. Please choose one mode."
+     - **STOP execution immediately**
+
+2. **Determine execution mode**:
+   - If `$ARGUMENTS` contains `--direct`: Set `MODE = "direct"`
+   - If `$ARGUMENTS` contains `--agent`: Set `MODE = "agent"`
+   - If neither flag is present: Set `MODE = "agent"` (default for backward compatibility)
+
+3. **Store the MODE variable** for use in task execution steps below.
+
+4. **Display mode indicator**:
+   - If `MODE = "agent"` AND `--agent` flag was explicitly provided:
+     - Display: "Executing tasks in agent mode (isolated context per task)"
+   - If `MODE = "agent"` AND no flag was provided (default):
+     - Display: "Executing tasks in agent mode (isolated context per task) (default)"
+   - If `MODE = "direct"`:
+     - Display: "Executing tasks in direct mode (sequential, no agents)"
+
+**Backward Compatibility Note:** Running `/projspec.implement` without any flags maintains the same behavior as before this feature was added - tasks will be executed in agent mode with isolated context per task. This ensures existing scripts and workflows continue to work unchanged.
+
 ## Outline
 
 1. Run `{SCRIPT}` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
@@ -112,6 +138,10 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 6. **Task Execution Strategy - Isolated Context Per Task**:
 
+   <!-- BEGIN AGENT MODE SECTION (MODE == "agent") -->
+   **When MODE = "agent" (Agent Mode Execution):**
+
+   The following agent-based execution strategy applies when running in agent mode.
    Each task runs in a **fresh context** via spawned agents to ensure isolation and clean state.
 
    **CRITICAL - ONE TASK = ONE AGENT = ONE COMMIT**:
@@ -187,6 +217,95 @@ You **MUST** consider the user input before proceeding (if not empty).
        When complete, report what files were created/modified.
    ```
 
+   <!-- END AGENT MODE SECTION -->
+
+   <!-- BEGIN DIRECT MODE SECTION (MODE == "direct") -->
+   **When MODE = "direct" (Direct Mode Execution):**
+
+   The following inline execution strategy applies when running in direct mode.
+   Tasks are executed sequentially in the current conversation context without spawning agents.
+
+   **CRITICAL - ONE TASK = ONE COMMIT**:
+   - Each task (T001, T002, etc.) MUST be implemented sequentially in the current context
+   - Each task MUST result in exactly ONE commit with format `[T001] Description`
+   - NEVER batch multiple tasks into one commit
+   - NEVER use range formats like `[T001-T005]` or `[T001, T002]` in commits
+   - NO agents are spawned - all work happens in this conversation
+   - This ensures: rollback granularity, clear audit trail, simpler execution
+
+   **For Sequential Tasks**:
+   - Parse tasks from tasks.md in order
+   - For each task:
+     1. Read the task details (ID, description, file paths)
+     2. Load relevant context from plan.md, spec.md, data-model.md, constitution.md
+     3. Implement the task changes directly in the current context
+     4. Stage all changes: `git add -A`
+     5. Commit with task ID and description: `git commit -m "[TaskID] Task description"`
+     6. Push to remote: `git push`
+     7. Mark task as [X] in tasks.md file
+   - Move to next task
+
+   **For Parallel Tasks [P]**:
+   - In direct mode, parallel-marked tasks [P] are executed sequentially (direct mode cannot parallelize)
+   - Track the count of [P] tasks encountered in each batch as you process them
+   - Execute each [P] task one after another using the same workflow as sequential tasks:
+     1. Read the task details (ID, description, file paths)
+     2. Load relevant context from plan.md, spec.md, data-model.md, constitution.md
+     3. Implement the task changes directly in the current context
+     4. Stage all changes: `git add -A`
+     5. Commit with task ID and description: `git commit -m "[TaskID] Task description"`
+     6. Push to remote: `git push`
+     7. Mark task as [X] in tasks.md file
+   - After completing all [P] tasks in a batch, display info message:
+     - `"Note: N parallel tasks ran sequentially in direct mode"` (where N is the count of [P] tasks in that batch)
+   - This informs users that parallelization was not applied and why
+   - Then proceed to the next batch or sequential task
+
+   **Direct Execution Template**:
+
+   For each task, follow this pattern:
+
+   ```text
+   1. IDENTIFY: Parse task [TaskID] from tasks.md
+      - Task description
+      - Files to create/modify
+      - Dependencies on previous tasks
+
+   2. CONTEXT: Load relevant information
+      - plan.md: Architecture, tech stack, file structure
+      - spec.md: Requirements this task addresses
+      - data-model.md: Entities if applicable
+      - constitution.md: Principles to follow
+
+   3. IMPLEMENT: Make the changes
+      - Create/modify specified files
+      - Follow patterns from the plan
+      - Adhere to constitution principles
+      - Ensure code is production-ready
+
+   4. COMMIT: Save progress
+      - git add -A
+      - git commit -m "[TaskID] Description"
+      - git push
+
+   5. TRACK: Update progress
+      - Mark [X] in tasks.md
+      - Report: "✓ [TaskID] Description - Committed and pushed"
+   ```
+
+   **Benefits of Direct Mode**:
+   - Simpler execution without agent coordination overhead
+   - Full context accumulation across tasks (can reference earlier changes)
+   - Lower latency per task (no agent spawn time)
+   - Better for smaller task sets or when context sharing is valuable
+
+   **Trade-offs**:
+   - No isolated context per task (context accumulates)
+   - Sequential only (no parallel execution)
+   - Context window may fill with large implementations
+
+   <!-- END DIRECT MODE SECTION -->
+
 7. **Phase-by-Phase Execution**:
    - **Phase 1 - Setup**:
      - Spawn agents for setup tasks (project structure, dependencies, config)
@@ -204,6 +323,8 @@ You **MUST** consider the user input before proceeding (if not empty).
      - Commit + push after each polish task
 
 8. **Git Commit Strategy**:
+
+   **This section applies to BOTH agent mode and direct mode. All commits must follow this format regardless of execution mode.**
 
    **Commit Message Format** (SINGLE task ID only):
 
@@ -235,6 +356,10 @@ You **MUST** consider the user input before proceeding (if not empty).
 
    # Push to remote
    git push
+
+   # Update tasks.md - mark the task checkbox as complete
+   # Change: - [ ] T001: Description
+   # To:     - [X] T001: Description
    ```
 
    **Benefits**:
@@ -245,6 +370,9 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Each commit is a checkpoint
 
 9. **Progress Tracking and Error Handling**:
+
+   **This section applies to BOTH agent mode and direct mode. Error handling behavior is consistent regardless of execution mode.**
+
    - Report progress after each spawned agent completes
    - Display: "✓ [TaskID] Description - Committed and pushed"
    - Halt execution if any non-parallel task fails
@@ -254,9 +382,12 @@ You **MUST** consider the user input before proceeding (if not empty).
      - Commit successful tasks
      - Provide clear error messages for failed tasks
    - If task fails:
-     - Show agent error output
+     - Show error output (from agent in agent mode, or from current context in direct mode)
      - Suggest fixes or next steps
-     - Ask user whether to retry, skip, or abort
+     - Ask user whether to retry, skip, or abort:
+       - **Retry**: In agent mode, spawn the same agent again. In direct mode, re-read the task details from tasks.md, reload context from plan.md/spec.md, and re-attempt the implementation in the current conversation.
+       - **Skip**: Mark task as skipped and continue to next task (not recommended).
+       - **Abort**: Stop implementation entirely and allow user to review the issue.
    - **IMPORTANT**: Update tasks.md checkbox [X] only after successful commit + push
 
 10. **Completion Validation**:
@@ -295,12 +426,16 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Error Recovery
 
+**This section applies to BOTH agent mode and direct mode.**
+
+**Flag Conflict Error**: If you see "Cannot use both --agent and --direct flags", remove one of the flags and re-run the command.
+
 If a task fails:
 
-1. Review the agent's error output
+1. Review the error output (from spawned agent in agent mode, or from current context in direct mode)
 2. Determine if it's a transient error (network, etc.) or code error
 3. Options:
-   - **Retry**: Spawn the same agent again with same prompt
-   - **Fix & Retry**: Fix the issue manually, commit, then continue
+   - **Retry**: In agent mode, spawn the same agent again with the same prompt. In direct mode, re-read the task details from tasks.md, reload context from plan.md/spec.md, and re-attempt the implementation in the current conversation.
+   - **Fix & Retry**: Fix the issue manually, commit, then continue with the next task
    - **Skip**: Mark task as skipped and move to next (not recommended)
    - **Abort**: Stop implementation, review task breakdown
