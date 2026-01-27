@@ -79,6 +79,99 @@ observability/
 
 ## Configuration
 
+Observability is configured through the `.projspec/projspec.local.md` file using YAML frontmatter. This file should be created in your project root directory.
+
+### Configuration File Location
+
+```
+your-project/
+├── .projspec/
+│   └── projspec.local.md    # Observability configuration
+└── ...
+```
+
+### Configuration Format
+
+Create or edit `.projspec/projspec.local.md` with YAML frontmatter:
+
+```markdown
+---
+observability:
+  enabled: true
+  server_url: http://localhost:4000
+  client_url: http://localhost:3000
+---
+
+# Project Observability Notes
+
+Optional markdown content for project-specific notes.
+```
+
+### Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `enabled` | boolean | `false` | Enable or disable observability event capture |
+| `server_url` | string | `http://localhost:4000` | URL of the observability server for event submission |
+| `client_url` | string | `http://localhost:3000` | URL of the Vue dashboard for visualization |
+| `source_app` | string | `projspec` | Application identifier included in all events |
+| `summarize_events` | boolean | `false` | Enable event summarization before sending |
+| `include_chat` | boolean | `false` | Include chat content in captured events |
+| `max_chat_size` | integer | `1048576` | Maximum chat content size in bytes (1MB default) |
+| `retention_days` | integer | `7` | Number of days to retain events before cleanup |
+
+### Enabling Observability
+
+To enable observability for your project:
+
+1. **Create the configuration file**:
+   ```bash
+   mkdir -p .projspec
+   cat > .projspec/projspec.local.md << 'EOF'
+   ---
+   observability:
+     enabled: true
+   ---
+   EOF
+   ```
+
+2. **Start the server and client** (see [Quick Start](#quick-start))
+
+3. **Use Claude Code normally** - events will be captured automatically
+
+### Minimal Configuration
+
+The simplest configuration to enable observability with all defaults:
+
+```yaml
+---
+observability:
+  enabled: true
+---
+```
+
+### Full Configuration Example
+
+A complete configuration with all options explicitly set:
+
+```yaml
+---
+observability:
+  enabled: true
+  server_url: http://localhost:4000
+  client_url: http://localhost:3000
+  source_app: my-project
+  summarize_events: false
+  include_chat: true
+  max_chat_size: 2097152  # 2MB
+  retention_days: 14
+---
+```
+
+### Server Configuration
+
+These settings affect the observability server behavior:
+
 | Setting | Default | Description |
 |---------|---------|-------------|
 | Server Port | 4000 | HTTP and WebSocket server port |
