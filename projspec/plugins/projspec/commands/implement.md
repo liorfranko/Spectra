@@ -19,7 +19,7 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
 1. **Check for conflicting flags**:
    - If `$ARGUMENTS` contains BOTH `--agent` AND `--direct`:
-     - Display error: "Error: Cannot specify both --agent and --direct flags. Please choose one mode."
+     - Display error: "Error: Cannot use both --agent and --direct flags. Please choose one mode."
      - **STOP execution immediately**
 
 2. **Determine execution mode**:
@@ -415,6 +415,8 @@ Parse the `$ARGUMENTS` to determine execution mode:
 - User has push permissions to remote repository
 
 ## Error Recovery
+
+**Flag Conflict Error**: If you see "Cannot use both --agent and --direct flags", remove one of the flags and re-run the command.
 
 If a task fails:
 
