@@ -39,3 +39,20 @@ worktrees/
 # E2E test output (logs and test projects)
 tests/e2e/output/logs/
 tests/e2e/output/test-projects/
+
+# Node.js/Bun
+node_modules/
+bun.lockb
+*.tsbuildinfo
+
+# SQLite databases
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Observability PID files
+observability.pid
+
+# Local plugin configuration
+*.local.md
