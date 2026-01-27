@@ -318,6 +318,8 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
 8. **Git Commit Strategy**:
 
+   **This section applies to BOTH agent mode and direct mode. All commits must follow this format regardless of execution mode.**
+
    **Commit Message Format** (SINGLE task ID only):
 
    ```text
@@ -348,6 +350,10 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
    # Push to remote
    git push
+
+   # Update tasks.md - mark the task checkbox as complete
+   # Change: - [ ] T001: Description
+   # To:     - [X] T001: Description
    ```
 
    **Benefits**:
