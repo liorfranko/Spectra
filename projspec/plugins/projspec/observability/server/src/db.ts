@@ -120,6 +120,16 @@ export function initDatabase(): void {
   db.exec('CREATE INDEX IF NOT EXISTS idx_themes_createdAt ON themes(createdAt)');
   db.exec('CREATE INDEX IF NOT EXISTS idx_theme_shares_token ON theme_shares(shareToken)');
   db.exec('CREATE INDEX IF NOT EXISTS idx_theme_ratings_theme ON theme_ratings(themeId)');
+
+  // Cleanup old events on startup
+  cleanupOldEvents();
+}
+
+export function cleanupOldEvents(retentionDays: number = 7): number {
+  const cutoffMs = Date.now() - (retentionDays * 24 * 60 * 60 * 1000);
+  const result = db.run('DELETE FROM events WHERE timestamp < ?', [cutoffMs]);
+  console.log(`Cleaned up ${result.changes} events older than ${retentionDays} days`);
+  return result.changes;
 }
 
 export function insertEvent(event: HookEvent): HookEvent {
