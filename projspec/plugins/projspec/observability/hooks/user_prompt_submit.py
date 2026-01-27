@@ -12,6 +12,7 @@ import os
 import sys
 from pathlib import Path
 from datetime import datetime
+from utils.constants import append_to_json_log
 
 try:
     from dotenv import load_dotenv
@@ -28,22 +29,8 @@ def log_user_prompt(session_id, input_data):
     log_dir.mkdir(parents=True, exist_ok=True)
     log_file = log_dir / "user_prompt_submit.json"
 
-    # Read existing log data or initialize empty list
-    if log_file.exists():
-        with open(log_file, "r") as f:
-            try:
-                log_data = json.load(f)
-            except (json.JSONDecodeError, ValueError):
-                log_data = []
-    else:
-        log_data = []
-
     # Append the entire input data
-    log_data.append(input_data)
-
-    # Write back to file with formatting
-    with open(log_file, "w") as f:
-        json.dump(log_data, f, indent=2)
+    append_to_json_log(log_file, input_data)
 
 
 def manage_session_data(session_id, prompt, name_agent=False):

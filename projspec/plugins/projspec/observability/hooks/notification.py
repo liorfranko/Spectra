@@ -13,7 +13,7 @@ import sys
 import subprocess
 import random
 from pathlib import Path
-from utils.constants import ensure_session_log_dir
+from utils.constants import ensure_session_log_dir, append_to_json_log
 
 try:
     from dotenv import load_dotenv
@@ -96,26 +96,10 @@ def main():
         # Extract session_id
         session_id = input_data.get('session_id', 'unknown')
         
-        # Ensure session log directory exists
+        # Ensure session log directory exists and append to log
         log_dir = ensure_session_log_dir(session_id)
         log_file = log_dir / 'notification.json'
-        
-        # Read existing log data or initialize empty list
-        if log_file.exists():
-            with open(log_file, 'r') as f:
-                try:
-                    log_data = json.load(f)
-                except (json.JSONDecodeError, ValueError):
-                    log_data = []
-        else:
-            log_data = []
-        
-        # Append new data
-        log_data.append(input_data)
-        
-        # Write back to file with formatting
-        with open(log_file, 'w') as f:
-            json.dump(log_data, f, indent=2)
+        append_to_json_log(log_file, input_data)
         
         # Announce notification via TTS only if --notify flag is set
         # Skip TTS for the generic "Claude is waiting for your input" message

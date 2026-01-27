@@ -220,10 +220,9 @@ def truncate_chat_transcript(chat_data: List[Dict], max_size: int) -> List[Dict]
 
     return truncated
 
-def send_event_to_server(event_data, server_url='http://localhost:4000/events'):
+def send_event_to_server(event_data: Dict[str, Any], server_url: str = 'http://localhost:4000/events') -> bool:
     """Send event data to the observability server."""
     try:
-        # Prepare the request
         req = urllib.request.Request(
             server_url,
             data=json.dumps(event_data).encode('utf-8'),
@@ -233,13 +232,11 @@ def send_event_to_server(event_data, server_url='http://localhost:4000/events'):
             }
         )
 
-        # Send the request
         with urllib.request.urlopen(req, timeout=5) as response:
             if response.status == 200:
                 return True
-            else:
-                print(f"Server returned status: {response.status}", file=sys.stderr)
-                return False
+            print(f"Server returned status: {response.status}", file=sys.stderr)
+            return False
 
     except urllib.error.URLError as e:
         print(f"Failed to send event: {e}", file=sys.stderr)
@@ -248,100 +245,158 @@ def send_event_to_server(event_data, server_url='http://localhost:4000/events'):
         print(f"Unexpected error: {e}", file=sys.stderr)
         return False
 
-def main():
-    # Load projspec configuration first
-    config = load_projspec_config()
 
-    # Check if observability is enabled - early exit if disabled
-    if not config.get('enabled', False):
-        # Silently exit if observability is disabled
-        sys.exit(0)
-
-    # Parse command line arguments
-    # CLI arguments can override config file settings
+def parse_cli_arguments() -> argparse.Namespace:
+    """Parse command line arguments for the hook script."""
     parser = argparse.ArgumentParser(description='Send Claude Code hook events to observability server')
     parser.add_argument('--source-app', default=None, help='Source application name (overrides config)')
     parser.add_argument('--event-type', required=True, help='Hook event type (PreToolUse, PostToolUse, etc.)')
     parser.add_argument('--server-url', default=None, help='Server URL (overrides config)')
     parser.add_argument('--add-chat', action='store_true', default=None, help='Include chat transcript if available (overrides config)')
     parser.add_argument('--summarize', action='store_true', default=None, help='Generate AI summary of the event (overrides config)')
+    return parser.parse_args()
 
-    args = parser.parse_args()
 
-    # Resolve configuration: CLI args override config file, which overrides defaults
+def resolve_config(args: argparse.Namespace, config: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Resolve final configuration by merging CLI args with config file settings.
+
+    Args:
+        args: Parsed command line arguments.
+        config: Configuration loaded from file.
+
+    Returns:
+        Dictionary with resolved configuration values.
+    """
     source_app = args.source_app if args.source_app else config.get('source_app', 'projspec')
     server_url = args.server_url if args.server_url else config.get('server_url', 'http://localhost:4000')
+
     # Ensure server_url has /events endpoint
     if not server_url.endswith('/events'):
         server_url = server_url.rstrip('/') + '/events'
-    include_chat = args.add_chat if args.add_chat is not None else config.get('include_chat', False)
-    summarize = args.summarize if args.summarize is not None else config.get('summarize_events', False)
-    max_chat_size = config.get('max_chat_size', 1048576)
 
+    return {
+        'source_app': source_app,
+        'server_url': server_url,
+        'include_chat': args.add_chat if args.add_chat is not None else config.get('include_chat', False),
+        'summarize': args.summarize if args.summarize is not None else config.get('summarize_events', False),
+        'max_chat_size': config.get('max_chat_size', 1048576),
+    }
+
+
+def read_input_data() -> Optional[Dict[str, Any]]:
+    """Read and parse JSON input from stdin."""
     try:
-        # Read hook data from stdin
-        input_data = json.load(sys.stdin)
+        return json.load(sys.stdin)
     except json.JSONDecodeError as e:
         print(f"Failed to parse JSON input: {e}", file=sys.stderr)
-        sys.exit(0)  # Exit 0 to not block Claude Code
+        return None
 
-    # Extract model name from transcript (with caching)
+
+def build_event_data(
+    input_data: Dict[str, Any],
+    source_app: str,
+    event_type: str
+) -> Dict[str, Any]:
+    """
+    Build the event payload for the observability server.
+
+    Args:
+        input_data: Raw hook input data from stdin.
+        source_app: Source application identifier.
+        event_type: Hook event type (PreToolUse, PostToolUse, etc.).
+
+    Returns:
+        Dictionary containing the complete event payload.
+    """
     session_id = input_data.get('session_id', 'unknown')
     transcript_path = input_data.get('transcript_path', '')
+
+    # Extract model name from transcript (with caching)
     model_name = ''
     if transcript_path:
         model_name = get_model_from_transcript(session_id, transcript_path)
 
-    # Get projspec-specific context
-    projspec_context = get_projspec_context()
-
-    # Prepare event data for server
     event_data = {
         'source_app': source_app,
         'session_id': session_id,
-        'hook_event_type': args.event_type,
+        'hook_event_type': event_type,
         'payload': input_data,
         'timestamp': int(datetime.now().timestamp() * 1000),
         'model_name': model_name
     }
 
     # Add projspec context if available
+    projspec_context = get_projspec_context()
     if projspec_context:
         event_data['projspec_context'] = projspec_context
 
-    # Handle chat transcript inclusion
-    if include_chat and 'transcript_path' in input_data:
-        transcript_path = input_data['transcript_path']
-        if os.path.exists(transcript_path):
-            # Read .jsonl file and convert to JSON array
-            chat_data = []
-            try:
-                with open(transcript_path, 'r') as f:
-                    for line in f:
-                        line = line.strip()
-                        if line:
-                            try:
-                                chat_data.append(json.loads(line))
-                            except json.JSONDecodeError:
-                                pass  # Skip invalid lines
+    return event_data
 
-                # Truncate chat if it exceeds max_chat_size
-                chat_data = truncate_chat_transcript(chat_data, max_chat_size)
 
-                # Add chat to event data
-                event_data['chat'] = chat_data
-            except Exception as e:
-                print(f"Failed to read transcript: {e}", file=sys.stderr)
+def include_chat_transcript(event_data: Dict[str, Any], transcript_path: str, max_size: int) -> None:
+    """
+    Read and include chat transcript in event data.
+
+    Args:
+        event_data: Event payload to add chat data to.
+        transcript_path: Path to the JSONL transcript file.
+        max_size: Maximum size in bytes for the chat data.
+    """
+    if not os.path.exists(transcript_path):
+        return
+
+    try:
+        chat_data = []
+        with open(transcript_path, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    try:
+                        chat_data.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        pass  # Skip invalid lines
+
+        # Truncate chat if it exceeds max_chat_size
+        chat_data = truncate_chat_transcript(chat_data, max_size)
+        event_data['chat'] = chat_data
+
+    except Exception as e:
+        print(f"Failed to read transcript: {e}", file=sys.stderr)
+
+
+def main():
+    # Load projspec configuration first
+    config = load_projspec_config()
+
+    # Check if observability is enabled - early exit if disabled
+    if not config.get('enabled', False):
+        sys.exit(0)
+
+    # Parse CLI arguments and resolve configuration
+    args = parse_cli_arguments()
+    resolved = resolve_config(args, config)
+
+    # Read input data from stdin
+    input_data = read_input_data()
+    if input_data is None:
+        sys.exit(0)  # Exit 0 to not block Claude Code
+
+    # Build event payload
+    event_data = build_event_data(input_data, resolved['source_app'], args.event_type)
+
+    # Include chat transcript if requested
+    if resolved['include_chat'] and 'transcript_path' in input_data:
+        include_chat_transcript(event_data, input_data['transcript_path'], resolved['max_chat_size'])
 
     # Generate summary if requested
-    if summarize:
+    if resolved['summarize']:
         summary = generate_event_summary(event_data)
         if summary:
             event_data['summary'] = summary
-        # Continue even if summary generation fails
 
     # Send to server
-    success = send_event_to_server(event_data, server_url)
+    send_event_to_server(event_data, resolved['server_url'])
 
     # Always exit with 0 to not block Claude Code operations
     sys.exit(0)

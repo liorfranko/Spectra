@@ -13,6 +13,7 @@ import sys
 import subprocess
 from pathlib import Path
 from datetime import datetime
+from utils.constants import append_to_json_log
 
 try:
     from dotenv import load_dotenv
@@ -28,26 +29,12 @@ def log_session_end(input_data):
     log_dir.mkdir(parents=True, exist_ok=True)
     log_file = log_dir / 'session_end.json'
 
-    # Read existing log data or initialize empty list
-    if log_file.exists():
-        with open(log_file, 'r') as f:
-            try:
-                log_data = json.load(f)
-            except (json.JSONDecodeError, ValueError):
-                log_data = []
-    else:
-        log_data = []
-
     # Append the entire input data with timestamp
     entry = {
         **input_data,
         "logged_at": datetime.now().isoformat()
     }
-    log_data.append(entry)
-
-    # Write back to file with formatting
-    with open(log_file, 'w') as f:
-        json.dump(log_data, f, indent=2)
+    append_to_json_log(log_file, entry)
 
 
 def save_session_statistics(input_data):
@@ -72,24 +59,12 @@ def save_session_statistics(input_data):
         stats_dir.mkdir(parents=True, exist_ok=True)
         stats_file = stats_dir / 'session_statistics.json'
 
-        if stats_file.exists():
-            with open(stats_file, 'r') as f:
-                try:
-                    stats = json.load(f)
-                except (json.JSONDecodeError, ValueError):
-                    stats = []
-        else:
-            stats = []
-
-        stats.append({
+        append_to_json_log(stats_file, {
             "session_id": session_id,
             "ended_at": datetime.now().isoformat(),
             "reason": reason,
             "message_count": message_count
         })
-
-        with open(stats_file, 'w') as f:
-            json.dump(stats, f, indent=2)
 
     except Exception:
         pass  # Don't fail the hook on stats errors
