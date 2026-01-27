@@ -30,7 +30,9 @@ class TestProjspecImplement:
             claude_runner: Fixture providing a configured ClaudeRunner instance.
         """
         prompt = (
-            "/projspec:implement --yes --direct"
+            "/projspec:implement --yes --direct. "
+            "Important: The --yes flag means you MUST proceed without asking for confirmation. "
+            "Bypass all checklist confirmations and execute tasks immediately."
         )
 
         result = claude_runner.run(
