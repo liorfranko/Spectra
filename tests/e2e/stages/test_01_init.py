@@ -37,7 +37,7 @@ class TestProjspecInit:
             claude_runner: ClaudeRunner fixture configured for the test project.
         """
         result = claude_runner.run(
-            prompt="List available projspec commands. Just confirm that /projspec.specify, /projspec.plan, and /projspec.tasks are available.",
+            prompt="List available projspec commands. Just confirm that /projspec:specify, /projspec:plan, and /projspec:tasks are available.",
             stage=1,
             log_name="test_plugin_discovered",
         )
