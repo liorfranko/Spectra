@@ -44,7 +44,7 @@ This project uses git worktrees for feature isolation:
 - Run projspec commands from the worktree directory
 - After PR merge, specs appear in main repo's `specs/` directory
 
-Key worktree functions in `.specify/scripts/bash/common.sh`:
+Key worktree functions in `.projspec/scripts/bash/common.sh`:
 - `is_worktree()` - detect if in worktree context
 - `get_main_repo_from_worktree()` - get main repo path
 - `get_worktree_for_branch()` - find worktree by branch

@@ -31,9 +31,14 @@ Parse the `$ARGUMENTS` to determine execution mode:
    - If `$ARGUMENTS` contains `--agent`: Set `MODE = "agent"`
    - If neither flag is present: Set `MODE = "agent"` (default for backward compatibility)
 
-3. **Store the MODE variable** for use in task execution steps below.
+3. **Check for --yes flag**:
+   - If `$ARGUMENTS` contains `--yes` or `-y`: Set `SKIP_CONFIRMATION = true`
+   - Otherwise: Set `SKIP_CONFIRMATION = false`
+   - The `--yes` flag bypasses checklist confirmation prompts (useful for CI/automation)
 
-4. **Display mode indicator**:
+4. **Store the MODE and SKIP_CONFIRMATION variables** for use in task execution steps below.
+
+5. **Display mode indicator**:
    - If `MODE = "agent"` AND `--agent` flag was explicitly provided:
      - Display: "Executing tasks in agent mode (isolated context per task)"
    - If `MODE = "agent"` AND no flag was provided (default):
@@ -69,10 +74,14 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
    - **If any checklist is incomplete**:
      - Display the table with incomplete item counts
-     - **STOP** and ask: "Some checklists are incomplete. Do you want to proceed with implementation anyway? (yes/no)"
-     - Wait for user response before continuing
-     - If user says "no" or "wait" or "stop", halt execution
-     - If user says "yes" or "proceed" or "continue", proceed to step 3
+     - **If SKIP_CONFIRMATION is true** (--yes flag provided):
+       - Display: "Proceeding with implementation despite incomplete checklists (--yes flag)"
+       - Proceed to step 3
+     - **Otherwise**:
+       - **STOP** and ask: "Some checklists are incomplete. Do you want to proceed with implementation anyway? (yes/no)"
+       - Wait for user response before continuing
+       - If user says "no" or "wait" or "stop", halt execution
+       - If user says "yes" or "proceed" or "continue", proceed to step 3
 
    - **If all checklists are complete**:
      - Display the table showing all checklists passed

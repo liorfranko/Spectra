@@ -110,7 +110,7 @@ class ClaudeRunner:
     DEFAULT_TIMEOUT_SPECIFY = 600
     DEFAULT_TIMEOUT_PLAN = 600
     DEFAULT_TIMEOUT_TASKS = 600
-    DEFAULT_TIMEOUT_IMPLEMENT = 1800
+    DEFAULT_TIMEOUT_IMPLEMENT = 3600
 
     # Claude model configuration
     MODEL = "claude-sonnet-4-5@20250929"
