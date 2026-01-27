@@ -213,6 +213,83 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
    <!-- END AGENT MODE SECTION -->
 
+   <!-- BEGIN DIRECT MODE SECTION (MODE == "direct") -->
+   **When MODE = "direct" (Direct Mode Execution):**
+
+   The following inline execution strategy applies when running in direct mode.
+   Tasks are executed sequentially in the current conversation context without spawning agents.
+
+   **CRITICAL - ONE TASK = ONE COMMIT**:
+   - Each task (T001, T002, etc.) MUST be implemented sequentially in the current context
+   - Each task MUST result in exactly ONE commit with format `[T001] Description`
+   - NEVER batch multiple tasks into one commit
+   - NEVER use range formats like `[T001-T005]` or `[T001, T002]` in commits
+   - NO agents are spawned - all work happens in this conversation
+   - This ensures: rollback granularity, clear audit trail, simpler execution
+
+   **For Sequential Tasks**:
+   - Parse tasks from tasks.md in order
+   - For each task:
+     1. Read the task details (ID, description, file paths)
+     2. Load relevant context from plan.md, spec.md, data-model.md, constitution.md
+     3. Implement the task changes directly in the current context
+     4. Stage all changes: `git add -A`
+     5. Commit with task ID and description: `git commit -m "[TaskID] Task description"`
+     6. Push to remote: `git push`
+     7. Mark task as [X] in tasks.md file
+   - Move to next task
+
+   **For Parallel Tasks [P]**:
+   - In direct mode, parallel-marked tasks [P] are executed sequentially
+   - The [P] marker is ignored - tasks run one after another
+   - Each task still gets its own commit following the same workflow
+   - Note: For true parallel execution in direct mode, see future parallel execution support
+
+   **Direct Execution Template**:
+
+   For each task, follow this pattern:
+
+   ```text
+   1. IDENTIFY: Parse task [TaskID] from tasks.md
+      - Task description
+      - Files to create/modify
+      - Dependencies on previous tasks
+
+   2. CONTEXT: Load relevant information
+      - plan.md: Architecture, tech stack, file structure
+      - spec.md: Requirements this task addresses
+      - data-model.md: Entities if applicable
+      - constitution.md: Principles to follow
+
+   3. IMPLEMENT: Make the changes
+      - Create/modify specified files
+      - Follow patterns from the plan
+      - Adhere to constitution principles
+      - Ensure code is production-ready
+
+   4. COMMIT: Save progress
+      - git add -A
+      - git commit -m "[TaskID] Description"
+      - git push
+
+   5. TRACK: Update progress
+      - Mark [X] in tasks.md
+      - Report: "✓ [TaskID] Description - Committed and pushed"
+   ```
+
+   **Benefits of Direct Mode**:
+   - Simpler execution without agent coordination overhead
+   - Full context accumulation across tasks (can reference earlier changes)
+   - Lower latency per task (no agent spawn time)
+   - Better for smaller task sets or when context sharing is valuable
+
+   **Trade-offs**:
+   - No isolated context per task (context accumulates)
+   - Sequential only (no parallel execution)
+   - Context window may fill with large implementations
+
+   <!-- END DIRECT MODE SECTION -->
+
 7. **Phase-by-Phase Execution**:
    - **Phase 1 - Setup**:
      - Spawn agents for setup tasks (project structure, dependencies, config)
