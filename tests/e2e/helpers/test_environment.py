@@ -225,7 +225,9 @@ class E2EProject:
                 "Ensure the projspec plugin directory exists."
             )
 
-        self.plugin_dir = plugin_path
+        # --plugin-dir expects the parent directory containing plugin folders
+        # The plugin is at projspec/plugins/projspec/, so we pass projspec/plugins/
+        self.plugin_dir = plugin_path / "plugins"
 
         # Copy plugin directories to test project
         # The plugin structure contains .specify/ in the main repo
