@@ -373,7 +373,7 @@ In case of conflict between principles:
 
 ---
 
-*This constitution is checked during `/projspec.plan` execution. Violations must be justified in the Complexity Tracking section of the plan.*
+*This constitution is checked during `/projspec:plan` execution. Violations must be justified in the Complexity Tracking section of the plan.*
 ```
 
 **3.2: Write the constitution file**
@@ -489,9 +489,9 @@ during their respective command executions.
 ### Next Steps
 
 The constitution is now active. It will be checked during:
-- `/projspec.plan` - Technical planning will verify compliance
-- `/projspec.implement` - Implementation will follow constraints
-- `/projspec.review-pr` - Reviews will verify adherence
+- `/projspec:plan` - Technical planning will verify compliance
+- `/projspec:implement` - Implementation will follow constraints
+- `/projspec:review-pr` - Reviews will verify adherence
 
 To view the full constitution:
 ```bash
@@ -500,12 +500,12 @@ cat {CONSTITUTION_PATH}
 
 To add a new principle:
 ```
-/projspec.constitution add "Your new principle text here"
+/projspec:constitution add "Your new principle text here"
 ```
 
 To update interactively:
 ```
-/projspec.constitution interactive
+/projspec:constitution interactive
 ```
 ```
 
@@ -531,7 +531,7 @@ Upon completion, this command produces:
 ## Usage
 
 ```
-/projspec.constitution [action] [arguments]
+/projspec:constitution [action] [arguments]
 ```
 
 ### Actions
@@ -548,16 +548,16 @@ Upon completion, this command produces:
 
 ```bash
 # View current constitution
-/projspec.constitution
+/projspec:constitution
 
 # Start interactive creation
-/projspec.constitution interactive
+/projspec:constitution interactive
 
 # Add a specific principle
-/projspec.constitution add "All API endpoints must have rate limiting"
+/projspec:constitution add "All API endpoints must have rate limiting"
 
 # Update existing constitution
-/projspec.constitution update
+/projspec:constitution update
 ```
 
 ## Notes

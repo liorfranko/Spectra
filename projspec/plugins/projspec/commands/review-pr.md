@@ -574,7 +574,7 @@ No specification context available. Run from feature directory for requirements 
 ### Action Required
 
 1. Fix all {critical_count} critical issues
-2. Re-run review: `/projspec.review-pr`
+2. Re-run review: `/projspec:review-pr`
 
 Do not create PR until critical issues are resolved.
 
@@ -770,7 +770,7 @@ Upon completion, this command produces:
 ## Usage
 
 ```
-/projspec.review-pr [type]
+/projspec:review-pr [type]
 ```
 
 ### Arguments
@@ -787,19 +787,19 @@ Upon completion, this command produces:
 
 ```bash
 # Full review (default)
-/projspec.review-pr
+/projspec:review-pr
 
 # Quick review for critical issues
-/projspec.review-pr quick
+/projspec:review-pr quick
 
 # Security-focused review
-/projspec.review-pr security
+/projspec:review-pr security
 
 # Performance analysis
-/projspec.review-pr performance
+/projspec:review-pr performance
 
 # Style check only
-/projspec.review-pr style
+/projspec:review-pr style
 ```
 
 ## Notes

@@ -21,7 +21,7 @@ Run the prerequisite check before proceeding:
 ${CLAUDE_PLUGIN_ROOT}/scripts/check-prerequisites.sh --require-spec
 ```
 
-If the check fails, use the `/projspec.specify` command first to create the specification.
+If the check fails, use the `/projspec:specify` command first to create the specification.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ Parse the JSON output to extract:
 - `FEATURE_ID` - The unique identifier for the feature
 - `SPEC_EXISTS` - Boolean indicating if spec.md is present
 
-If `SPEC_EXISTS` is false, display an error message instructing the user to run `/projspec.specify` first, then stop execution.
+If `SPEC_EXISTS` is false, display an error message instructing the user to run `/projspec:specify` first, then stop execution.
 
 #### 1.2: Load spec.md Content
 
@@ -647,11 +647,11 @@ Create a summary of all changes made during the clarification session:
 
 **If all clarifications resolved:**
 The specification is now complete. Recommended next step:
-  /projspec.plan
+  /projspec:plan
 
 **If clarifications remain:**
-Run `/projspec.clarify` again to address remaining questions, or proceed
-with `/projspec.plan` using the suggested defaults for unresolved items.
+Run `/projspec:clarify` again to address remaining questions, or proceed
+with `/projspec:plan` using the suggested defaults for unresolved items.
 ```
 
 ### Step 6: Report Completion Status
@@ -689,15 +689,15 @@ Assess whether the specification is now complete:
 ```
 If all criteria met:
   completeness = "COMPLETE"
-  recommendation = "Run /projspec.plan to generate implementation plan"
+  recommendation = "Run /projspec:plan to generate implementation plan"
 
 If markers remain but < 3:
   completeness = "MOSTLY_COMPLETE"
-  recommendation = "Proceed to /projspec.plan or run /projspec.clarify again"
+  recommendation = "Proceed to /projspec:plan or run /projspec:clarify again"
 
 If markers >= 3 or blocking issues exist:
   completeness = "INCOMPLETE"
-  recommendation = "Run /projspec.clarify again to resolve remaining issues"
+  recommendation = "Run /projspec:clarify again to resolve remaining issues"
 ```
 
 #### 6.3: Display Final Report
@@ -732,22 +732,22 @@ Specification Status: {COMPLETE | MOSTLY_COMPLETE | INCOMPLETE}
 Your specification is now complete and ready for planning.
 
 Recommended next step:
-  /projspec.plan
+  /projspec:plan
 
 {If MOSTLY_COMPLETE:}
 Your specification has {N} remaining clarification items.
 You can proceed with planning (defaults will be used) or clarify further.
 
 Options:
-  /projspec.plan      - Proceed with implementation planning
-  /projspec.clarify   - Resolve remaining questions
+  /projspec:plan      - Proceed with implementation planning
+  /projspec:clarify   - Resolve remaining questions
 
 {If INCOMPLETE:}
 Your specification still has {N} unresolved clarification items.
 It's recommended to resolve these before proceeding.
 
 Recommended next step:
-  /projspec.clarify
+  /projspec:clarify
 
 -------------------------------------------------------------------
 ```

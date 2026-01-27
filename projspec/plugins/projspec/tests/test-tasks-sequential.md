@@ -76,7 +76,7 @@ T003 (Add documentation)
 
 ## Expected Outcomes
 
-After running `/projspec.implement` on this fixture:
+After running `/projspec:implement` on this fixture:
 
 1. **File Creation**: `sample.txt` exists with initial content
 2. **File Modification**: `sample.txt` contains appended line
@@ -97,12 +97,12 @@ Both `--agent` and `--direct` modes should produce:
 
 Run with agent mode:
 ```
-/projspec.implement --agent
+/projspec:implement --agent
 ```
 
 Run with direct mode:
 ```
-/projspec.implement --direct
+/projspec:implement --direct
 ```
 
 Compare results to verify execution parity.

@@ -450,10 +450,10 @@ main() {
     local plan_file="${FEATURE_DIR}/plan.md"
     if [[ ! -f "$plan_file" ]]; then
         if [[ "$OUTPUT_JSON" == "true" ]]; then
-            json_output "error" "true" "message" "plan.md not found in $FEATURE_DIR - run /projspec.plan first"
+            json_output "error" "true" "message" "plan.md not found in $FEATURE_DIR - run /projspec:plan first"
             exit 1
         else
-            error "plan.md not found in $FEATURE_DIR - run /projspec.plan first"
+            error "plan.md not found in $FEATURE_DIR - run /projspec:plan first"
         fi
     fi
 

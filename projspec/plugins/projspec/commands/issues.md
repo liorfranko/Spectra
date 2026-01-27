@@ -40,7 +40,7 @@ Parse the JSON output to extract:
 - `GH_CLI_AVAILABLE` - Boolean indicating if GitHub CLI is installed
 - `TASKS_CONTENT` - The full content of tasks.md
 
-If the script exits with error (missing tasks.md), display an error message instructing the user to run `/projspec.tasks` first, then stop execution.
+If the script exits with error (missing tasks.md), display an error message instructing the user to run `/projspec:tasks` first, then stop execution.
 
 **1.2: Check if gh CLI is available**
 
@@ -113,7 +113,7 @@ Follow the prompts to:
 2. Select authentication method (browser or token)
 3. Complete the authentication flow
 
-After authentication, run `/projspec.issues` again.
+After authentication, run `/projspec:issues` again.
 ```
 
 Stop execution if not authenticated.
@@ -637,7 +637,7 @@ GitHub API rate limit has been reached.
 **Options:**
 
 1. **Wait and Resume** - Rate limits typically reset within an hour
-   - Run `/projspec.issues --resume` after the limit resets
+   - Run `/projspec:issues --resume` after the limit resets
    - Check rate limit status: `gh api rate_limit`
 
 2. **Continue Later** - Progress has been saved
@@ -696,7 +696,7 @@ Failed to connect to GitHub API.
 Issues created before the error: {created_count}
 Remaining tasks: {remaining_count}
 
-Run `/projspec.issues --resume` to continue after resolving the network issue.
+Run `/projspec:issues --resume` to continue after resolving the network issue.
 ```
 
 **5.3: Authentication expiration handling**
@@ -726,7 +726,7 @@ Your GitHub authentication has expired or been revoked.
 2. Resume issue creation:
    ```bash
    # Run the issues command again
-   /projspec.issues --resume
+   /projspec:issues --resume
    ```
 
 The command will skip already-created issues and continue with remaining tasks.
@@ -779,7 +779,7 @@ The following tasks failed to create issues:
 To continue creating issues, run:
 
 ```
-/projspec.issues --resume
+/projspec:issues --resume
 ```
 
 This will:
@@ -973,13 +973,13 @@ View project board (if configured):
 ---
 
 *State saved to: {FEATURE_DIR}/.issues-state.json*
-*Run `/projspec.issues --resume` to resume if interrupted*
+*Run `/projspec:issues --resume` to resume if interrupted*
 ```
 
 ## Usage
 
 ```
-/projspec.issues [options]
+/projspec:issues [options]
 ```
 
 ### Options

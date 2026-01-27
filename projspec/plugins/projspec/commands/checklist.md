@@ -125,7 +125,7 @@ Generate a requirements validation checklist when type is `requirements` or `all
 ## Overview
 
 This checklist validates that the feature specification is complete, well-formed,
-and ready for implementation planning. All items should pass before running `/projspec.plan`.
+and ready for implementation planning. All items should pass before running `/projspec:plan`.
 
 ---
 ```
@@ -257,7 +257,7 @@ Generate an implementation readiness checklist when type is `implementation` or 
 ## Overview
 
 This checklist validates that the implementation plan is complete and the project
-is ready for development. All items should pass before running `/projspec.implement`.
+is ready for development. All items should pass before running `/projspec:implement`.
 
 ---
 ```
@@ -340,7 +340,7 @@ is ready for development. All items should pass before running `/projspec.implem
 
 {Else:}
 - [ ] tasks.md not yet generated
-- [ ] Run `/projspec.tasks` before implementation
+- [ ] Run `/projspec:tasks` before implementation
 {End if}
 ```
 
@@ -538,17 +538,17 @@ echo "${checklist_content}" > "${FEATURE_DIR}/checklists/${type}.md"
 {If type is requirements:}
 - Review and complete the requirements checklist
 - Address any failed items
-- Run `/projspec.plan` when all items pass
+- Run `/projspec:plan` when all items pass
 
 {If type is implementation:}
 - Review and complete the implementation checklist
 - Ensure all prerequisites are met
-- Run `/projspec.implement` when all items pass
+- Run `/projspec:implement` when all items pass
 
 {If type is review:}
 - Review and complete the review checklist
 - Address any failed items
-- Run `/projspec.review-pr` when all items pass
+- Run `/projspec:review-pr` when all items pass
 ```
 
 ## Output
@@ -575,7 +575,7 @@ Upon completion, this command produces:
 ## Usage
 
 ```
-/projspec.checklist [type]
+/projspec:checklist [type]
 ```
 
 ### Arguments
