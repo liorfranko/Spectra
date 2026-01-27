@@ -1,6 +1,9 @@
 name: Release
 
 on:
+  push:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       version_bump:
@@ -52,14 +55,17 @@ jobs:
         run: |
           CURRENT="${{ steps.current.outputs.version }}"
 
-          if [ -n "${{ inputs.custom_version }}" ]; then
+          CUSTOM_VERSION="${{ inputs.custom_version }}"
+          VERSION_BUMP="${{ inputs.version_bump || 'patch' }}"
+
+          if [ -n "$CUSTOM_VERSION" ]; then
             # Use custom version if provided
-            NEW_VERSION="${{ inputs.custom_version }}"
+            NEW_VERSION="$CUSTOM_VERSION"
           else
             # Parse current version
             IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
 
-            case "${{ inputs.version_bump }}" in
+            case "$VERSION_BUMP" in
               major)
                 NEW_VERSION="$((MAJOR + 1)).0.0"
                 ;;
@@ -111,7 +117,7 @@ jobs:
           git push origin "v${{ steps.new.outputs.version }}"
 
       - name: Create GitHub Release
-        if: ${{ inputs.create_github_release }}
+        if: ${{ inputs.create_github_release != false }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.new.outputs.version }}
@@ -128,6 +134,6 @@ jobs:
           echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
           echo "| Previous Version | ${{ steps.current.outputs.version }} |" >> $GITHUB_STEP_SUMMARY
           echo "| New Version | ${{ steps.new.outputs.version }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Bump Type | ${{ inputs.version_bump }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Bump Type | ${{ inputs.version_bump || 'patch' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Tag | v${{ steps.new.outputs.version }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| GitHub Release | ${{ inputs.create_github_release }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| GitHub Release | ${{ inputs.create_github_release != false }} |" >> $GITHUB_STEP_SUMMARY
