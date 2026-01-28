@@ -1,0 +1,173 @@
+[
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Glob",
+    "tool_input": {
+      "pattern": "**/012*/**/spec.md"
+    },
+    "tool_use_id": "toolu_vrtx_01JHSkv83J37LGnB8wrbfgEH"
+  },
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Glob",
+    "tool_input": {
+      "pattern": "**/specs/012*/**/*.md"
+    },
+    "tool_use_id": "toolu_vrtx_01MxTaHxBFjeGN1CeW3htTWh"
+  },
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Glob",
+    "tool_input": {
+      "pattern": "**/*observability*/**/*.md"
+    },
+    "tool_use_id": "toolu_vrtx_01UQZ8ybx6evtoyi7y2D7gX8"
+  },
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Glob",
+    "tool_input": {
+      "pattern": "**/specs/**/*.md"
+    },
+    "tool_use_id": "toolu_vrtx_01SiHT8jkVv1iM4hc2ECmpby"
+  },
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Glob",
+    "tool_input": {
+      "pattern": "**/spec*.md",
+      "path": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration"
+    },
+    "tool_use_id": "toolu_vrtx_01UC8qZndvGC2eUJYetBwDyE"
+  },
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec/observability/README.md"
+    },
+    "tool_use_id": "toolu_vrtx_01QRCSwkZd7fzeeuVKx6HgHd"
+  },
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/specs/012-multi-agent-observability-integration/spec.md"
+    },
+    "tool_use_id": "toolu_vrtx_01GbJQfPkQzJ5uzWSjRdrVFH"
+  },
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Glob",
+    "tool_input": {
+      "pattern": "**/specs/012-multi-agent-observability-integration/**/*"
+    },
+    "tool_use_id": "toolu_vrtx_01CUVdVmoKo7o2erKvbYDLJy"
+  },
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Glob",
+    "tool_input": {
+      "pattern": "**/observability/**/*.{py,ts,sh}",
+      "path": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec"
+    },
+    "tool_use_id": "toolu_vrtx_01BexBicHtfJJd4kco2D3X7b"
+  },
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Glob",
+    "tool_input": {
+      "pattern": "**/scripts/*observability*.sh",
+      "path": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec"
+    },
+    "tool_use_id": "toolu_vrtx_01KbnUf9UEuynvjhuqKHt5dr"
+  },
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Glob",
+    "tool_input": {
+      "pattern": "**/012*/{plan,tasks}.md"
+    },
+    "tool_use_id": "toolu_vrtx_01GqSqDTMYp7VtFwZXAMKyLH"
+  },
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec/hooks/hooks.json"
+    },
+    "tool_use_id": "toolu_vrtx_01PcB5Z4ueqBZPoBwEjZwEos"
+  },
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec/observability/hooks/send_event.py"
+    },
+    "tool_use_id": "toolu_vrtx_01HVowGG1fkGoJ79sJSdfztz"
+  },
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Read",
+    "tool_input": {
+      "file_path": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec/scripts/start-observability.sh"
+    },
+    "tool_use_id": "toolu_vrtx_01Qs4FG5WL4BPpisWmgPS9Re"
+  }
+]

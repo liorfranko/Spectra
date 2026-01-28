@@ -1,0 +1,12 @@
+[
+  {
+    "tool_name": "test",
+    "tool_input": {}
+  },
+  {
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "ls"
+    }
+  }
+]

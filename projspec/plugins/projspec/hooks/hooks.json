@@ -2,56 +2,146 @@
   "hooks": {
     "PreToolUse": [
       {
-        "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/pre_tool_use.py",
-        "timeout": 5000
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/pre_tool_use.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/send_event.py --event-type PreToolUse",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PostToolUse": [
       {
-        "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/post_tool_use.py",
-        "timeout": 5000
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/post_tool_use.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/send_event.py --event-type PostToolUse",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "Notification": [
       {
-        "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/notification.py",
-        "timeout": 5000
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/notification.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/send_event.py --event-type Notification",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "Stop": [
       {
-        "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/stop.py",
-        "timeout": 5000
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/stop.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/send_event.py --event-type Stop",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "SubagentStop": [
       {
-        "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/subagent_stop.py",
-        "timeout": 5000
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/subagent_stop.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/send_event.py --event-type SubagentStop",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PreCompact": [
       {
-        "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/pre_compact.py",
-        "timeout": 5000
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/pre_compact.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/send_event.py --event-type PreCompact",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "UserPromptSubmit": [
       {
-        "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/user_prompt_submit.py",
-        "timeout": 5000
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/user_prompt_submit.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/send_event.py --event-type UserPromptSubmit",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "SessionStart": [
       {
-        "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/session_start.py",
-        "timeout": 5000
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/session_start.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/send_event.py --event-type SessionStart",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "SessionEnd": [
       {
-        "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/session_end.py",
-        "timeout": 5000
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/session_end.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "uv run ${CLAUDE_PLUGIN_ROOT}/observability/hooks/send_event.py --event-type SessionEnd",
+            "timeout": 5
+          }
+        ]
       }
     ]
   }

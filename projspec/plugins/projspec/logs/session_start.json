@@ -1,0 +1,10 @@
+[
+  {
+    "session_id": "93da0504-b1f3-4871-8e32-4c8b177c415d",
+    "transcript_path": "/Users/liorfr/.claude/projects/-Users-liorfr-Development-projspec-worktrees-012-multi-agent-observability-integration-projspec-plugins-projspec/93da0504-b1f3-4871-8e32-4c8b177c415d.jsonl",
+    "cwd": "/Users/liorfr/Development/projspec/worktrees/012-multi-agent-observability-integration/projspec/plugins/projspec",
+    "hook_event_name": "SessionStart",
+    "source": "startup",
+    "model": "claude-opus-4-5@20251101"
+  }
+]
