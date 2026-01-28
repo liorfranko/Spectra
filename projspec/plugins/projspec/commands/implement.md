@@ -166,7 +166,7 @@ Parse the `$ARGUMENTS` to determine execution mode:
    - Provide the agent with:
      - Task ID and description
      - Relevant excerpts from plan.md, spec.md, data-model.md
-     - Constitution principles from `.specify/memory/constitution.md`
+     - Constitution principles from `.projspec/memory/constitution.md`
      - Specific file paths to create/modify
    - Wait for agent completion
    - After agent completes:

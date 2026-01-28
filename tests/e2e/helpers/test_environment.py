@@ -195,7 +195,7 @@ class E2EProject:
         """Locate and install the projspec plugin into the test project.
 
         This method finds the projspec plugin from the local development
-        path and copies the necessary directories (.specify/, .claude/)
+        path and copies the necessary directories (.projspec/, .claude/)
         to the test project so Claude Code can use projspec commands.
 
         Raises:
@@ -230,15 +230,15 @@ class E2EProject:
         self.plugin_dir = plugin_path / "plugins"
 
         # Copy plugin directories to test project
-        # The plugin structure contains .specify/ in the main repo
+        # The plugin structure contains .projspec/ in the main repo
         # and plugin config in projspec/plugins/projspec/
         main_repo_root = plugin_path.parent
 
-        # Copy .specify/ from main repo to test project
-        source_specify = main_repo_root / ".specify"
-        if source_specify.exists():
-            dest_specify = self.project_path / ".specify"
-            shutil.copytree(source_specify, dest_specify, dirs_exist_ok=True)
+        # Copy .projspec/ from main repo to test project
+        source_projspec = main_repo_root / ".projspec"
+        if source_projspec.exists():
+            dest_projspec = self.project_path / ".projspec"
+            shutil.copytree(source_projspec, dest_projspec, dirs_exist_ok=True)
 
         # Copy .claude/ from main repo to test project (if exists)
         source_claude = main_repo_root / ".claude"
