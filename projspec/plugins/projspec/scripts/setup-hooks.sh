@@ -135,7 +135,7 @@ copy_hook_templates() {
 
     if [[ -d "$templates_dir" ]]; then
         # Copy spec/plan/tasks templates
-        for template in spec-template.md plan-template.md tasks-template.md checklist-template.md; do
+        for template in spec-template.md plan-template.md tasks-template.md; do
             if [[ -f "$templates_dir/$template" ]]; then
                 if cp "$templates_dir/$template" "$specify_dir/templates/" 2>/dev/null; then
                     log_verbose "Copied $template"

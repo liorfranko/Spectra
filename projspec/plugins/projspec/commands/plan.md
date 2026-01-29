@@ -953,8 +953,6 @@ specs/[feature-id]/
 ├── plan.md              # Implementation plan (this document)
 ├── quickstart.md        # Getting started guide
 ├── tasks.md             # Implementation task list
-└── checklists/          # Optional: validation checklists
-    └── requirements.md
 ```
 
 **File Purposes**:
@@ -1044,8 +1042,7 @@ specs/[feature-id]/
 ├── data-model.md
 ├── plan.md
 ├── quickstart.md
-├── tasks.md
-└── checklists/
+└── tasks.md
 ```
 
 ### Source Code Layout
@@ -1162,7 +1159,6 @@ This will:
 
 **Alternative Actions**:
 - `/projspec:analyze` - Perform cross-artifact consistency analysis
-- `/projspec:checklist` - Generate a requirements validation checklist
 - Manual review - Review generated artifacts before proceeding
 ```
 

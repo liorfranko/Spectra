@@ -146,10 +146,6 @@ scan_available_docs() {
         docs+=("contracts/")
     fi
 
-    # Check for checklists directory
-    if [[ -d "${feature_dir}/checklists" ]] && [[ -n "$(ls -A "${feature_dir}/checklists" 2>/dev/null)" ]]; then
-        docs+=("checklists/")
-    fi
 
     # Output each doc on a new line
     printf '%s\n' "${docs[@]}"

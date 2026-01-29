@@ -56,7 +56,7 @@ ${CLAUDE_PLUGIN_ROOT}/scripts/create-new-feature.sh "$ARGUMENTS" --json
 
 Use the `FEATURE_DIR` path from the script output:
 
-1. Verify the directory exists and contains a `checklists/` subdirectory
+1. Verify the directory exists
 2. The spec.md file will be created at: `${FEATURE_DIR}/spec.md`
 3. Store the feature context for subsequent steps:
    - Feature ID: Used for cross-references
@@ -510,151 +510,11 @@ If the spec passes critical checks (sections present, no implementation details)
 - Recommend running `/projspec:clarify` to improve quality
 - Mark spec status as "Draft - Needs Review"
 
-### Step 7: Generate Requirements Checklist
-
-After validation passes, generate a requirements checklist to help validate specification quality before proceeding to planning.
-
-#### 7.1: Create Checklists Directory
-
-Ensure the checklists directory exists within the feature directory:
-
-```
-${FEATURE_DIR}/checklists/
-```
-
-If the directory doesn't exist, create it. The `create-new-feature.sh` script typically creates this directory, but verify it exists.
-
-#### 7.2: Generate Requirements Checklist Content
-
-Create a requirements checklist based on the checklist template format. The checklist should validate spec quality across these categories:
-
-**Checklist Header:**
-```markdown
-# Requirements Checklist: [FEATURE_NAME]
-
-**Purpose**: Validate specification quality before proceeding to implementation planning
-**Created**: [DATE in YYYY-MM-DD format]
-**Feature**: [Link to spec.md]
-
----
-
-## Overview
-
-This checklist validates that the feature specification is complete, well-formed,
-and ready for implementation planning. All items should pass before running `/projspec:plan`.
-
----
-```
-
-**Completeness Section:**
-Generate checklist items to verify all required sections are present:
-- [ ] Overview section describes feature purpose and scope
-- [ ] At least 2 user scenarios are defined (US-001, US-002)
-- [ ] Edge cases table has at least 1 entry
-- [ ] At least 1 functional requirement is defined (FR-001)
-- [ ] At least 1 success criterion is defined (SC-001)
-- [ ] Key entities are identified and described
-- [ ] Assumptions are documented
-- [ ] Open questions are tracked (if any)
-
-**Requirement Quality Section:**
-Generate checklist items to verify requirements meet quality standards:
-- [ ] All requirements are testable (have pass/fail criteria)
-- [ ] All requirements are specific (no vague terms like "fast", "easy", "user-friendly")
-- [ ] All requirements are atomic (one behavior per requirement)
-- [ ] All requirements have verification methods defined
-- [ ] Requirements use consistent terminology
-
-**Implementation Independence Section:**
-Generate checklist items to verify no implementation leakage:
-- [ ] No programming languages mentioned (Python, JavaScript, etc.)
-- [ ] No frameworks mentioned (React, Django, Express, etc.)
-- [ ] No database technologies mentioned (PostgreSQL, MongoDB, etc.)
-- [ ] No infrastructure details mentioned (AWS, Docker, etc.)
-- [ ] Focus is on "what" not "how"
-
-**Success Criteria Section:**
-Generate checklist items to verify success criteria quality:
-- [ ] All success criteria have measurable targets
-- [ ] Targets include specific values (numbers, percentages, durations)
-- [ ] Verification methods are defined for each criterion
-- [ ] Criteria are achievable and realistic
-
-**Edge Case Coverage Section:**
-Generate checklist items to verify edge cases are addressed:
-- [ ] Empty/null input cases are considered
-- [ ] Boundary conditions are identified
-- [ ] Error scenarios are documented
-- [ ] Recovery behaviors are specified
-
-**Assumption Documentation Section:**
-Generate checklist items to verify assumptions are properly tracked:
-- [ ] All assumptions are explicitly listed
-- [ ] Each assumption has validation status
-- [ ] Impact of invalid assumptions is understood
-- [ ] No hidden assumptions in requirements
-
-**Notes Section:**
-```markdown
----
-
-## Notes
-
-<!--
-Document any issues, blockers, or observations here.
-Format: - [ITEM_REF] Description of issue or note
--->
-
--
-
----
-```
-
-**Summary Table:**
-```markdown
-## Summary
-
-| Category                   | Passed | Failed | Skipped |
-|----------------------------|--------|--------|---------|
-| Completeness               | 0      | 0      | 0       |
-| Requirement Quality        | 0      | 0      | 0       |
-| Implementation Independence| 0      | 0      | 0       |
-| Success Criteria           | 0      | 0      | 0       |
-| Edge Case Coverage         | 0      | 0      | 0       |
-| Assumption Documentation   | 0      | 0      | 0       |
-| **Total**                  | 0      | 0      | 0       |
-
-**Status**: [ ] PASS / [ ] FAIL / [ ] BLOCKED
-
----
-
-## Instructions
-
-1. Check items as you validate them: `- [x]` for pass, leave unchecked for fail
-2. Add notes for any failed or concerning items
-3. Update the summary table when complete
-4. Mark final status based on results
-5. Address any failed items before running `/projspec:plan`
-```
-
-#### 7.3: Write Requirements Checklist
-
-Write the generated checklist to:
-```
-${FEATURE_DIR}/checklists/requirements.md
-```
-
-**File Content:**
-Combine all sections from 7.2 into a complete checklist document, replacing placeholders:
-- `[FEATURE_NAME]`: The feature name from the spec
-- `[DATE]`: Current date in YYYY-MM-DD format
-- `[Link to spec.md]`: Relative path `../spec.md`
-
-### Step 8: Final Summary
+### Step 7: Final Summary
 
 Present a comprehensive summary of all artifacts created and guide the user to next steps.
 
-#### 8.1: Report Created Artifacts
+#### 7.1: Report Created Artifacts
 
 Display a summary of what was created:
 
@@ -670,7 +530,6 @@ Display a summary of what was created:
 | File | Description | Status |
 |------|-------------|--------|
 | `spec.md` | Feature specification document | Created |
-| `checklists/requirements.md` | Spec quality validation checklist | Created |
 
 ### Specification Summary
 
@@ -681,7 +540,7 @@ Display a summary of what was created:
 - **Open Questions**: [count] pending
 ```
 
-#### 8.2: Determine Next Steps
+#### 7.2: Determine Next Steps
 
 Based on the specification state, recommend appropriate next steps:
 
@@ -703,12 +562,10 @@ Based on the specification state, recommend appropriate next steps:
 
 1. **Review the Specification**: Review `spec.md` to ensure it captures your requirements accurately
 
-2. **Validate with Checklist**: Use `checklists/requirements.md` to verify spec quality
-
-3. **Run `/projspec:plan`**: Generate the implementation plan with architecture and design decisions
+2. **Run `/projspec:plan`**: Generate the implementation plan with architecture and design decisions
 ```
 
-#### 8.3: Display Feature Context
+#### 7.3: Display Feature Context
 
 Provide context information for reference:
 
@@ -719,14 +576,12 @@ Provide context information for reference:
 - **Git Branch**: [BRANCH]
 - **Feature Directory**: [FEATURE_DIR]
 - **Spec File**: [FEATURE_DIR]/spec.md
-- **Checklist**: [FEATURE_DIR]/checklists/requirements.md
 ```
 
 ## Output
 
 Upon completion, this command will:
 1. Create a structured specification document at `${FEATURE_DIR}/spec.md`
-2. Generate a requirements checklist at `${FEATURE_DIR}/checklists/requirements.md`
-3. Report any clarification questions or ambiguities found
-4. Provide a summary of the generated specification
-5. Recommend next steps based on specification state
+2. Report any clarification questions or ambiguities found
+3. Provide a summary of the generated specification
+4. Recommend next steps based on specification state

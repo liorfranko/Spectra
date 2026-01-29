@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # projspec/scripts/create-new-feature.sh - Create a new feature branch and directory structure
-# Creates git branch (or worktree), specs directory, and checklists directory
+# Creates git branch (or worktree) and specs directory
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -42,7 +42,6 @@ Output:
   Creates:
     - Git branch: [###]-[short-name] (e.g., 003-user-auth)
     - Directory: specs/[###]-[short-name]/
-    - Directory: specs/[###]-[short-name]/checklists/
 
   JSON output format:
     {"FEATURE_ID": "003-user-auth", "FEATURE_DIR": "/path/to/specs/003-user-auth", "BRANCH": "003-user-auth"}
@@ -115,7 +114,6 @@ create_feature() {
     # Determine paths
     local specs_dir="${repo_root}/specs"
     local feature_dir="${specs_dir}/${feature_id}"
-    local checklists_dir="${feature_dir}/checklists"
 
     # Check if feature already exists
     if [[ -d "$feature_dir" ]]; then
@@ -158,12 +156,11 @@ create_feature() {
         # Update paths for worktree context
         specs_dir="${worktree_path}/specs"
         feature_dir="${specs_dir}/${feature_id}"
-        checklists_dir="${feature_dir}/checklists"
     fi
 
     # Create directory structure
-    mkdir -p "$checklists_dir" || {
-        error "Failed to create directory: $checklists_dir"
+    mkdir -p "$feature_dir" || {
+        error "Failed to create directory: $feature_dir"
     }
 
     # Output results

@@ -439,7 +439,6 @@ After any constitution change, check if dependent templates need synchronization
 
 Templates that reference constitution principles:
 - `plan-template.md` - Constitution Check section
-- `checklist-template.md` - Quality gates section
 - Any custom templates in the project
 
 **5.2: Notify about potential sync needs**
@@ -452,7 +451,6 @@ The constitution has been updated. The following templates may need review:
 | Template | Dependency | Action Needed |
 |----------|------------|---------------|
 | plan-template.md | Constitution Check section | Verify principle references |
-| checklist-template.md | Quality Gates | Verify gate alignment |
 
 **Note:** These templates will automatically use the updated constitution
 during their respective command executions.

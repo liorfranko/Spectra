@@ -1475,7 +1475,6 @@ This command will:
 **Optional commands before implementation:**
 
 - `/projspec:analyze` - Run cross-artifact consistency analysis
-- `/projspec:checklist` - Generate a requirements checklist
 - `/projspec:taskstoissues` - Convert tasks to GitHub issues
 ```
 

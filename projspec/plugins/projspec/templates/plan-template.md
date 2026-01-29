@@ -98,9 +98,7 @@ Separate documentation from source code locations.
 specs/[FEATURE_ID]/
 ├── spec.md              # Feature specification
 ├── plan.md              # This implementation plan
-├── tasks.md             # Generated task list
-└── checklists/          # Requirement checklists
-    └── [CHECKLIST_FILES]
+└── tasks.md             # Generated task list
 ```
 
 ### Source Code Layout
