@@ -119,11 +119,11 @@ Starting review...
 
 | Review Type | Agents Invoked |
 |-------------|----------------|
-| `full` | All agents: code-quality, security, performance, style, requirements |
+| `full` | All agents: code-quality, security, performance, style, requirements, **code-simplifier** |
 | `quick` | code-quality, critical-issues |
 | `security` | security-deep, vulnerability-scan |
 | `performance` | performance-analysis, resource-usage |
-| `style` | style-consistency, formatting |
+| `style` | style-consistency, formatting, **code-simplifier** |
 
 **2.2: Order agents by priority**
 
@@ -131,9 +131,10 @@ For `full` review, execute in order:
 1. **Critical Issues** - Blocking problems
 2. **Security** - Vulnerabilities and security concerns
 3. **Code Quality** - Logic, patterns, maintainability
-4. **Requirements** - Spec compliance
-5. **Performance** - Optimization opportunities
-6. **Style** - Formatting and conventions
+4. **Code Simplifier** - Complexity reduction and refactoring opportunities (HIGH PRIORITY)
+5. **Requirements** - Spec compliance
+6. **Performance** - Optimization opportunities
+7. **Style** - Formatting and conventions
 
 ### Step 3: Execute Review Agents
 
@@ -280,7 +281,84 @@ Task:
     Also note positive patterns worth keeping.
 ```
 
-**3.4: Requirements Compliance Agent** (if spec.md available)
+**3.4: Code Simplifier Agent (HIGH PRIORITY)**
+
+```markdown
+### Agent: Code Simplifier
+
+**This agent is critical for maintaining code quality.** Analyzing complexity and identifying simplification opportunities...
+
+**Checks:**
+- [ ] Cyclomatic complexity
+- [ ] Function length and nesting depth
+- [ ] Code duplication (DRY violations)
+- [ ] Over-engineering and unnecessary abstractions
+- [ ] Naming clarity and self-documenting code
+- [ ] Cognitive load per function
+```
+
+Spawn the code-simplifier agent using the Task tool:
+```yaml
+Task:
+  subagent_type: "projspec:code-simplifier"
+  description: "Code Simplification Review"
+  prompt: |
+    **IMPORTANT: This is a high-priority review step.**
+
+    Analyze the following code changes for complexity issues and simplification opportunities.
+
+    Focus on:
+    1. Functions with high cyclomatic complexity (>10)
+    2. Deeply nested conditionals (>3 levels)
+    3. Long functions (>50 lines)
+    4. Code duplication across the changes
+    5. Over-engineered abstractions that add complexity without value
+    6. Unclear naming that requires comments to understand
+    7. "Clever" code that sacrifices readability
+    8. Opportunities to apply guard clauses and early returns
+
+    DIFF:
+    {FULL_DIFF}
+
+    CHANGED FILES:
+    {CHANGED_FILES}
+
+    Report format:
+    ## Complexity Issues Found
+
+    ### Critical Complexity (Must Simplify)
+    - [file:line] Description - Why it's complex and how to simplify
+
+    ### High Complexity (Should Simplify)
+    - [file:line] Description - Suggested refactoring
+
+    ### Simplification Opportunities
+    - [file:line] Quick win that improves readability
+
+    ### Positive Patterns
+    - Note any well-structured, clean code worth preserving
+
+    If code is already clean and simple, report "Code complexity is acceptable. No simplification needed."
+```
+
+Parse agent response and categorize:
+```
+simplificationIssues = {
+  critical: [
+    { file: "path/file.ts", line: 42, issue: "Function has cyclomatic complexity of 25", suggestion: "Extract into smaller functions" }
+  ],
+  high: [
+    { file: "path/file.ts", line: 100, issue: "5 levels of nesting", suggestion: "Use guard clauses" }
+  ],
+  opportunities: [
+    { file: "path/file.ts", line: 150, issue: "Duplicate logic", suggestion: "Extract helper function" }
+  ]
+}
+```
+
+**Note:** Code simplification findings should be weighted heavily in the final review score. Complex code that passes other checks should still be flagged for improvement.
+
+**3.5: Requirements Compliance Agent** (if spec.md available)
 
 ```markdown
 ### Agent: Requirements Compliance
@@ -318,7 +396,7 @@ Task:
     - Missing: List any unimplemented requirements
 ```
 
-**3.5: Performance Review Agent**
+**3.6: Performance Review Agent**
 
 ```markdown
 ### Agent: Performance Review
@@ -358,7 +436,7 @@ Task:
     - Suggestion: How to optimize
 ```
 
-**3.6: Style Consistency Agent**
+**3.7: Style Consistency Agent**
 
 ```markdown
 ### Agent: Style Consistency
@@ -408,7 +486,12 @@ reviewResults = {
   medium: [...],          // Recommended to fix
   low: [...],             // Nice to fix
   suggestions: [...],     // Optional improvements
-  positives: [...]        // Good patterns to keep
+  positives: [...],       // Good patterns to keep
+  simplification: {       // Code complexity issues (HIGH PRIORITY)
+    critical: [...],      // Must simplify before merge
+    high: [...],          // Should simplify
+    opportunities: [...]  // Quick wins for readability
+  }
 }
 ```
 
@@ -421,6 +504,10 @@ reviewScore = {
   medium: qualityIssues.length + performanceIssues.length,
   low: styleIssues.length,
 
+  // Code simplification issues (weighted heavily)
+  simplificationCritical: simplificationIssues.critical.length,
+  simplificationHigh: simplificationIssues.high.length,
+
   // Aggregate score (0-100)
   overallScore: calculateScore(...)
 }
@@ -429,10 +516,18 @@ reviewScore = {
 Score calculation:
 - Start at 100
 - -20 for each critical issue
+- **-15 for each critical simplification issue (complexity debt is expensive)**
 - -10 for each high issue
+- **-8 for each high simplification issue**
 - -5 for each medium issue
 - -1 for each low issue
 - Minimum score: 0
+
+**Note:** Code simplification issues are weighted heavily because complex code:
+- Is harder to maintain and debug
+- Contains more hidden bugs
+- Slows down future development
+- Makes onboarding difficult
 
 **4.3: Determine review verdict**
 
@@ -462,7 +557,9 @@ Score calculation:
 | Severity | Count | Status |
 |----------|-------|--------|
 | Critical | {count} | {Must Fix} |
+| **Complexity Critical** | {simplificationCritical} | **Must Simplify** |
 | High | {count} | {Should Fix} |
+| **Complexity High** | {simplificationHigh} | **Should Simplify** |
 | Medium | {count} | {Recommended} |
 | Low | {count} | {Optional} |
 
@@ -510,6 +607,53 @@ These issues should be addressed before merge.
 **Suggestion:** {issue.suggestion}
 
 {End for}
+
+---
+{End if}
+
+{If simplification issues exist:}
+## Code Simplification Required (HIGH PRIORITY)
+
+**Complex code is technical debt.** These issues significantly impact maintainability and should be addressed.
+
+{If simplificationIssues.critical exist:}
+### Critical Complexity (Must Simplify)
+
+These complexity issues are blocking and must be resolved before merge:
+
+{For each simplificationIssues.critical:}
+#### {index}. {issue.file}:{issue.line}
+
+**Problem:** {issue.issue}
+
+**Impact:** High complexity increases bug risk and maintenance cost
+
+**Suggested Fix:**
+{issue.suggestion}
+
+{End for}
+{End if}
+
+{If simplificationIssues.high exist:}
+### High Complexity (Should Simplify)
+
+These issues should be addressed for long-term code health:
+
+{For each simplificationIssues.high:}
+- **`{issue.file}:{issue.line}`** - {issue.issue}
+  - Fix: {issue.suggestion}
+{End for}
+{End if}
+
+{If simplificationIssues.opportunities exist:}
+### Quick Wins
+
+Easy improvements that enhance readability:
+
+{For each simplificationIssues.opportunities:}
+- `{issue.file}:{issue.line}` - {issue.issue}
+{End for}
+{End if}
 
 ---
 {End if}
