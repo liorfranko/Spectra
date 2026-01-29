@@ -373,7 +373,10 @@ Parse the `$ARGUMENTS` to determine execution mode:
   - Total commits made (should match tasks completed)
   - Verification: "X tasks = X commits ✓" or warning if mismatch
   - Summary of completed work by phase
-  - Next suggested step: `/projspec:review-pr`
+  - Next steps in the workflow:
+    1. `/projspec:review-pr` - Run code review
+    2. `/projspec:accept` - Validate feature readiness
+    3. `/projspec:merge --push` - Merge to main and cleanup
 
 ## Important Notes
 

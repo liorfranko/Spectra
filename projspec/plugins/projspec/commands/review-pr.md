@@ -736,14 +736,20 @@ Issues found are minor. You can:
 1. Create PR now and address in follow-up
 2. Fix remaining issues then create PR
 
-Create PR with: `/commit-push-pr`
+**Next Steps:**
+1. Run `/projspec:accept` to validate feature readiness
+2. Run `/projspec:merge --push` to merge and cleanup
+
 
 {Else:}
 ### Approved
 
-Code looks good! Ready to create PR.
+Code looks good! Ready to merge.
 
-Create PR with: `/commit-push-pr`
+**Next Steps:**
+1. Run `/projspec:accept` to validate feature readiness
+2. Run `/projspec:merge --push` to merge and cleanup
+
 {End if}
 ```
 

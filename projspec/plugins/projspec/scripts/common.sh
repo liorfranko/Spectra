@@ -246,3 +246,141 @@ slugify() {
     # Ensure at least 2 words worth of content (or return as-is if single word)
     printf '%s\n' "$slug"
 }
+
+# =============================================================================
+# Worktree Helper Functions
+# =============================================================================
+
+# Check if current directory is inside a git worktree
+# Returns: "true" if in a worktree, "false" otherwise
+# Usage: if [[ "$(is_worktree)" == "true" ]]; then ... fi
+is_worktree() {
+    local git_dir
+    git_dir=$(git rev-parse --git-dir 2>/dev/null) || {
+        echo "false"
+        return
+    }
+
+    # If git-dir contains "worktrees", we're in a worktree
+    if [[ "$git_dir" == *"/worktrees/"* ]] || [[ "$git_dir" == *"/.git/worktrees/"* ]]; then
+        echo "true"
+    else
+        echo "false"
+    fi
+}
+
+# Get the main repository path from a worktree
+# Returns: Path to main repository, or current repo root if not in worktree
+# Usage: main_repo=$(get_main_repo_from_worktree)
+get_main_repo_from_worktree() {
+    local git_dir
+    git_dir=$(git rev-parse --git-dir 2>/dev/null) || {
+        error "Not in a git repository"
+    }
+
+    if [[ "$(is_worktree)" == "true" ]]; then
+        # Extract main repo path from gitdir file or path
+        # Worktree git-dir format: /path/to/main/.git/worktrees/branch-name
+        local main_git_dir
+        main_git_dir=$(echo "$git_dir" | sed 's|/worktrees/[^/]*$||')
+        # Remove .git suffix to get repo root
+        echo "${main_git_dir%/.git}"
+    else
+        git rev-parse --show-toplevel
+    fi
+}
+
+# Get the worktree path for a given branch
+# Returns: Worktree path if exists, empty string otherwise
+# Usage: wt_path=$(get_worktree_for_branch "001-my-feature")
+get_worktree_for_branch() {
+    local branch_name="$1"
+    git worktree list --porcelain 2>/dev/null | \
+        awk -v branch="$branch_name" '
+            /^worktree / { wt = substr($0, 10) }
+            /^branch / {
+                b = substr($0, 8)
+                gsub(/^refs\/heads\//, "", b)
+                if (b == branch) print wt
+            }
+        '
+}
+
+# Remove a worktree safely
+# Usage: remove_worktree "/path/to/worktree"
+# Returns: 0 on success, 1 on failure
+remove_worktree() {
+    local worktree_path="$1"
+    local force="${2:-false}"
+
+    if [[ ! -d "$worktree_path" ]]; then
+        warn "Worktree path does not exist: $worktree_path"
+        return 0
+    fi
+
+    local force_flag=""
+    [[ "$force" == "true" ]] && force_flag="--force"
+
+    if git worktree remove "$worktree_path" $force_flag 2>/dev/null; then
+        return 0
+    else
+        # Fallback: manual cleanup
+        warn "git worktree remove failed, attempting manual cleanup"
+        rm -rf "$worktree_path" 2>/dev/null || return 1
+        git worktree prune 2>/dev/null || true
+        return 0
+    fi
+}
+
+# Check if we should warn about being in wrong context (main vs worktree)
+# Usage: check_worktree_context "implement"  # warns if not in worktree for implement
+check_worktree_context() {
+    local command="$1"
+    local in_worktree
+    in_worktree=$(is_worktree)
+
+    case "$command" in
+        specify|constitution)
+            # These should typically run from main repo
+            if [[ "$in_worktree" == "true" ]]; then
+                warn "Running '$command' from a worktree. Consider running from main repository."
+            fi
+            ;;
+        implement|review|accept)
+            # These should typically run from worktree
+            if [[ "$in_worktree" == "false" ]]; then
+                local branch
+                branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+                if [[ "$branch" =~ ^[0-9]{3}-[a-z0-9-]+$ ]]; then
+                    local wt_path
+                    wt_path=$(get_worktree_for_branch "$branch")
+                    if [[ -n "$wt_path" ]]; then
+                        warn "A worktree exists for branch '$branch' at: $wt_path"
+                        warn "Consider running '$command' from the worktree: cd $wt_path"
+                    fi
+                fi
+            fi
+            ;;
+    esac
+}
+
+# Get base branch (main/master) for the repository
+# Usage: base=$(get_base_branch)
+get_base_branch() {
+    # Try to get from remote HEAD
+    local base
+    base=$(git remote show origin 2>/dev/null | grep 'HEAD branch' | cut -d' ' -f5)
+
+    if [[ -z "$base" ]]; then
+        # Fallback: check if main or master exists
+        if git rev-parse --verify main &>/dev/null; then
+            base="main"
+        elif git rev-parse --verify master &>/dev/null; then
+            base="master"
+        else
+            base="main"  # Default
+        fi
+    fi
+
+    echo "$base"
+}
