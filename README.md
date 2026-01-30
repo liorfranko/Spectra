@@ -1,10 +1,10 @@
 <div align="center">
 
-# 📋 ProjSpec
+# 📋 Spectra
 
 ### Specification-Driven Development for Claude Code
 
-[![GitHub stars](https://img.shields.io/github/stars/liorfranko/projspec?style=flat-square&logo=github)](https://github.com/liorfranko/projspec/stargazers)
+[![GitHub stars](https://img.shields.io/github/stars/liorfranko/spectra?style=flat-square&logo=github)](https://github.com/liorfranko/spectra/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Plugin-7C3AED?style=flat-square&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=)](https://github.com/anthropics/claude-code)
 [![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Linux-lightgrey?style=flat-square)]()
@@ -13,13 +13,13 @@
 
 🌳 **Parallel feature development** with automatic git worktree isolation
 
-[Getting Started](#-quick-start) · [Commands](#-commands) · [Worktrees](#-git-worktree-workflow) · [Docs](projspec/README.md)
+[Getting Started](#-quick-start) · [Commands](#-commands) · [Worktrees](#-git-worktree-workflow) · [Docs](spectra/README.md)
 
 </div>
 
 ---
 
-## 🎯 Why ProjSpec?
+## 🎯 Why Spectra?
 
 | Problem | Solution |
 |---------|----------|
@@ -29,7 +29,7 @@
 | Manual task breakdown is tedious | **Automated task generation** with dependency ordering |
 | Can't work on multiple features at once | **Git worktrees** isolate each feature with its own Claude session |
 
-> 🌳 **Worktree-First Development**: Each `/projspec.specify` creates an isolated git worktree. Work on Feature A while Feature B is in review. Start fresh Claude sessions per feature. No more stashing or context pollution. [Learn more →](#-git-worktree-workflow)
+> 🌳 **Worktree-First Development**: Each `/spectra.specify` creates an isolated git worktree. Work on Feature A while Feature B is in review. Start fresh Claude sessions per feature. No more stashing or context pollution. [Learn more →](#-git-worktree-workflow)
 
 ---
 
@@ -38,26 +38,26 @@
 ```mermaid
 flowchart TD
     subgraph setup["Project Setup (Once)"]
-        constitution["/projspec.constitution<br/>Define principles"]
+        constitution["/spectra.constitution<br/>Define principles"]
     end
 
     subgraph core["Core Development Flow"]
-        specify["/projspec.specify<br/>Create feature spec"]
-        clarify["/projspec.clarify<br/>(Optional)"]
-        plan["/projspec.plan<br/>Design implementation"]
-        analyze["/projspec.analyze<br/>(Optional)"]
-        tasks["/projspec.tasks<br/>Generate task list"]
-        implement["/projspec.implement<br/>Execute tasks"]
+        specify["/spectra.specify<br/>Create feature spec"]
+        clarify["/spectra.clarify<br/>(Optional)"]
+        plan["/spectra.plan<br/>Design implementation"]
+        analyze["/spectra.analyze<br/>(Optional)"]
+        tasks["/spectra.tasks<br/>Generate task list"]
+        implement["/spectra.implement<br/>Execute tasks"]
     end
 
     subgraph delivery["Delivery"]
-        review["/projspec.review-pr<br/>Code review"]
-        accept["/projspec.accept<br/>Validate readiness"]
-        merge["/projspec.merge<br/>Merge & cleanup"]
+        review["/spectra.review-pr<br/>Code review"]
+        accept["/spectra.accept<br/>Validate readiness"]
+        merge["/spectra.merge<br/>Merge & cleanup"]
     end
 
     subgraph lifecycle["Lifecycle"]
-        cancel["/projspec.cancel<br/>Cancel feature"]
+        cancel["/spectra.cancel<br/>Cancel feature"]
     end
 
     constitution -.-> specify
@@ -95,7 +95,7 @@ flowchart TD
 Install directly in Claude Code:
 
 ```bash
-/plugin install projspec@claude-plugin-directory
+/plugin install spectra@claude-plugin-directory
 ```
 
 Or browse available plugins:
@@ -110,29 +110,29 @@ Or browse available plugins:
 
 ```bash
 # 1. Set up project principles (optional but recommended)
-/projspec.constitution
+/spectra.constitution
 
 # 2. Create a feature specification
-/projspec.specify implement user authentication
+/spectra.specify implement user authentication
 
 # 3. Generate implementation plan
-/projspec.plan
+/spectra.plan
 
 # 4. Generate tasks
-/projspec.tasks
+/spectra.tasks
 
 # 5. Implement (choose execution mode)
-/projspec.implement           # Agent mode (default) - isolated context per task
-/projspec.implement --direct  # Direct mode - faster, sequential execution
+/spectra.implement           # Agent mode (default) - isolated context per task
+/spectra.implement --direct  # Direct mode - faster, sequential execution
 
 # 6. Review code quality
-/projspec.review-pr
+/spectra.review-pr
 
 # 7. Validate readiness
-/projspec.accept
+/spectra.accept
 
 # 8. Merge and cleanup
-/projspec.merge --push
+/spectra.merge --push
 ```
 
 ---
@@ -143,22 +143,22 @@ Or browse available plugins:
 
 | Command | Description |
 |---------|-------------|
-| `/projspec.specify` | Create feature spec with requirements and success criteria |
-| `/projspec.clarify` | Ask targeted questions to resolve ambiguous areas |
-| `/projspec.plan` | Generate implementation plan with architecture decisions |
-| `/projspec.tasks` | Create dependency-ordered task breakdown |
-| `/projspec.implement` | Execute tasks with agent or direct mode |
-| `/projspec.review-pr` | Run 6 specialized agents for code review |
-| `/projspec.accept` | Validate feature readiness (tasks, docs, tests) |
-| `/projspec.merge` | Merge feature branch and cleanup worktree |
+| `/spectra.specify` | Create feature spec with requirements and success criteria |
+| `/spectra.clarify` | Ask targeted questions to resolve ambiguous areas |
+| `/spectra.plan` | Generate implementation plan with architecture decisions |
+| `/spectra.tasks` | Create dependency-ordered task breakdown |
+| `/spectra.implement` | Execute tasks with agent or direct mode |
+| `/spectra.review-pr` | Run 6 specialized agents for code review |
+| `/spectra.accept` | Validate feature readiness (tasks, docs, tests) |
+| `/spectra.merge` | Merge feature branch and cleanup worktree |
 
 ### Utilities
 
 | Command | Description |
 |---------|-------------|
-| `/projspec.analyze` | Cross-artifact consistency analysis |
-| `/projspec.constitution` | Define project principles and constraints |
-| `/projspec.cancel` | Cancel feature and cleanup resources |
+| `/spectra.analyze` | Cross-artifact consistency analysis |
+| `/spectra.constitution` | Define project principles and constraints |
+| `/spectra.cancel` | Cancel feature and cleanup resources |
 
 <details>
 <summary><strong>🤖 Specialized Review Agents</strong></summary>
@@ -174,17 +174,17 @@ Or browse available plugins:
 
 </details>
 
-👉 **[Full Documentation](projspec/README.md)** — All commands with examples, agent details, and workflow diagrams.
+👉 **[Full Documentation](spectra/README.md)** — All commands with examples, agent details, and workflow diagrams.
 
 ---
 
 ## 📁 Repository Structure
 
 ```
-projspec/
-├── projspec/                    # The Claude Code plugin
-│   └── plugins/projspec/
-│       ├── commands/            # Slash commands (/projspec.*)
+spectra/
+├── spectra/                    # The Claude Code plugin
+│   └── plugins/spectra/
+│       ├── commands/            # Slash commands (/spectra.*)
 │       ├── agents/              # Specialized review agents
 │       ├── templates/           # Spec, plan, task templates
 │       ├── scripts/             # Helper bash scripts
@@ -197,7 +197,7 @@ projspec/
 
 ## 🌳 Git Worktree Workflow
 
-ProjSpec uses **git worktrees** to isolate feature development. Each feature gets its own working directory with a dedicated branch, enabling powerful parallel development capabilities.
+Spectra uses **git worktrees** to isolate feature development. Each feature gets its own working directory with a dedicated branch, enabling powerful parallel development capabilities.
 
 ### Why Worktrees?
 
@@ -211,7 +211,7 @@ ProjSpec uses **git worktrees** to isolate feature development. Each feature get
 
 ### How It Works
 
-When you run `/projspec.specify`, a new worktree is automatically created:
+When you run `/spectra.specify`, a new worktree is automatically created:
 
 ```
 your-repo/
@@ -240,7 +240,7 @@ Best when working on multiple features simultaneously or when you want maximum i
 
 ```bash
 # 1. Start in main repo, create the feature
-/projspec.specify implement user authentication
+/spectra.specify implement user authentication
 
 # 2. Navigate to the new worktree
 cd worktrees/001-user-auth
@@ -249,11 +249,11 @@ cd worktrees/001-user-auth
 claude
 
 # 4. Continue the workflow in the worktree
-/projspec.plan
-/projspec.tasks
-/projspec.implement
+/spectra.plan
+/spectra.tasks
+/spectra.implement
 # ... complete the feature ...
-/projspec.merge --push
+/spectra.merge --push
 ```
 
 **Advantages:**
@@ -271,19 +271,19 @@ Best for sequential feature development or when you prefer staying in one termin
 
 ```bash
 # 1. Start in main repo
-/projspec.specify implement user authentication
+/spectra.specify implement user authentication
 
 # Claude Code automatically detects the worktree and can work from main repo
 # Helper scripts handle navigation behind the scenes
 
 # 2. Continue workflow - Claude knows to work in the worktree context
-/projspec.plan
-/projspec.tasks
-/projspec.implement
-/projspec.merge --push
+/spectra.plan
+/spectra.tasks
+/spectra.implement
+/spectra.merge --push
 
 # 3. Start next feature
-/projspec.specify add dashboard analytics
+/spectra.specify add dashboard analytics
 ```
 
 **Advantages:**
@@ -297,17 +297,17 @@ Best for sequential feature development or when you prefer staying in one termin
 ### Worktree Lifecycle
 
 ```
-/projspec.specify  →  Creates worktree + branch
+/spectra.specify  →  Creates worktree + branch
         ↓
    Development      →  All work happens in worktree
         ↓
-/projspec.merge    →  Merges to main, removes worktree + branch
+/spectra.merge    →  Merges to main, removes worktree + branch
 ```
 
 Or if you decide not to proceed:
 
 ```
-/projspec.cancel   →  Removes worktree + branch, optionally keeps specs
+/spectra.cancel   →  Removes worktree + branch, optionally keeps specs
 ```
 
 ---

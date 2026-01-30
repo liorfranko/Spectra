@@ -54,7 +54,7 @@ jobs:
           echo "Latest tag: $LATEST_TAG"
 
           # Check for changes in the plugin directory since the last tag
-          CHANGED_FILES=$(git diff --name-only "$LATEST_TAG" HEAD -- projspec/plugins/projspec/)
+          CHANGED_FILES=$(git diff --name-only "$LATEST_TAG" HEAD -- spectra/plugins/spectra/)
 
           if [ -n "$CHANGED_FILES" ]; then
             echo "Plugin changes detected:"
@@ -130,19 +130,19 @@ jobs:
         run: |
           jq --arg version "${{ steps.new.outputs.version }}" \
             '.version = $version' \
-            projspec/plugins/projspec/.claude-plugin/plugin.json > tmp.json
-          mv tmp.json projspec/plugins/projspec/.claude-plugin/plugin.json
+            spectra/plugins/spectra/.claude-plugin/plugin.json > tmp.json
+          mv tmp.json spectra/plugins/spectra/.claude-plugin/plugin.json
 
       - name: Verify updates
         run: |
           echo "marketplace.json version:"
           jq -r '.plugins[0].version' .claude-plugin/marketplace.json
           echo "plugin.json version:"
-          jq -r '.version' projspec/plugins/projspec/.claude-plugin/plugin.json
+          jq -r '.version' spectra/plugins/spectra/.claude-plugin/plugin.json
 
       - name: Commit version bump
         run: |
-          git add .claude-plugin/marketplace.json projspec/plugins/projspec/.claude-plugin/plugin.json
+          git add .claude-plugin/marketplace.json spectra/plugins/spectra/.claude-plugin/plugin.json
           git commit -m "Release v${{ steps.new.outputs.version }}"
 
       - name: Create tag

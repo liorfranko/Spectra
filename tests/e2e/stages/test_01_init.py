@@ -1,7 +1,7 @@
-"""Stage 1 tests for projspec plugin auto-discovery.
+"""Stage 1 tests for spectra plugin auto-discovery.
 
 This module contains end-to-end tests that verify Claude Code correctly
-discovers and loads the projspec plugin from the .claude/ directory.
+discovers and loads the spectra plugin from the .claude/ directory.
 These tests are the first stage in the E2E test pipeline and must pass
 before subsequent stages can run.
 """
@@ -13,23 +13,23 @@ from ..helpers import ClaudeRunner, FileVerifier
 
 @pytest.mark.e2e
 @pytest.mark.stage(1)
-class TestProjspecInit:
-    """Test class for verifying projspec plugin auto-discovery.
+class TestSpectraInit:
+    """Test class for verifying spectra plugin auto-discovery.
 
     Tests in this class verify that Claude Code correctly discovers
-    the projspec plugin and that the plugin structure is properly
+    the spectra plugin and that the plugin structure is properly
     configured, including:
     - Plugin configuration in .claude/ directory
     - Plugin commands are available
 
-    Note: The .projspec/ directory and templates are created by the
+    Note: The .spectra/ directory and templates are created by the
     constitution command and are tested in Stage 2.
     """
 
     def test_01_plugin_discovered(self, claude_runner: ClaudeRunner) -> None:
-        """Test that Claude Code discovers the projspec plugin.
+        """Test that Claude Code discovers the spectra plugin.
 
-        This test verifies that Claude Code can discover the projspec
+        This test verifies that Claude Code can discover the spectra
         plugin and that the plugin's commands are available. The plugin
         is auto-discovered from the .claude/ directory.
 
@@ -37,7 +37,7 @@ class TestProjspecInit:
             claude_runner: ClaudeRunner fixture configured for the test project.
         """
         result = claude_runner.run(
-            prompt="List available projspec commands. Just confirm that /projspec:specify, /projspec:plan, and /projspec:tasks are available.",
+            prompt="List available spectra commands. Just confirm that /spectra:specify, /spectra:plan, and /spectra:tasks are available.",
             stage=1,
             log_name="test_plugin_discovered",
         )

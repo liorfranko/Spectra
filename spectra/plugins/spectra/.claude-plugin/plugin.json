@@ -1,0 +1,9 @@
+{
+  "name": "spectra",
+  "version": "2.0.0",
+  "description": "Specification-driven development workflow automation",
+  "author": {
+    "name": "liorfr",
+    "email": "lior@example.com"
+  }
+}

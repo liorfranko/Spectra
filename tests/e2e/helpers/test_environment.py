@@ -111,8 +111,8 @@ class E2EProject:
         # Initialize git repository
         self._init_git_repository()
 
-        # Locate projspec plugin directory
-        self._locate_projspec_plugin()
+        # Locate spectra plugin directory
+        self._locate_spectra_plugin()
 
         return self.project_path
 
@@ -158,7 +158,7 @@ class E2EProject:
 
         # Configure git user for commits (local to this repo)
         subprocess.run(
-            ["git", "config", "user.email", "e2e-test@projspec.local"],
+            ["git", "config", "user.email", "e2e-test@spectra.local"],
             cwd=self.project_path,
             capture_output=True,
             text=True,
@@ -191,12 +191,12 @@ class E2EProject:
                 f"Failed to create initial commit: {result.stderr}"
             )
 
-    def _locate_projspec_plugin(self) -> None:
-        """Locate and install the projspec plugin into the test project.
+    def _locate_spectra_plugin(self) -> None:
+        """Locate and install the spectra plugin into the test project.
 
-        This method finds the projspec plugin from the local development
-        path and copies the necessary directories (.projspec/, .claude/)
-        to the test project so Claude Code can use projspec commands.
+        This method finds the spectra plugin from the local development
+        path and copies the necessary directories (.spectra/, .claude/)
+        to the test project so Claude Code can use spectra commands.
 
         Raises:
             RuntimeError: If plugin directory cannot be found.
@@ -204,41 +204,41 @@ class E2EProject:
         if self.project_path is None:
             return
 
-        # Determine the projspec plugin path
-        # The plugin is located at the repo root /projspec directory
+        # Determine the spectra plugin path
+        # The plugin is located at the repo root /spectra directory
         # We need to find the repo root by going up from tests_root
         repo_root = self.tests_root.parent
-        plugin_path = repo_root / "projspec"
+        plugin_path = repo_root / "spectra"
 
         # If running in a worktree, the plugin path may be different
         # Check if the plugin exists at the expected path
         if not plugin_path.exists():
             # Try to find it relative to the worktree structure
-            # worktrees/XXX/tests -> ../../projspec
-            potential_path = self.tests_root.parent.parent.parent / "projspec"
+            # worktrees/XXX/tests -> ../../spectra
+            potential_path = self.tests_root.parent.parent.parent / "spectra"
             if potential_path.exists():
                 plugin_path = potential_path
 
         if not plugin_path.exists():
             raise RuntimeError(
-                f"Could not find projspec plugin at {plugin_path}. "
-                "Ensure the projspec plugin directory exists."
+                f"Could not find spectra plugin at {plugin_path}. "
+                "Ensure the spectra plugin directory exists."
             )
 
         # --plugin-dir expects the parent directory containing plugin folders
-        # The plugin is at projspec/plugins/projspec/, so we pass projspec/plugins/
+        # The plugin is at spectra/plugins/spectra/, so we pass spectra/plugins/
         self.plugin_dir = plugin_path / "plugins"
 
         # Copy plugin directories to test project
-        # The plugin structure contains .projspec/ in the main repo
-        # and plugin config in projspec/plugins/projspec/
+        # The plugin structure contains .spectra/ in the main repo
+        # and plugin config in spectra/plugins/spectra/
         main_repo_root = plugin_path.parent
 
-        # Copy .projspec/ from main repo to test project
-        source_projspec = main_repo_root / ".projspec"
-        if source_projspec.exists():
-            dest_projspec = self.project_path / ".projspec"
-            shutil.copytree(source_projspec, dest_projspec, dirs_exist_ok=True)
+        # Copy .spectra/ from main repo to test project
+        source_spectra = main_repo_root / ".spectra"
+        if source_spectra.exists():
+            dest_spectra = self.project_path / ".spectra"
+            shutil.copytree(source_spectra, dest_spectra, dirs_exist_ok=True)
 
         # Copy .claude/ from main repo to test project (if exists)
         source_claude = main_repo_root / ".claude"

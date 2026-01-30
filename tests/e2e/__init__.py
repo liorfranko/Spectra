@@ -1,5 +1,5 @@
-"""E2E test package for projspec.
+"""E2E test package for spectra.
 
 This package contains end-to-end tests that validate the complete
-projspec workflow using Claude Code subprocess execution.
+spectra workflow using Claude Code subprocess execution.
 """
