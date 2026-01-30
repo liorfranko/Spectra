@@ -11,7 +11,9 @@
 
 **Turn feature ideas into working code through guided specification, planning, and implementation.**
 
-[Getting Started](#-quick-start) · [Commands](#-commands) · [Documentation](projspec/README.md)
+🌳 **Parallel feature development** with automatic git worktree isolation
+
+[Getting Started](#-quick-start) · [Commands](#-commands) · [Worktrees](#-git-worktree-workflow) · [Docs](projspec/README.md)
 
 </div>
 
@@ -25,6 +27,9 @@
 | Features drift from original requirements | **Explicit traceability** from spec → plan → tasks → code |
 | Code quality varies without review | **6 specialized agents** review before PR creation |
 | Manual task breakdown is tedious | **Automated task generation** with dependency ordering |
+| Can't work on multiple features at once | **Git worktrees** isolate each feature with its own Claude session |
+
+> 🌳 **Worktree-First Development**: Each `/projspec.specify` creates an isolated git worktree. Work on Feature A while Feature B is in review. Start fresh Claude sessions per feature. No more stashing or context pollution. [Learn more →](#-git-worktree-workflow)
 
 ---
 
