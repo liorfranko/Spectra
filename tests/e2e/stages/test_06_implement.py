@@ -1,6 +1,6 @@
-"""Stage 6 tests for /projspec:implement command.
+"""Stage 6 tests for /spectra:implement command.
 
-This module contains end-to-end tests that verify the /projspec:implement
+This module contains end-to-end tests that verify the /spectra:implement
 command works correctly, executing tasks and producing implementation
 artifacts.
 """
@@ -12,17 +12,17 @@ from ..helpers import ClaudeRunner, FileVerifier, GitVerifier
 
 @pytest.mark.e2e
 @pytest.mark.stage(6)
-class TestProjspecImplement:
-    """Test class for /projspec:implement command functionality.
+class TestSpectraImplement:
+    """Test class for /spectra:implement command functionality.
 
     Tests in this class verify that the implement command correctly
     executes the generated tasks and produces implementation artifacts.
     """
 
     def test_01_implement_runs_successfully(self, claude_runner: ClaudeRunner) -> None:
-        """Test that /projspec:implement command executes successfully.
+        """Test that /spectra:implement command executes successfully.
 
-        This test runs the /projspec:implement command on the tasks
+        This test runs the /spectra:implement command on the tasks
         generated in stage 5 and verifies that it completes without errors.
         Note: This stage has a longer timeout due to the implementation work.
 
@@ -30,7 +30,7 @@ class TestProjspecImplement:
             claude_runner: Fixture providing a configured ClaudeRunner instance.
         """
         prompt = (
-            "/projspec:implement --yes --direct. "
+            "/spectra:implement --yes --direct. "
             "Important: The --yes flag means you MUST proceed without asking for confirmation. "
             "Bypass all checklist confirmations and execute tasks immediately."
         )
@@ -42,7 +42,7 @@ class TestProjspecImplement:
         )
 
         assert result.success, (
-            f"/projspec:implement command failed.\n"
+            f"/spectra:implement command failed.\n"
             f"Exit code: {result.exit_code}\n"
             f"Timed out: {result.timed_out}\n"
             f"Stderr: {result.stderr}\n"
@@ -52,9 +52,9 @@ class TestProjspecImplement:
     def test_02_implement_produces_code(
         self, git_verifier: GitVerifier
     ) -> None:
-        """Test that /projspec:implement produces implementation artifacts.
+        """Test that /spectra:implement produces implementation artifacts.
 
-        The /projspec:implement command should create new commits with
+        The /spectra:implement command should create new commits with
         implementation code. This test verifies that commits were made
         during the implementation process.
 

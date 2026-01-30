@@ -1,9 +1,0 @@
-{
-  "name": "projspec",
-  "version": "1.0.12",
-  "description": "Specification-driven development workflow automation",
-  "author": {
-    "name": "liorfr",
-    "email": "lior@example.com"
-  }
-}

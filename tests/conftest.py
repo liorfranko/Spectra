@@ -1,5 +1,5 @@
 """
-Global pytest configuration for projspec tests.
+Global pytest configuration for spectra tests.
 
 This module provides shared pytest configuration, fixtures, and hooks
 that apply to all test types across the test suite.

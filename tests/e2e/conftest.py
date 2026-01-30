@@ -1,7 +1,7 @@
-"""E2E test configuration for projspec.
+"""E2E test configuration for spectra.
 
 This module provides shared fixtures, configuration, and utilities
-for end-to-end tests that validate the complete projspec workflow
+for end-to-end tests that validate the complete spectra workflow
 using Claude Code subprocess execution.
 
 Pytest Markers for E2E Tests

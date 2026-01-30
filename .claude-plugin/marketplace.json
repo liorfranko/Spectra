@@ -1,6 +1,6 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
-  "name": "projspec",
+  "name": "spectra",
   "description": "Specification-driven development workflow automation",
   "owner": {
     "name": "liorfr",
@@ -8,14 +8,14 @@
   },
   "plugins": [
     {
-      "name": "projspec",
+      "name": "spectra",
       "description": "Specification-driven development workflow automation",
-      "version": "1.0.12",
+      "version": "2.0.0",
       "author": {
         "name": "liorfr",
         "email": "lior@example.com"
       },
-      "source": "./projspec/plugins/projspec",
+      "source": "./spectra/plugins/spectra",
       "category": "development"
     }
   ]

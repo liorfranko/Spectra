@@ -1,7 +1,7 @@
 """
-projspec test suite.
+spectra test suite.
 
-This package contains all tests for the projspec project, including:
+This package contains all tests for the spectra project, including:
 - Unit tests
 - Integration tests
 - End-to-end (E2E) tests for Claude Code plugin workflows
