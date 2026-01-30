@@ -25,10 +25,10 @@ Source: plan.md, spec.md, data-model.md, research.md
 
 This phase performs the fundamental directory restructuring using git mv to preserve history.
 
-- [ ] T001 Rename root projspec/ directory to spectra/ using git mv (projspec/ → spectra/)
-- [ ] T002 Rename nested plugins/projspec/ to plugins/spectra/ using git mv (spectra/plugins/projspec/ → spectra/plugins/spectra/)
-- [ ] T003 Verify git history is preserved for renamed directories (git log verification)
-- [ ] T004 CHECKPOINT: Verify directory structure matches spec
+- [x] T001 Rename root projspec/ directory to spectra/ using git mv (projspec/ → spectra/)
+- [x] T002 Rename nested plugins/projspec/ to plugins/spectra/ using git mv (spectra/plugins/projspec/ → spectra/plugins/spectra/)
+- [x] T003 Verify git history is preserved for renamed directories (git log verification)
+- [x] T004 CHECKPOINT: Verify directory structure matches spec
 
 ---
 
@@ -36,10 +36,10 @@ This phase performs the fundamental directory restructuring using git mv to pres
 
 Update the plugin manifest to reflect the new name and version.
 
-- [ ] T005 [US1] Update plugin.json name field from "projspec" to "spectra" (spectra/plugins/spectra/.claude-plugin/plugin.json)
-- [ ] T006 [US1] Update plugin.json version to 2.0.0 for breaking change (spectra/plugins/spectra/.claude-plugin/plugin.json)
-- [ ] T007 [US1] Verify plugin.json is valid JSON after changes (spectra/plugins/spectra/.claude-plugin/plugin.json)
-- [ ] T008 CHECKPOINT: Verify plugin manifest is correct
+- [x] T005 [US1] Update plugin.json name field from "projspec" to "spectra" (spectra/plugins/spectra/.claude-plugin/plugin.json)
+- [x] T006 [US1] Update plugin.json version to 2.0.0 for breaking change (spectra/plugins/spectra/.claude-plugin/plugin.json)
+- [x] T007 [US1] Verify plugin.json is valid JSON after changes (spectra/plugins/spectra/.claude-plugin/plugin.json)
+- [x] T008 CHECKPOINT: Verify plugin manifest is correct
 
 ---
 
@@ -48,22 +48,22 @@ Update the plugin manifest to reflect the new name and version.
 Update all 12 command files to use the new /spectra: prefix.
 
 ### Entity Tasks
-- [ ] T009 [US1] Update accept.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/accept.md)
-- [ ] T010 [US1] Update analyze.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/analyze.md)
-- [ ] T011 [US1] Update cancel.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/cancel.md)
-- [ ] T012 [US1] Update clarify.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/clarify.md)
-- [ ] T013 [US1] Update constitution.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/constitution.md)
-- [ ] T014 [US1] Update implement.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/implement.md)
-- [ ] T015 [US1] Update issues.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/issues.md)
-- [ ] T016 [US1] Update merge.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/merge.md)
-- [ ] T017 [US1] Update plan.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/plan.md)
-- [ ] T018 [US1] Update review-pr.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/review-pr.md)
-- [ ] T019 [US1] Update specify.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/specify.md)
-- [ ] T020 [US1] Update tasks.md command - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/tasks.md)
+- [x] T009 [US1] Update accept.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/accept.md)
+- [x] T010 [US1] Update analyze.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/analyze.md)
+- [x] T011 [US1] Update cancel.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/cancel.md)
+- [x] T012 [US1] Update clarify.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/clarify.md)
+- [x] T013 [US1] Update constitution.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/constitution.md)
+- [x] T014 [US1] Update implement.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/implement.md)
+- [x] T015 [US1] Update issues.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/issues.md)
+- [x] T016 [US1] Update merge.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/merge.md)
+- [x] T017 [US1] Update plan.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/plan.md)
+- [x] T018 [US1] Update review-pr.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/review-pr.md)
+- [x] T019 [US1] Update specify.md - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/specify.md)
+- [x] T020 [US1] Update tasks.md command - replace /projspec: with /spectra: (spectra/plugins/spectra/commands/tasks.md)
 
 ### Verification
-- [ ] T021 [US1] Verify all commands contain /spectra: prefix (grep verification)
-- [ ] T022 [US1] CHECKPOINT: Verify zero /projspec: occurrences in commands directory
+- [x] T021 [US1] Verify all commands contain /spectra: prefix (grep verification)
+- [x] T022 [US1] CHECKPOINT: Verify zero /projspec: occurrences in commands directory
 
 ---
 
@@ -71,11 +71,11 @@ Update all 12 command files to use the new /spectra: prefix.
 
 Update all 5 bash scripts to use new paths and references.
 
-- [ ] T023 [P] [US1] Update check-prerequisites.sh - replace projspec references (spectra/plugins/spectra/scripts/check-prerequisites.sh)
-- [ ] T024 [P] [US1] Update common.sh - replace projspec references (spectra/plugins/spectra/scripts/common.sh)
-- [ ] T025 [P] [US1] Update any remaining script files with projspec references (spectra/plugins/spectra/scripts/)
-- [ ] T026 [US1] Verify all scripts use spectra paths (grep verification)
-- [ ] T027 [US1] CHECKPOINT: Verify zero projspec occurrences in scripts directory
+- [x] T023 [P] [US1] Update check-prerequisites.sh - replace projspec references (spectra/plugins/spectra/scripts/check-prerequisites.sh)
+- [x] T024 [P] [US1] Update common.sh - replace projspec references (spectra/plugins/spectra/scripts/common.sh)
+- [x] T025 [P] [US1] Update any remaining script files with projspec references (spectra/plugins/spectra/scripts/)
+- [x] T026 [US1] Verify all scripts use spectra paths (grep verification)
+- [x] T027 [US1] CHECKPOINT: Verify zero projspec occurrences in scripts directory
 
 ---
 
@@ -84,20 +84,20 @@ Update all 5 bash scripts to use new paths and references.
 Update all documentation files for consistent Spectra branding.
 
 ### README Updates
-- [ ] T028 [P] [US2] [US3] Update root README.md with Spectra branding (README.md)
-- [ ] T029 [P] [US2] [US3] Update spectra/README.md with Spectra branding (spectra/README.md)
+- [x] T028 [P] [US2] [US3] Update root README.md with Spectra branding (README.md)
+- [x] T029 [P] [US2] [US3] Update spectra/README.md with Spectra branding (spectra/README.md)
 
 ### CLAUDE.md Updates
-- [ ] T030 [US2] Update CLAUDE.md project description to reference Spectra (CLAUDE.md)
-- [ ] T031 [US2] Update CLAUDE.md directory structure references (CLAUDE.md)
+- [x] T030 [US2] Update CLAUDE.md project description to reference Spectra (CLAUDE.md)
+- [x] T031 [US2] Update CLAUDE.md directory structure references (CLAUDE.md)
 
 ### Template Updates
-- [ ] T032 [P] [US1] Update template files with spectra references (spectra/plugins/spectra/templates/)
-- [ ] T033 [P] [US1] Update agent description files (spectra/plugins/spectra/agents/)
+- [x] T032 [P] [US1] Update template files with spectra references (spectra/plugins/spectra/templates/)
+- [x] T033 [P] [US1] Update agent description files (spectra/plugins/spectra/agents/)
 
 ### Verification
-- [ ] T034 [US2] Verify documentation consistency (grep verification)
-- [ ] T035 [US2] [US3] CHECKPOINT: Verify zero projspec occurrences in documentation
+- [x] T034 [US2] Verify documentation consistency (grep verification)
+- [x] T035 [US2] [US3] CHECKPOINT: Verify zero projspec occurrences in documentation
 
 ---
 
@@ -105,12 +105,12 @@ Update all documentation files for consistent Spectra branding.
 
 Comprehensive verification that all renaming is complete.
 
-- [ ] T036 [US1] [US2] Run grep to verify zero "projspec" occurrences in all files (full codebase grep)
-- [ ] T037 [US1] Test /spectra:specify command execution (manual test)
-- [ ] T038 [US1] Test /spectra:plan command execution (manual test)
-- [ ] T039 [US1] Test /spectra:tasks command execution (manual test)
-- [ ] T040 [US1] Verify plugin loads correctly and appears as "Spectra" (plugin listing)
-- [ ] T041 [US1] [US2] [US3] CHECKPOINT: All verification criteria passed
+- [x] T036 [US1] [US2] Run grep to verify zero "projspec" occurrences in all files (full codebase grep)
+- [x] T037 [US1] Test /spectra:specify command execution (manual test)
+- [x] T038 [US1] Test /spectra:plan command execution (manual test)
+- [x] T039 [US1] Test /spectra:tasks command execution (manual test)
+- [x] T040 [US1] Verify plugin loads correctly and appears as "Spectra" (plugin listing)
+- [x] T041 [US1] [US2] [US3] CHECKPOINT: All verification criteria passed
 
 ---
 
@@ -118,7 +118,7 @@ Comprehensive verification that all renaming is complete.
 
 Rename the GitHub repository for complete brand consistency.
 
-- [ ] T042 [US3] Rename GitHub repository from projspec to spectra via GitHub Settings (github.com/liorfranko/projspec → spectra)
+- [x] T042 [US3] Rename GitHub repository from projspec to spectra via GitHub Settings (github.com/liorfranko/projspec → spectra)
 
 ---
 
