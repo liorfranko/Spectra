@@ -17,13 +17,14 @@ ProjSpec provides a structured approach to feature development by guiding you th
 
 ## 📋 Table of Contents
 
-- [Prerequisites](#-prerequisites)
+- [Prerequisites](#️-prerequisites)
 - [Installation](#-installation)
 - [Quick Start](#-quick-start)
 - [Commands Reference](#-commands-reference)
 - [Agents Reference](#-agents-reference)
 - [Workflow Overview](#-workflow-overview)
 - [Feature Directory Structure](#-feature-directory-structure)
+- [Git Worktree Integration](#-git-worktree-integration)
 
 ---
 
@@ -512,6 +513,73 @@ specs/{feature-id}/
 ├── checklists/       # Generated checklists
 └── checkpoints/      # Session checkpoints
 ```
+
+---
+
+## 🌳 Git Worktree Integration
+
+ProjSpec uses git worktrees to provide isolated development environments for each feature.
+
+### Why Worktrees?
+
+- **Parallel Development** — Work on multiple features simultaneously without stashing
+- **Clean Context** — Each feature has its own file state with no cross-contamination
+- **Fresh Claude Sessions** — Start Claude in a worktree for focused context
+- **Safe Experimentation** — Break things without affecting other features
+
+### Worktree Structure
+
+```
+your-repo/
+├── worktrees/
+│   ├── 001-user-auth/           # Feature 1 (isolated)
+│   │   ├── specs/001-user-auth/
+│   │   └── [full repo copy]
+│   │
+│   └── 002-dashboard/           # Feature 2 (parallel)
+│       ├── specs/002-dashboard/
+│       └── [full repo copy]
+│
+└── specs/                       # Merged specs land here
+```
+
+### Working with Worktrees
+
+**Option A: Parallel Features** — Best for multiple simultaneous features
+
+```bash
+# 1. Create the feature (worktree is auto-created)
+/projspec.specify implement user authentication
+
+# 2. Navigate to worktree and start fresh Claude session
+cd worktrees/001-user-auth
+claude
+
+# 3. Continue workflow in isolation
+/projspec.plan
+/projspec.tasks
+/projspec.implement
+/projspec.merge --push
+```
+
+**Option B: Single Feature** — Simpler sequential workflow
+
+```bash
+# Stay in main repo - Claude helpers manage worktree context
+/projspec.specify implement user authentication
+/projspec.plan
+/projspec.tasks
+/projspec.implement
+/projspec.merge --push
+```
+
+### Worktree Lifecycle
+
+| Command | Worktree Action |
+|---------|-----------------|
+| `/projspec.specify` | Creates worktree + feature branch |
+| `/projspec.merge` | Merges branch, removes worktree |
+| `/projspec.cancel` | Deletes branch, removes worktree |
 
 ---
 

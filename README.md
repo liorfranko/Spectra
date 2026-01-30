@@ -190,25 +190,124 @@ projspec/
 
 ---
 
-## 🛠️ Development
+## 🌳 Git Worktree Workflow
 
-<details>
-<summary><strong>Git Worktree Workflow</strong></summary>
+ProjSpec uses **git worktrees** to isolate feature development. Each feature gets its own working directory with a dedicated branch, enabling powerful parallel development capabilities.
 
-This project uses git worktrees for feature isolation:
+### Why Worktrees?
 
-```bash
-# Feature development happens in worktrees
-worktrees/<NNN-feature-name>/
+| Benefit | Description |
+|---------|-------------|
+| **Parallel Development** | Work on multiple features simultaneously without stashing or branch switching |
+| **Clean Context** | Each feature has isolated file state — no cross-contamination between features |
+| **Fresh Claude Sessions** | Start Claude Code in a worktree for focused, feature-specific context |
+| **Safe Experimentation** | Break things in one worktree without affecting others |
+| **Easy Comparison** | Open multiple worktrees side-by-side to compare implementations |
 
-# Feature specs live in the worktree
-worktrees/<feature>/specs/<feature>/
+### How It Works
 
-# After PR merge, specs appear in main repo
-specs/
+When you run `/projspec.specify`, a new worktree is automatically created:
+
+```
+your-repo/
+├── worktrees/
+│   ├── 001-user-auth/          # Feature 1 worktree
+│   │   ├── specs/001-user-auth/
+│   │   │   ├── spec.md
+│   │   │   ├── plan.md
+│   │   │   └── tasks.md
+│   │   └── src/                # Full repo copy
+│   │
+│   └── 002-dashboard/          # Feature 2 worktree (parallel!)
+│       ├── specs/002-dashboard/
+│       └── src/
+│
+├── specs/                      # Merged specs appear here
+└── src/                        # Main repo
 ```
 
+### Two Workflow Options
+
+<details>
+<summary><strong>Option 1: Parallel Features (Recommended for teams)</strong></summary>
+
+Best when working on multiple features simultaneously or when you want maximum isolation.
+
+```bash
+# 1. Start in main repo, create the feature
+/projspec.specify implement user authentication
+
+# 2. Navigate to the new worktree
+cd worktrees/001-user-auth
+
+# 3. Start a fresh Claude Code session there
+claude
+
+# 4. Continue the workflow in the worktree
+/projspec.plan
+/projspec.tasks
+/projspec.implement
+# ... complete the feature ...
+/projspec.merge --push
+```
+
+**Advantages:**
+- Complete isolation between features
+- Fresh Claude context focused on one feature
+- Can work on Feature B while Feature A is in review
+- Each worktree can have different uncommitted changes
+
 </details>
+
+<details>
+<summary><strong>Option 2: Single Feature (Simpler flow)</strong></summary>
+
+Best for sequential feature development or when you prefer staying in one terminal.
+
+```bash
+# 1. Start in main repo
+/projspec.specify implement user authentication
+
+# Claude Code automatically detects the worktree and can work from main repo
+# Helper scripts handle navigation behind the scenes
+
+# 2. Continue workflow - Claude knows to work in the worktree context
+/projspec.plan
+/projspec.tasks
+/projspec.implement
+/projspec.merge --push
+
+# 3. Start next feature
+/projspec.specify add dashboard analytics
+```
+
+**Advantages:**
+- Simpler mental model
+- No directory switching needed
+- Good for solo development
+- Claude Code helpers manage worktree context automatically
+
+</details>
+
+### Worktree Lifecycle
+
+```
+/projspec.specify  →  Creates worktree + branch
+        ↓
+   Development      →  All work happens in worktree
+        ↓
+/projspec.merge    →  Merges to main, removes worktree + branch
+```
+
+Or if you decide not to proceed:
+
+```
+/projspec.cancel   →  Removes worktree + branch, optionally keeps specs
+```
+
+---
+
+## 🛠️ Development
 
 <details>
 <summary><strong>Running Tests</strong></summary>
