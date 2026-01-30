@@ -1,17 +1,44 @@
-# ProjSpec
+<div align="center">
 
-Specification-driven development workflow automation for Claude Code.
+# 📋 ProjSpec
+
+### Complete Plugin Documentation
+
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Plugin-7C3AED?style=flat-square)](https://github.com/anthropics/claude-code)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](../LICENSE)
+
+**Specification-driven development workflow automation for Claude Code**
+
+</div>
+
+---
 
 ProjSpec provides a structured approach to feature development by guiding you through specification, planning, task generation, and implementation phases. It ensures consistency and traceability throughout the development lifecycle.
 
-## Prerequisites
+## 📋 Table of Contents
 
-- **Claude Code CLI** - The Claude Code command-line interface
-- **Git** - Version control (repository must be initialized)
-- **macOS or Linux** - Currently supported platforms
-- **GitHub CLI** (optional) - Required for `/projspec.issues` command
+- [Prerequisites](#-prerequisites)
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [Commands Reference](#-commands-reference)
+- [Agents Reference](#-agents-reference)
+- [Workflow Overview](#-workflow-overview)
+- [Feature Directory Structure](#-feature-directory-structure)
 
-## Installation
+---
+
+## ⚙️ Prerequisites
+
+| Requirement | Description |
+|-------------|-------------|
+| **Claude Code CLI** | The Claude Code command-line interface |
+| **Git** | Version control (repository must be initialized) |
+| **macOS or Linux** | Currently supported platforms |
+| **GitHub CLI** | Optional — required for `/projspec.issues` command |
+
+---
+
+## 📦 Installation
 
 Install directly in Claude Code:
 
@@ -21,13 +48,15 @@ Install directly in Claude Code:
 
 Or browse available plugins:
 
-```
+```bash
 /plugin > Discover
 ```
 
-## Quick Start
+---
 
-### 1. Create a Specification
+## 🚀 Quick Start
+
+### 1️⃣ Create a Specification
 
 Define your feature requirements:
 
@@ -37,7 +66,7 @@ Define your feature requirements:
 
 This creates a structured specification with user scenarios, functional requirements, and success criteria.
 
-### 2. Clarify Requirements (Optional)
+### 2️⃣ Clarify Requirements (Optional)
 
 Identify and resolve ambiguous areas:
 
@@ -47,7 +76,7 @@ Identify and resolve ambiguous areas:
 
 Asks up to 5 targeted questions and encodes answers back into the spec.
 
-### 3. Generate a Plan
+### 3️⃣ Generate a Plan
 
 Create an implementation plan from your spec:
 
@@ -57,7 +86,7 @@ Create an implementation plan from your spec:
 
 This produces a detailed design with architecture decisions and constitution compliance checks.
 
-### 4. Generate Tasks
+### 4️⃣ Generate Tasks
 
 Break down the plan into actionable tasks:
 
@@ -67,7 +96,7 @@ Break down the plan into actionable tasks:
 
 Creates a dependency-ordered task list ready for implementation.
 
-### 5. Implement
+### 5️⃣ Implement
 
 Execute the implementation plan:
 
@@ -78,7 +107,7 @@ Execute the implementation plan:
 
 Processes and executes all tasks defined in tasks.md. Use `--direct` for faster execution when task isolation is not needed.
 
-### 6. Review Before PR
+### 6️⃣ Review Before PR
 
 Run comprehensive code review:
 
@@ -90,11 +119,11 @@ Uses specialized agents to ensure code quality before PR creation.
 
 ---
 
-## Commands Reference
+## 📖 Commands Reference
 
-ProjSpec includes 10 commands for the complete development workflow.
+ProjSpec includes 12 commands for the complete development workflow.
 
-### Core Workflow Commands
+### 🔄 Core Workflow Commands
 
 | Command | Description | Arguments |
 |---------|-------------|-----------|
@@ -103,25 +132,27 @@ ProjSpec includes 10 commands for the complete development workflow.
 | `/projspec.plan` | Generate implementation plan with constitution compliance | None |
 | `/projspec.tasks` | Generate structured, dependency-ordered task list from plan | None |
 | `/projspec.implement` | Implement tasks from task list with guided workflow | `--agent`, `--direct`, or Task ID |
-| `/projspec.issues` | Convert tasks into GitHub issues (requires GitHub CLI) | None |
 
-### Quality & Validation Commands
+### ✅ Quality & Delivery Commands
 
 | Command | Description | Arguments |
 |---------|-------------|-----------|
-| `/projspec.checklist` | Generate a custom checklist for the current feature based on requirements | Checklist type |
 | `/projspec.analyze` | Perform cross-artifact consistency and quality analysis | None |
 | `/projspec.review-pr` | Comprehensive PR review using specialized agents | `full`, `quick`, `security`, `performance`, `style` |
+| `/projspec.accept` | Validate feature readiness before merge | `--lenient`, `--skip-tests` |
+| `/projspec.merge` | Merge feature branch into main and cleanup | `--push`, `--squash`, `--keep-branch` |
 
-### Project Configuration Commands
+### ⚙️ Configuration & Lifecycle Commands
 
 | Command | Description | Arguments |
 |---------|-------------|-----------|
 | `/projspec.constitution` | Create or update project constitution with foundational principles | `interactive`, `add "principle"`, `update`, or empty |
+| `/projspec.cancel` | Cancel feature and cleanup resources (branch, worktree) | `--delete`, `--force`, `--reason` |
+| `/projspec.issues` | Convert tasks into GitHub issues (requires GitHub CLI) | None |
 
 ---
 
-## Command Details & Examples
+## 📝 Command Details & Examples
 
 ### /projspec.specify
 
@@ -317,7 +348,97 @@ Create or update the project constitution with foundational principles.
 
 ---
 
-## Agents Reference
+### /projspec.accept
+
+Validate that a feature is ready for merge by checking task completion, running quality gates, and confirming acceptance criteria.
+
+```bash
+# Standard acceptance check
+/projspec.accept
+
+# Lenient mode (allows minor issues)
+/projspec.accept --lenient
+
+# Skip test execution
+/projspec.accept --skip-tests
+```
+
+**Prerequisites:** Requires `tasks.md` to exist, must be on a feature branch.
+
+**Checks performed:**
+- All tasks marked complete [X]
+- Required documents exist (spec.md, plan.md, tasks.md)
+- No unresolved markers (TODO, FIXME, TBD)
+- Git state is clean
+- Tests pass (if detected)
+- No merge conflicts with base branch
+
+**Output:** Validation report with pass/fail status and recommended next steps.
+
+---
+
+### /projspec.merge
+
+Merge a completed feature branch into main and cleanup resources.
+
+```bash
+# Standard merge
+/projspec.merge
+
+# Merge and push to remote
+/projspec.merge --push
+
+# Squash commits into one
+/projspec.merge --squash --push
+
+# Preview without executing
+/projspec.merge --dry-run
+
+# Keep branch after merge
+/projspec.merge --push --keep-branch
+```
+
+**Prerequisites:** Should have passed `/projspec.accept` first.
+
+**Behavior:**
+- Merges feature branch into main/master
+- Optionally pushes to remote (`--push`)
+- Cleans up local and remote feature branch
+- Removes associated worktree
+
+**Options:** `--push`, `--squash`, `--rebase`, `--keep-branch`, `--keep-worktree`, `--dry-run`
+
+---
+
+### /projspec.cancel
+
+Cancel a feature that you decided not to develop and cleanup resources.
+
+```bash
+# Cancel current feature (keep spec files)
+/projspec.cancel
+
+# Cancel and delete everything
+/projspec.cancel --delete
+
+# Cancel with reason
+/projspec.cancel --reason "Requirements changed"
+
+# Force cancel without prompts
+/projspec.cancel --force
+```
+
+**Behavior:**
+- Deletes local and remote feature branch
+- Removes associated worktree
+- By default, keeps spec files with a `CANCELLED.md` marker
+- Use `--delete` to remove spec files entirely
+
+**Options:** `--delete`, `--keep-spec`, `--force`, `--reason <text>`
+
+---
+
+## 🤖 Agents Reference
 
 ProjSpec includes 6 specialized agents for code analysis and review tasks.
 
@@ -341,49 +462,60 @@ All agents have access to:
 
 ---
 
-## Workflow Overview
+## 🔄 Workflow Overview
 
 ```
-                    +------------------+
-                    |                  |
-                    v                  |
-specify --> clarify --> plan --> tasks --> implement
-                                   |
-                                   v
-                              issues (optional)
-                                   |
-                                   v
-                              review-pr
+┌─────────────────────────────────────────────────────────────────────┐
+│                         CORE WORKFLOW                                │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│   specify ──► plan ──► tasks ──► implement ──► review-pr            │
+│      │         │                                    │                │
+│      ▼         ▼                                    ▼                │
+│   clarify   analyze                              accept              │
+│  (optional) (optional)                              │                │
+│                                                     ▼                │
+│                                                   merge              │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────┐    ┌─────────────────────────┐
+│  SETUP (Once)           │    │  LIFECYCLE              │
+├─────────────────────────┤    ├─────────────────────────┤
+│  constitution           │    │  cancel (abandon)       │
+└─────────────────────────┘    └─────────────────────────┘
 ```
 
-### Supporting Commands
+### Command Categories
 
-```
-constitution  <-- Define project principles (run once at project start)
-analyze       <-- Cross-artifact consistency (run after tasks)
-checklist     <-- Generate custom checklists (run at any phase)
-```
+| Category | Commands |
+|----------|----------|
+| **Core Flow** | specify → plan → tasks → implement |
+| **Quality** | clarify, analyze, review-pr |
+| **Delivery** | accept, merge |
+| **Lifecycle** | cancel |
+| **Setup** | constitution |
 
 ---
 
-## Feature Directory Structure
+## 📁 Feature Directory Structure
 
 Each feature creates artifacts in a dedicated directory:
 
 ```
 specs/{feature-id}/
-  spec.md           # Feature specification
-  plan.md           # Implementation plan
-  tasks.md          # Task list
-  research.md       # Technical research (optional)
-  data-model.md     # Data model design (optional)
-  checklists/       # Generated checklists
-  checkpoints/      # Session checkpoints
+├── spec.md           # Feature specification
+├── plan.md           # Implementation plan
+├── tasks.md          # Task list
+├── research.md       # Technical research (optional)
+├── data-model.md     # Data model design (optional)
+├── checklists/       # Generated checklists
+└── checkpoints/      # Session checkpoints
 ```
 
 ---
 
-## Error Handling
+## ⚠️ Error Handling
 
 If prerequisites are not met, commands provide clear error messages:
 
@@ -399,6 +531,14 @@ Navigate to a feature directory under specs/ or run /projspec.specify to start.
 
 ---
 
-## License
+## 📄 License
 
-MIT
+MIT — see [LICENSE](../LICENSE) for details.
+
+---
+
+<div align="center">
+
+**[⬆ Back to top](#-projspec)**
+
+</div>
