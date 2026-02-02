@@ -102,11 +102,11 @@ Creates a dependency-ordered task list ready for implementation.
 Execute the implementation plan:
 
 ```
-/spectra.implement           # Agent mode (default)
-/spectra.implement --direct  # Direct mode (faster, sequential)
+/spectra.implement           # Agent mode with smart grouping (default)
+/spectra.implement --direct  # Direct mode (sequential, no agents)
 ```
 
-Processes and executes all tasks defined in tasks.md. Use `--direct` for faster execution when task isolation is not needed.
+Processes and executes all tasks defined in tasks.md. Agent mode uses smart grouping to batch related tasks into a single agent context while preserving per-task commits. Use `--direct` for simpler sequential execution without agents.
 
 ### 6️⃣ Review Before PR
 
@@ -220,11 +220,11 @@ Execute the implementation plan by processing tasks. Supports two execution mode
 
 | Mode | Flag | Description |
 |------|------|-------------|
-| **Agent** (default) | `--agent` | Spawns isolated agent per task with fresh context. Enables parallel execution of [P] tasks. |
-| **Direct** | `--direct` | Executes tasks sequentially in current context. Faster for simple task sets. |
+| **Agent** (default) | `--agent` | Uses smart grouping to batch related tasks by phase/user story into single agent contexts. Each task still gets its own commit. |
+| **Direct** | `--direct` | Executes tasks sequentially in current context. Simpler for small task sets. |
 
 ```bash
-# Agent mode (default) - isolated context per task
+# Agent mode (default) - smart grouping enabled
 /spectra.implement
 /spectra.implement --agent
 
@@ -241,17 +241,25 @@ Execute the implementation plan by processing tasks. Supports two execution mode
 - Processes tasks in dependency order
 - Each task produces exactly one commit: `[T###] Description`
 - Updates task checkboxes after successful commit
-- Agent mode: Tasks marked with [P] run in parallel
-- Direct mode: Parallel markers are noted but tasks run sequentially
+- Agent mode: Groups tasks by phase and user story, spawns one agent per group
+- Direct mode: Executes all tasks sequentially in current context
+
+**Smart Grouping (Agent Mode):**
+- Groups tasks by phase boundaries (Setup, Foundational, User Stories, Polish)
+- Within phases, groups by user story (`[US1]`, `[US2]`, etc.)
+- Maximum 5-7 tasks per group to avoid context overload
+- One agent per group, but each task still gets its own commit
+- Push happens after each group completes (not after each task)
 
 **Mode Comparison:**
 
 | Aspect | Agent Mode | Direct Mode |
 |--------|------------|-------------|
-| Execution | Parallel possible | Sequential only |
-| Context | Fresh per task | Accumulated |
-| Speed | Slower (agent overhead) | Faster |
-| Use case | Complex tasks, parallelism | Simple, sequential tasks |
+| Execution | Grouped by phase/story | Sequential only |
+| Context | Shared within group | Accumulated |
+| Commits | Per task | Per task |
+| Push | Per group | Per task |
+| Use case | Complex features with many tasks | Simple, small task sets |
 
 ---
 
