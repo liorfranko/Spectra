@@ -69,15 +69,21 @@ Tasks that can run simultaneously:
 
 ## Expected Behavior
 
-### Agent Mode (`--agent`)
-- T001 executes first (sequential setup)
-- T002 and T003 spawn as parallel Task tool agents
-- Both components created concurrently
+### Agent Mode (`--agent`) - Smart Grouping
+- **Group 1 (Phase 1 - Setup)**: T001
+  - Single agent for setup phase
+  - Commits T001, then pushes
+- **Group 2 (Phase 2 - Parallel Component Creation)**: T002, T003
+  - Single agent for both parallel tasks
+  - Agent implements T002, commits, then T003, commits
+  - Pushes after both tasks complete
+- Total: 2 groups, 3 commits
 
 ### Direct Mode (`--direct`)
 - T001 executes first (sequential setup)
 - T002 and T003 execute sequentially (one after another)
 - Message displayed: "Note: 2 parallel tasks ran sequentially in direct mode"
+- Each task commits and pushes individually
 
 ---
 
@@ -85,5 +91,7 @@ Tasks that can run simultaneously:
 
 This fixture validates:
 - SC-001: Mode availability - both modes accessible and functional
-- FR-002: Agent mode executes [P] tasks concurrently
+- FR-002: Agent mode groups tasks by phase and executes within single agent context
 - FR-003: Direct mode handles [P] tasks sequentially with info message
+- FR-004: Smart grouping respects phase boundaries (Setup vs Parallel Component Creation)
+- FR-005: Each task gets its own commit regardless of grouping

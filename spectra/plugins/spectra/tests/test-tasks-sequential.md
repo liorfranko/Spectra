@@ -83,6 +83,20 @@ After running `/spectra:implement` on this fixture:
 3. **Documentation**: `README.md` exists with test description
 4. **Git Commits**: 3 commits in format `[T###] Description`
 
+### Agent Mode Behavior (Smart Grouping)
+
+- **Group 1 (Phase 1 - Sequential Tasks)**: T001, T002, T003
+  - Single agent handles all tasks (same phase, no user story markers)
+  - Agent implements T001, commits, then T002, commits, then T003, commits
+  - Pushes after all 3 tasks complete
+- Total: 1 group, 3 commits, 1 push
+
+### Direct Mode Behavior
+
+- T001, T002, T003 execute sequentially
+- Each task commits and pushes individually
+- Total: 3 commits, 3 pushes
+
 ### Verification Criteria (SC-001, SC-002)
 
 Both `--agent` and `--direct` modes should produce:
