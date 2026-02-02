@@ -35,13 +35,13 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
 5. **Display mode indicator**:
    - If `MODE = "agent"` AND `--agent` flag was explicitly provided:
-     - Display: "Executing tasks in agent mode (isolated context per task)"
+     - Display: "Executing tasks in agent mode (smart grouping enabled)"
    - If `MODE = "agent"` AND no flag was provided (default):
-     - Display: "Executing tasks in agent mode (isolated context per task) (default)"
+     - Display: "Executing tasks in agent mode (smart grouping enabled) (default)"
    - If `MODE = "direct"`:
      - Display: "Executing tasks in direct mode (sequential, no agents)"
 
-**Backward Compatibility Note:** Running `/spectra:implement` without any flags maintains the same behavior as before this feature was added - tasks will be executed in agent mode with isolated context per task. This ensures existing scripts and workflows continue to work unchanged.
+**Backward Compatibility Note:** Running `/spectra:implement` without any flags maintains the same behavior as before - tasks will be executed in agent mode. Smart grouping is now the default agent behavior, grouping related tasks to reduce context overhead while preserving per-task commit granularity.
 
 ## Outline
 
@@ -105,86 +105,176 @@ Parse the `$ARGUMENTS` to determine execution mode:
    - **Task details**: ID, description, file paths, parallel markers [P]
    - **Execution flow**: Order and dependency requirements
 
-6. **Task Execution Strategy - Isolated Context Per Task**:
+6. **Task Execution Strategy - Smart Grouping**:
 
    <!-- BEGIN AGENT MODE SECTION (MODE == "agent") -->
    **When MODE = "agent" (Agent Mode Execution):**
 
    The following agent-based execution strategy applies when running in agent mode.
-   Each task runs in a **fresh context** via spawned agents to ensure isolation and clean state.
+   Tasks are **smartly grouped** to reduce context overhead while preserving per-task commit granularity.
 
-   **CRITICAL - ONE TASK = ONE AGENT = ONE COMMIT**:
-   - Each task (T001, T002, etc.) MUST be implemented by its own spawned agent
-   - Each task MUST result in exactly ONE commit with format `[T001] Description`
-   - NEVER batch multiple tasks into one agent or one commit
+   **CRITICAL - ONE GROUP = ONE AGENT, ONE TASK = ONE COMMIT**:
+   - Related tasks are grouped together and implemented by a single agent
+   - Each task MUST still result in exactly ONE commit with format `[T001] Description`
+   - NEVER batch multiple tasks into one commit (even within the same group)
    - NEVER use range formats like `[T001-T005]` or `[T001, T002]` in commits
-   - If a task is too small, still give it its own agent and commit
-   - This ensures: rollback granularity, clear audit trail, fresh context per task
+   - The agent commits after EACH task, not after the group
+   - This ensures: rollback granularity, clear audit trail, reduced context overhead
 
-   **For Sequential Tasks**:
-   - Spawn a new agent using the Task tool for each task
-   - Provide the agent with:
-     - Task ID and description
-     - Relevant excerpts from plan.md, spec.md, data-model.md
-     - Constitution principles from `.spectra/memory/constitution.md`
-     - Specific file paths to create/modify
-   - Wait for agent completion
-   - After agent completes:
-     1. Stage all changes: `git add -A`
-     2. Commit with task ID and description: `git commit -m "[TaskID] Task description"`
-     3. Push to remote: `git push`
-     4. Mark task as [X] in tasks.md file
-   - Move to next sequential task
+   ### Smart Grouping Algorithm
 
-   **For Parallel Tasks [P]**:
-   - Identify all tasks marked with [P] in the same batch
-   - Spawn multiple agents simultaneously (single message with multiple Task tool calls)
-   - Each agent gets the same context package (task details, plan excerpts, constitution)
-   - Wait for all parallel agents to complete
-   - After all complete, for each task in completion order:
-     1. Stage changes for that task: `git add [task-specific-files]` or `git add -A` if files overlap
-     2. Commit individually: `git commit -m "[TaskID] Task description"`
-     3. Mark task as [X] in tasks.md
-   - Push all commits together: `git push`
-   - Move to next batch
+   Before executing tasks, analyze and group them for optimal agent efficiency:
 
-   **Agent Invocation Template**:
+   **Step 1: Parse All Tasks**
+   - Extract all tasks from tasks.md with their attributes:
+     - Task ID (T001, T002, etc.)
+     - Phase (Setup, Foundational, User Stories, Polish)
+     - User Story marker if present ([US1], [US2], etc.)
+     - Parallel marker if present ([P])
+     - Description and file paths mentioned
+
+   **Step 2: Partition by Phase (HARD constraint)**
+   - NEVER group tasks across different phases
+   - Phases act as synchronization points
+   - Create separate groups for: Setup, Foundational, each User Story section, Polish
+
+   **Step 3: Within Phase, Group by User Story (PRIMARY grouping)**
+   - Group all tasks with the same `[USn]` marker together
+   - Example: T007 [US1], T008 [US1], T009 [US1] → one group
+   - Tasks without user story markers form their own groups within the phase
+
+   **Step 4: Analyze File Overlap (SECONDARY grouping)**
+   - Parse file paths from task descriptions
+   - Tasks touching the same files benefit from being grouped
+   - Use this to refine groups or split large ones
+
+   **Step 5: Apply Group Size Limit**
+   - Maximum 5-7 tasks per group to avoid context overload
+   - If a logical group exceeds this limit, split by file overlap
+   - Prefer keeping related tasks together when splitting
+
+   **Step 6: Respect Parallel/Sequential Constraints**
+   - Non-parallel tasks in sequence → can be grouped together
+   - Parallel [P] tasks → can be grouped together (within same phase/story)
+   - Mixed parallel and non-parallel within same story → same group is fine
+
+   **Grouping Output Format**:
+   ```
+   Group 1 (Phase 1 - Setup): T001, T002, T003
+   Group 2 (Phase 2 - Foundational): T004, T005, T006
+   Group 3 (US1 - User Registration): T007, T008, T009, T010
+   Group 4 (US2 - Login): T011, T012, T013
+   Group 5 (Phase 4 - Polish): T014, T015
+   ```
+
+   ### Display Group Plan
+
+   Before executing, display the grouping plan to the user:
+
+   ```
+   Smart Grouping Plan:
+   ┌─────────────────────────────────────────────────────────────┐
+   │ Group 1 (Phase 1 - Setup): T001, T002, T003                │
+   │ Group 2 (Phase 2 - Foundational): T004, T005, T006         │
+   │ Group 3 (US1 - User Registration): T007, T008, T009, T010  │
+   │ Group 4 (US2 - Login): T011, T012, T013                    │
+   │ Group 5 (Phase 4 - Polish): T014, T015                     │
+   └─────────────────────────────────────────────────────────────┘
+   Total: 5 groups, 15 tasks
+   ```
+
+   ### Group Execution Strategy
+
+   **For Each Group**:
+   1. Spawn ONE agent with all tasks in the group
+   2. Agent implements tasks sequentially in order
+   3. Agent commits after EACH task (not after the group)
+   4. Agent pushes after completing all tasks in the group
+   5. Update tasks.md checkboxes for all completed tasks
+   6. Report group completion before moving to next group
+
+   **For Parallel Groups** (groups that can run concurrently):
+   - If multiple groups have no dependencies between them (e.g., separate user stories after foundational phase)
+   - Can spawn multiple group agents simultaneously
+   - Each agent still commits per-task within its group
+   - Wait for all parallel groups to complete before dependent groups
+
+   **Group Agent Invocation Template**:
 
    ```yaml
    Task tool:
      subagent_type: "general-purpose"
-     description: "[TaskID] Brief description"
+     description: "Group N: [Phase/Story name] - Tasks T00X-T00Y"
      prompt: |
-       You are implementing a specific task in isolation with a fresh context.
+       You are implementing a GROUP of related tasks.
+       Implement each task in order and commit after EACH one.
 
-       TASK DETAILS:
-       - Task ID: [TaskID]
-       - Description: [Full task description]
-       - Files to modify: [file paths]
+       TASK GROUP:
+       1. T001: [Description] [FILES: path1, path2]
+       2. T002: [Description] [FILES: path2, path3]
+       3. T003: [Description] [FILES: path1]
+
+       EXECUTION ORDER:
+       For each task in order:
+       1. Implement the task
+       2. Stage all changes: git add -A
+       3. Commit with format: git commit -m "[T###] Description
+
+          Co-Authored-By: Claude Sonnet 4.5 (1M context) <noreply@anthropic.com>"
+       4. Report: "✓ [T###] Description - Committed"
+       5. Move to next task
+
+       After ALL tasks in this group are committed:
+       - Push all commits: git push
+       - Report: "Group N complete: X tasks committed and pushed"
 
        CONTEXT:
-       [Relevant plan.md excerpts]
-       [Relevant spec.md user stories]
+       [Relevant plan.md excerpts for this group]
+       [Relevant spec.md user stories for this group]
        [Relevant data-model.md entities if applicable]
 
        CONSTITUTION PRINCIPLES:
        [Key principles from constitution.md]
 
        INSTRUCTIONS:
-       1. Implement ONLY this specific task
-       2. Follow the architecture and patterns from the plan
-       3. Adhere to constitution principles
-       4. Create/modify the specified files
-       5. Ensure code is production-ready
+       1. Implement tasks IN ORDER (T001 before T002, etc.)
+       2. Commit AFTER EACH TASK (not at the end)
+       3. Each commit message: "[T###] Description"
+       4. You can reference earlier task implementations in later tasks
+       5. Follow the architecture and patterns from the plan
+       6. Adhere to constitution principles
+       7. Ensure code is production-ready
 
        DO NOT:
-       - Implement other tasks
+       - Skip any task in the group
+       - Batch multiple tasks into one commit
+       - Use range formats like [T001-T003] in commits
        - Deviate from the plan
        - Skip error handling
-       - Ignore constitution requirements
 
-       When complete, report what files were created/modified.
+       When complete, report all files created/modified and confirm all commits.
    ```
+
+   ### Progress Tracking for Groups
+
+   After each group completes:
+   ```
+   ✓ Group 1 (Phase 1 - Setup) complete:
+     - [T001] Create project structure - Committed
+     - [T002] Initialize dependencies - Committed
+     - [T003] Configure tooling - Committed
+     Pushed 3 commits to remote
+
+   Executing Group 2 (Phase 2 - Foundational): T004, T005, T006...
+   ```
+
+   ### Verification After Group Completion
+
+   After each group:
+   1. Verify expected commits exist: `git log --oneline -n [group_size]`
+   2. Confirm each task has its own `[T###]` commit
+   3. Update tasks.md checkboxes for all tasks in group
+   4. If any task failed within group, report and ask user for action
 
    <!-- END AGENT MODE SECTION -->
 
@@ -275,21 +365,22 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
    <!-- END DIRECT MODE SECTION -->
 
-7. **Phase-by-Phase Execution**:
+7. **Phase-by-Phase Execution** (applies to both modes, agent mode uses grouping):
    - **Phase 1 - Setup**:
-     - Spawn agents for setup tasks (project structure, dependencies, config)
-     - Commit + push after each setup task
+     - Agent mode: One group for all setup tasks → single agent, commit per task, push after group
+     - Direct mode: Execute setup tasks sequentially, commit + push after each
    - **Phase 2 - Foundational**:
-     - Spawn agents for blocking prerequisites
-     - Commit + push after each foundational task
+     - Agent mode: One group for foundational tasks → single agent, commit per task, push after group
+     - Direct mode: Execute foundational tasks sequentially, commit + push after each
    - **Phase 3+ - User Stories**:
-     - For each user story phase (US1, US2, US3...):
-       - Spawn agents for story tasks (models → services → endpoints)
-       - Commit + push after each task
-       - Validate story completion before next story
+     - Agent mode: One group per user story (e.g., Group 3 = all US1 tasks, Group 4 = all US2 tasks)
+       - Each story group gets its own agent with shared context
+       - Agent commits per task, pushes after story group completes
+       - Independent story groups can run in parallel if no dependencies
+     - Direct mode: Execute story tasks sequentially, commit + push after each
    - **Final Phase - Polish**:
-     - Spawn agents for cross-cutting concerns
-     - Commit + push after each polish task
+     - Agent mode: One group for polish tasks → single agent, commit per task, push after group
+     - Direct mode: Execute polish tasks sequentially, commit + push after each
 
 8. **Git Commit Strategy**:
 
@@ -312,7 +403,7 @@ Parse the `$ARGUMENTS` to determine execution mode:
    Setup phase for T001-T005        # NO task IDs at end
    ```
 
-   **After Each Task Completion**:
+   **After Each Task Completion** (within a group in agent mode):
 
    ```bash
    # Stage all changes
@@ -323,30 +414,63 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
    Co-Authored-By: Claude Sonnet 4.5 (1M context) <noreply@anthropic.com>"
 
-   # Push to remote
-   git push
-
    # Update tasks.md - mark the task checkbox as complete
    # Change: - [ ] T001: Description
    # To:     - [X] T001: Description
    ```
 
+   **After Each Group Completion** (agent mode only):
+
+   ```bash
+   # Push all commits from this group to remote
+   git push
+   ```
+
+   **After Each Task** (direct mode):
+
+   ```bash
+   # Stage, commit, AND push after each task
+   git add -A && git commit -m "[TaskID] Description" && git push
+   ```
+
    **Benefits**:
    - Clear git history showing task-by-task progress
    - Easy rollback to specific task if needed
-   - Remote backup after each task
+   - Remote backup after each group (agent mode) or task (direct mode)
    - Granular tracking of what changed when
    - Each commit is a checkpoint
+   - Grouped pushes reduce network overhead in agent mode
 
 9. **Progress Tracking and Error Handling**:
 
    **This section applies to BOTH agent mode and direct mode. Error handling behavior is consistent regardless of execution mode.**
 
-   - Report progress after each spawned agent completes
+   **Agent Mode (Group-Level Tracking)**:
+   - Display group plan before execution starts
+   - Report progress after each group completes:
+     ```
+     ✓ Group 1 (Phase 1 - Setup) complete:
+       - [T001] Create project structure - Committed
+       - [T002] Initialize dependencies - Committed
+       - [T003] Configure tooling - Committed
+       Pushed 3 commits to remote
+
+     Executing Group 2 (Phase 2 - Foundational): T004, T005, T006...
+     ```
+   - If a task fails within a group:
+     - The agent should report which task failed
+     - Commits for successfully completed tasks in the group are preserved
+     - Show error output from the group agent
+     - Ask user whether to retry the failed task, skip it, or abort
+
+   **Direct Mode (Task-Level Tracking)**:
+   - Report progress after each task completes
    - Display: "✓ [TaskID] Description - Committed and pushed"
-   - Halt execution if any non-parallel task fails
-   - For parallel tasks [P]:
-     - Continue with successful tasks
+
+   **Error Handling (Both Modes)**:
+   - Halt execution if any blocking task fails
+   - For parallel tasks [P] or parallel groups:
+     - Continue with successful tasks/groups
      - Report failed tasks clearly
      - Commit successful tasks
      - Provide clear error messages for failed tasks
@@ -354,10 +478,10 @@ Parse the `$ARGUMENTS` to determine execution mode:
      - Show error output (from agent in agent mode, or from current context in direct mode)
      - Suggest fixes or next steps
      - Ask user whether to retry, skip, or abort:
-       - **Retry**: In agent mode, spawn the same agent again. In direct mode, re-read the task details from tasks.md, reload context from plan.md/spec.md, and re-attempt the implementation in the current conversation.
+       - **Retry**: In agent mode, respawn the group agent for remaining tasks. In direct mode, re-read the task details from tasks.md, reload context from plan.md/spec.md, and re-attempt the implementation in the current conversation.
        - **Skip**: Mark task as skipped and continue to next task (not recommended).
        - **Abort**: Stop implementation entirely and allow user to review the issue.
-   - **IMPORTANT**: Update tasks.md checkbox [X] only after successful commit + push
+   - **IMPORTANT**: Update tasks.md checkbox [X] only after successful commit
 
 10. **Completion Validation**:
 
@@ -368,11 +492,13 @@ Parse the `$ARGUMENTS` to determine execution mode:
 - Review git history: `git log --oneline | head -20` to see task progression
 - **Validate commit format**: Every commit should have format `[T###] Description` (single task ID)
 - **Validate commit count**: Number of `[T###]` commits should equal number of tasks implemented
+- **Agent mode validation**: Verify number of groups executed matches planned groups
 - Report final status with:
   - Total tasks completed
+  - Total groups executed (agent mode only)
   - Total commits made (should match tasks completed)
   - Verification: "X tasks = X commits ✓" or warning if mismatch
-  - Summary of completed work by phase
+  - Summary of completed work by phase/group
   - Next steps in the workflow:
     1. `/spectra:review-pr` - Run code review
     2. `/spectra:accept` - Validate feature readiness
@@ -380,13 +506,13 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
 ## Important Notes
 
-- **ONE TASK = ONE AGENT = ONE COMMIT**: This is the core principle. Never batch tasks together. Each T### gets its own spawned agent and its own `[T###]` commit.
-- **Fresh Context Per Task**: Each spawned agent starts with a clean slate, only seeing the explicit context provided in the prompt
+- **ONE GROUP = ONE AGENT, ONE TASK = ONE COMMIT**: Smart grouping batches related tasks into a single agent context, but each task still gets its own commit for rollback granularity.
+- **Smart Grouping Benefits**: Reduced context overhead, better coherence for related tasks, shared understanding within a group, fewer agent spawns.
 - **Git as Progress Tracker**: Git history becomes a detailed audit trail of task-by-task implementation. You should have as many commits as tasks.
-- **Parallel Efficiency**: Tasks marked [P] can run simultaneously for faster completion, but each still gets its own commit
+- **Group Efficiency**: Related tasks (same phase, same user story) share context, enabling the agent to build on earlier work within the group.
 - **Constitution Compliance**: Every spawned agent must receive relevant constitution principles
 - **Rollback Safety**: Any task can be rolled back via `git revert` using the task ID in commit message. This only works if each task has its own commit.
-- **Remote Backup**: Pushing after each task ensures work is backed up continuously
+- **Remote Backup**: Pushing after each group ensures work is backed up at logical boundaries
 - **Validation**: After implementation, verify `git log --oneline | wc -l` roughly equals the number of tasks
 
 ## Prerequisites
@@ -402,12 +528,26 @@ Parse the `$ARGUMENTS` to determine execution mode:
 
 **Flag Conflict Error**: If you see "Cannot use both --agent and --direct flags", remove one of the flags and re-run the command.
 
-If a task fails:
+**Agent Mode - Group Failure Recovery**:
 
-1. Review the error output (from spawned agent in agent mode, or from current context in direct mode)
+If a task fails within a group:
+1. Review the error output from the group agent
+2. Commits for completed tasks in the group are preserved
+3. Determine if it's a transient error (network, etc.) or code error
+4. Options:
+   - **Retry Task**: Spawn a new group agent for the remaining tasks (starting from the failed task)
+   - **Retry Group**: Re-run the entire group (may re-implement already committed tasks)
+   - **Fix & Continue**: Fix the issue manually, commit the failed task, then spawn agent for remaining tasks
+   - **Skip Task**: Mark task as skipped and continue with remaining tasks in group (not recommended)
+   - **Abort Group**: Stop this group, ask if user wants to continue with next group
+
+**Direct Mode - Task Failure Recovery**:
+
+If a task fails:
+1. Review the error output from current context
 2. Determine if it's a transient error (network, etc.) or code error
 3. Options:
-   - **Retry**: In agent mode, spawn the same agent again with the same prompt. In direct mode, re-read the task details from tasks.md, reload context from plan.md/spec.md, and re-attempt the implementation in the current conversation.
+   - **Retry**: Re-read the task details from tasks.md, reload context from plan.md/spec.md, and re-attempt the implementation in the current conversation.
    - **Fix & Retry**: Fix the issue manually, commit, then continue with the next task
    - **Skip**: Mark task as skipped and move to next (not recommended)
    - **Abort**: Stop implementation, review task breakdown
