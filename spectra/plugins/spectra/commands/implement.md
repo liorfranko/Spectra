@@ -204,6 +204,7 @@ Parse the `$ARGUMENTS` to determine execution mode:
    ```yaml
    Task tool:
      subagent_type: "general-purpose"
+     model: "opus"
      description: "Group N: [Phase/Story name] - Tasks T00X-T00Y"
      prompt: |
        You are implementing a GROUP of related tasks.
@@ -220,7 +221,7 @@ Parse the `$ARGUMENTS` to determine execution mode:
        2. Stage all changes: git add -A
        3. Commit with format: git commit -m "[T###] Description
 
-          Co-Authored-By: Claude Sonnet 4.5 (1M context) <noreply@anthropic.com>"
+          Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
        4. Report: "✓ [T###] Description - Committed"
        5. Move to next task
 
@@ -412,7 +413,7 @@ Parse the `$ARGUMENTS` to determine execution mode:
    # Commit with task ID and description
    git commit -m "[TaskID] Task description
 
-   Co-Authored-By: Claude Sonnet 4.5 (1M context) <noreply@anthropic.com>"
+   Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 
    # Update tasks.md - mark the task checkbox as complete
    # Change: - [ ] T001: Description
