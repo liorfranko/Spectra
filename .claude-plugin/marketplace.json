@@ -10,7 +10,7 @@
     {
       "name": "spectra",
       "description": "Specification-driven development workflow automation",
-      "version": "2.0.3",
+      "version": "2.0.4",
       "author": {
         "name": "liorfr",
         "email": "lior@example.com"
